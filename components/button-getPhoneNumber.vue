@@ -1,0 +1,104 @@
+<!--
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: yongqing
+ * @Date: 2021-03-09 14:59:31
+ * @LastEditors: yongqing
+ * @LastEditTime: 2021-03-10 15:58:36
+       open-type="getPhoneNumber"
+      @getphonenumber="getPhoneNumber"
+-->
+<template>
+  <block v-if="!token">
+    <button
+      :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'"
+      open-type="getPhoneNumber"
+      @getphonenumber="getPhoneNumber"
+    >
+      获取手机号(透明度为0)
+    </button>
+  </block>
+</template>
+<script>
+import { getChebaoToken } from "@/interfaces/index";
+import { mapState } from "vuex";
+export default {
+  props: {
+    type: {
+      type: String,
+      default: "global",
+    },
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState({
+      token: (state) => state.user.token,
+      jsCode: (state) => state.user.jsCode,
+    }),
+  },
+  mounted() {
+    //每次刷新拿到最新jscode
+    if (!this.token) {
+      this.$store.dispatch("user/refreshJsCode");
+    }
+  },
+  methods: {
+    async getPhoneNumber(e) {
+      let { fromType = 2 } = this.$root.$mp.query;
+      let { iv, encryptedData, errMsg } = e.mp.detail;
+      if (errMsg === "getPhoneNumber:ok") {
+        console.log(
+          `iv:${iv}\nencryptedData:${encryptedData}\njsCode:${this.jsCode}`
+        );
+        uni.showLoading({
+          title: "正在获取中",
+        });
+        try {
+          let {
+            data: { token, ...other },
+          } = await getChebaoToken({
+            iv,
+            encryptData: encryptedData,
+            jsCode: this.jsCode,
+            type: 1,//0 ETCI小程序  ETC车宝小程序
+            fromType: fromType, //注册渠道 3=粤通卡小程序 2=ETC车宝公众号
+          });
+          uni.hideLoading();
+          this.$store.commit("user/setUserInfo", other);
+          this.$store.commit("user/setToken", token);
+          this.$emit("success");
+        } catch (error) {
+          console.error(error);
+          uni.hideLoading();
+        }
+      } else {
+        this.$store.dispatch("user/refreshJsCode");
+        console.log("获取手机号失败", errMsg);
+        this.$emit("fail");
+      }
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.auth-btn-global {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  opacity: 0;
+}
+.auth-btn-local {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+</style>

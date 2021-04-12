@@ -1,0 +1,154 @@
+{
+	"pages": [
+		// pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/winning/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝"
+			}
+		},
+		{
+			"path": "pages/index/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝",
+				"usingComponents": {
+					"van-button": "/wxcomponents/vant/button/index",
+					"van-count-down": "/wxcomponents/vant/count-down/index",
+					"van-skeleton": "/wxcomponents/vant/skeleton/index"
+
+				}
+			}
+		}, {
+			"path": "pages/guide/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝",
+				"usingComponents": {
+					"van-button": "/wxcomponents/vant/button/index",
+					"van-count-down": "/wxcomponents/vant/count-down/index",
+					"van-skeleton": "/wxcomponents/vant/skeleton/index"
+
+				}
+			}
+		},
+
+		{
+			"path": "pages/webview/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝"
+			}
+		},
+		{
+			"path": "pages/payment/main",
+			"style": {
+				"navigationBarTitleText": "调起支付"
+			}
+		},
+		{
+			"path": "pages/payment_result/main",
+			"style": {
+				"navigationBarTitleText": "支付结果"
+			}
+		},
+		{
+			"path": "pages/pay_result/main",
+			"style": {
+				"navigationBarTitleText": "支付结果"
+			}
+		},
+		{
+			"path": "pages/lottery/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝"
+			}
+		},
+		{
+			"path": "pages/winning_info/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝"
+			}
+		},
+		{
+			"path": "pages/ytk/add_ytk/main",
+			"style": {
+				"navigationBarTitleText": "添加粤通卡"
+			}
+		},
+		{
+			"path": "pages/ytk/bill/main",
+			"style": {
+				"navigationBarTitleText": "账单",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/ytk/bind_ytk/main",
+			"style": {
+				"navigationBarTitleText": "绑定粤通卡"
+			}
+		},
+		{
+			"path": "pages/ytk/bind_result/main",
+			"style": {
+				"navigationBarTitleText": "绑定结果"
+			}
+		},
+		{
+			"path": "pages/ytk/ytk_list/main",
+			"style": {
+				"navigationBarTitleText": "粤通卡列表"
+			}
+		},
+		{
+			"path": "pages/coin/home/main",
+			"style": {
+				"navigationBarTitleText": "金币中心",
+				"navigationStyle": "custom",
+				"usingComponents": {
+					"van-popup": "/wxcomponents/vant/popup/index",
+					"van-button": "/wxcomponents/vant/button/index"
+				}
+			}
+		},
+		{
+			"path": "pages/coin/detail/main",
+			"style": {
+				"navigationBarTitleText": "金币中心",
+				"navigationBarBackgroundColor": "#2D2D38",
+				"navigationBarTextStyle": "white",
+				"usingComponents": {
+					"van-popup": "/wxcomponents/vant/popup/index",
+					"van-tab": "/wxcomponents/vant/tab/index",
+					"van-tabs": "/wxcomponents/vant/tabs/index"
+
+				}
+			}
+		},
+		{
+			"path": "pages/coin/introduction/main",
+			"style": {
+				"navigationBarTitleText": "攻略"
+			}
+		},
+
+		{
+			"path": "pages/user/mine/main",
+			"style": {
+				"navigationBarTitleText": "ETC车宝"
+			}
+		}
+	],
+	"globalStyle": {
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "ETC车宝",
+		"navigationBarTextStyle": "black"
+		// "navigationBarBackgroundColor": "#007AFF",
+		// "backgroundColor": "#F8F8F8",
+		// "backgroundColorTop": "#F4F5F6",
+		// "backgroundColorBottom": "#F4F5F6",
+		// "mp-360": {
+		// 	"navigationStyle": "custom"
+		// }
+	}
+
+}
