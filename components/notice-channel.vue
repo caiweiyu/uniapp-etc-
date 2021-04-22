@@ -7,17 +7,10 @@
  * @LastEditTime: 2021-04-22 20:31:54
 -->
 <template>
-  <view class="costom-channel">
-    <view class="channel-list">
-      <view
-        v-for="(item, index) in channelData"
-        :key="index"
-        @click="toJumpUrl(item.jump_url)"
-      >
-        <image :src="item.pic_url"/>
-      </view>
-    </view>
-  </view>
+	<view class="notice-box" :style="styleTop" v-if="pic_url">
+		<image :src="pic_url" class="icon-notice" />
+		<view @click="toJumpUrl(jump_url)">{{note}}尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~</view>
+	</view>
 </template>
 
 <script>
@@ -28,10 +21,16 @@ export default {
 	    type: String,
 	    default: "1",
 	  },
+	  styleTop: {
+		type: String,
+		default: 'top: 80rpx'
+	  },
 	},
   data() {
     return {
-      channelData: [],
+		pic_url:'',
+		jump_url:'',
+		note:''
     };
   },
   mounted() {
@@ -47,7 +46,9 @@ export default {
 		fromType: from_type,
       });
       if (res.data.length > 0) {
-        this.channelData = res.data;
+		  this.pic_url = res.data[0].pic_url;
+		  this.jump_url = res.data[0].jump_url;
+		  this.note = res.data[0].note;
       }
     },
     toJumpUrl(url) {
@@ -63,20 +64,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.costom-channel {
-  position: fixed;
-  z-index: 9999;
-  top: 170rpx;
-  width: 100%;
-  height: 80rpx;
-  text-align: center;
-  .channel-list {
-    width: 100%;
-    height: 80rpx;
-  }
-  .channel-list image {
-    width: 100%;
-    height: 80rpx;
-  }
+.notice-box {
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	z-index: 2;
+	top: 80rpx;
+	
+	.icon-notice {
+		width: 712rpx;
+		height: 96rpx;
+	}
+	
+	>view {
+		position: absolute;
+		top: 30rpx;
+		font-size: 26rpx;
+		color: #fff;
+		left: 100rpx;
+		width: 520rpx;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 }
 </style>

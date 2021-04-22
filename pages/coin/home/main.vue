@@ -41,10 +41,11 @@
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</view>
 				</navigator>
+				<notice-channel type="1" styleTop="top: 80rpx"/>
 				<!-- <view class="notice-box">
-              <image src="https://image.etcchebao.com/etc-min/notice-bar.png" class="icon-notice" />
-              <view>尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~</view>
-          </view> -->
+					<image src="https://image.etcchebao.com/etc-min/notice-bar.png" class="icon-notice" />
+					<view>尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~</view>
+				</view> -->
 				<view class="coin-box">
 					<view class="coin-item" :style="{ 'animation-delay': random['r_' + index] + 's' }" v-for="(item, index) in boxList"
 					 :key="index">
@@ -121,8 +122,7 @@
 		<!--全局授权-->
 		<button-get-user-info type="global" />
 		<button-get-phone-number type="global" />
-		<custom-channel type="1" />
-		<view class="<space-white-60></space-white-60>"></view>
+		<view class="space-white-60"></view>
 		<custom-tabbar />
 	</view>
 </template>
@@ -138,7 +138,7 @@
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 	
-	import customChannel from "@/components/custom-channel";
+	import noticeChannel from "@/components/notice-channel";
 	
 	import {
 		mapState
@@ -172,7 +172,7 @@
 			AnimatedNumber,
 			buttonGetPhoneNumber,
 			buttonGetUserInfo,
-			customChannel
+			noticeChannel
 		},
 		computed: {
 			...mapState({
@@ -488,30 +488,30 @@
 					top: 120rpx;
 				}
 
-				.notice-box {
-					display: block;
-					margin: 0 auto;
-					position: absolute;
-					z-index: 2;
-					top: 120rpx;
+				// .notice-box {
+				// 	display: block;
+				// 	margin: 0 auto;
+				// 	position: absolute;
+				// 	z-index: 2;
+				// 	top: 120rpx;
 
-					.icon-notice {
-						width: 712rpx;
-						height: 96rpx;
-					}
+				// 	.icon-notice {
+				// 		width: 712rpx;
+				// 		height: 96rpx;
+				// 	}
 
-					>view {
-						position: absolute;
-						top: 30rpx;
-						font-size: 26rpx;
-						color: #fff;
-						left: 100rpx;
-						width: 520rpx;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
-				}
+				// 	>view {
+				// 		position: absolute;
+				// 		top: 30rpx;
+				// 		font-size: 26rpx;
+				// 		color: #fff;
+				// 		left: 100rpx;
+				// 		width: 520rpx;
+				// 		overflow: hidden;
+				// 		text-overflow: ellipsis;
+				// 		white-space: nowrap;
+				// 	}
+				// }
 
 				.user-box {
 					display: flex;

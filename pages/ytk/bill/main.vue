@@ -12,6 +12,7 @@
       <image class="avatar" :src="headerUrl"></image>
       <view class="username">{{ nickName }}</view>
     </navigator>
+	<notice-channel type="2" styleTop="top: 180rpx" />
     <!--运营位-->
     <swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
       <swiper-item
@@ -139,13 +140,15 @@ import customTabbar from "@/components/custom-tabbar";
 import unitollCard from "@/components/unitoll-card";
 import buttonGetUserInfo from "@/components/button-getUserInfo";
 import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
+import noticeChannel from "@/components/notice-channel";
 import { mapState } from "vuex";
 export default {
   components: {
     customTabbar,
     unitollCard,
     buttonGetPhoneNumber,
-	buttonGetUserInfo
+	buttonGetUserInfo,
+	noticeChannel
   },
   data() {
     return {
