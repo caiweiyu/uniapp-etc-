@@ -8,6 +8,7 @@
       @click="toVip"
     />
     <!--全局授权-->
+	<button-get-user-info type="global" />
     <button-get-phone-number type="global" />
     <Coupon :coupon_info="coupon_info" @change="onTake" />
   </div>
@@ -20,6 +21,7 @@ import {
 } from "@/interfaces/index";
 import { chewu } from "@/common/constant";
 import Coupon from "./components/coupon";
+import buttonGetUserInfo from "@/components/button-getUserInfo";
 import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 import { mapState } from "vuex";
 
@@ -27,6 +29,7 @@ export default {
   components: {
     Coupon,
     buttonGetPhoneNumber,
+	buttonGetUserInfo
   },
   computed: {
     ...mapState({

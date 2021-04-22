@@ -6,10 +6,10 @@
  * @LastEditors: yongqing
  * @LastEditTime: 2021-04-06 15:53:45
  */
-let BASE_URL = "-dev";
+let BASE_URL = "-local";
 export const carowner = `https://carowner${BASE_URL}.etcchebao.com`;
 export const cp = `https://cp${BASE_URL}.etcchebao.com`;
-export const passport = `https://passport${BASE_URL}.etcchebao.com`;
+//export const passport = `https://passport${BASE_URL}.etcchebao.com`;
 export const wap = `https://wap${BASE_URL}.etcchebao.com`;
 export const mall = `https://api-mall${BASE_URL}.etcchebao.com`;
 export const activity = `https://activity${BASE_URL}.etcchebao.com`;

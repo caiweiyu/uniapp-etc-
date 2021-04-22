@@ -53,6 +53,7 @@
         src="https://image.etcchebao.com/etc-min/winning-btn.png"
       />
       <!--局部授权-->
+	  <button-get-user-info type="global" />
       <button-get-phone-number type="local" />
     </div>
 
@@ -91,11 +92,13 @@ import {
   wechatAppletBanner,
 } from "@/interfaces/index";
 import { wap, chewu, store } from "@/common/constant";
+import buttonGetUserInfo from "@/components/button-getUserInfo";
 import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 import { mapState } from "vuex";
 export default {
   components: {
     buttonGetPhoneNumber,
+	buttonGetUserInfo
   },
   data() {
     return {

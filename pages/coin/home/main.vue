@@ -119,8 +119,10 @@
 		</view>
 
 		<!--全局授权-->
+		<button-get-user-info type="global" />
 		<button-get-phone-number type="global" />
-		<view class="space-white-60"></view>
+		<custom-channel type="1" />
+		<view class="<space-white-60></space-white-60>"></view>
 		<custom-tabbar />
 	</view>
 </template>
@@ -133,7 +135,11 @@
 	import {
 		getOperaList
 	} from "@/interfaces/base";
+	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
+	
+	import customChannel from "@/components/custom-channel";
+	
 	import {
 		mapState
 	} from "vuex";
@@ -165,6 +171,8 @@
 			customTabbar,
 			AnimatedNumber,
 			buttonGetPhoneNumber,
+			buttonGetUserInfo,
+			customChannel
 		},
 		computed: {
 			...mapState({

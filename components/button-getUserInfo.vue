@@ -1,26 +1,24 @@
 <!--
  * @Description: 
  * @Version: 1.0
- * @Autor: yongqing
- * @Date: 2021-03-09 14:59:31
- * @LastEditors: yongqing
- * @LastEditTime: 2021-03-10 15:58:36
-       open-type="getPhoneNumber"
-      @getphonenumber="getPhoneNumber"
+ * @Autor: 杜兴旺
+ * @Date: 2021-04-22 17:16:48
+ * @LastEditors: 杜兴旺
+ * @LastEditTime: 2021-04-22 20:31:54
 -->
 <template>
-  <block v-if="!token">
+  <block v-if="!auth_info.openid">
     <button
       :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'"
-      open-type="getPhoneNumber"
-      @getphonenumber="getPhoneNumber"
+      open-type="getUserInfo"
+      @getuserinfo="getUserInfo"
     >
-      获取手机号(透明度为0)
+      获取用户信息(透明度为0)
     </button>
   </block>
 </template>
 <script>
-import { getAuthPhone } from "@/interfaces/index";
+import {getAuthInfo } from "@/interfaces/index";
 import { mapState } from "vuex";
 export default {
   props: {
@@ -34,7 +32,7 @@ export default {
   },
   computed: {
     ...mapState({
-      token: (state) => state.user.token,
+      auth_info: (state) => state.user.auth_info,
       jsCode: (state) => state.user.jsCode,
 	  from_type: (state) => state.user.from_type,
 	  share_id: (state) => state.user.share_id,
@@ -49,43 +47,44 @@ export default {
 	  	this.$store.commit("user/setShareId", Number(share_id));
 	  }
     //每次刷新拿到最新jscode
-    if (!this.token) {
+    if (!this.auth_info.openid) {
       this.$store.dispatch("user/refreshJsCode");
     }
   },
   methods: {
-    async getPhoneNumber(e) {
-	  this.$store.dispatch("user/refreshJsCode");
+    async getUserInfo(e) {
+		//console.log('e:',JSON.stringify(e))
       let { iv, encryptedData, errMsg } = e.mp.detail;
-      if (errMsg === "getPhoneNumber:ok") {
-        console.log(
-          `iv:${iv}\nencryptedData:${encryptedData}\njsCode:${this.jsCode}`
-        );
+      if (errMsg === "getUserInfo:ok") {
         uni.showLoading({
-          title: "登录中……",
+          title: "正在初始化",
         });
         try {
 		  let {
-		    data: { token, ...other },
-		  } = await getAuthPhone({
+		    data: { ...other },
+		  } = await getAuthInfo({
 		    iv,
 		    encryptData: encryptedData,
 		    jsCode: this.jsCode,
 		    fromType: this.from_type, //注册渠道 3=粤通卡小程序 2=ETC车宝公众号
 		  	shareId: this.share_id,
 		  });
-		  console.log('other',other);
           uni.hideLoading();
-          this.$store.commit("user/setUserInfo", other);
-          this.$store.commit("user/setToken", token);
+          this.$store.commit("user/setAuthUserInfo", other);
           this.$emit("success");
+		  uni.showToast({
+			icon: 'none',
+			duration:3000,
+		    title: "点击授权登录",
+		  });
+		  this.$store.dispatch("user/refreshJsCode");
         } catch (error) {
           console.error(error);
           uni.hideLoading();
         }
       } else {
         this.$store.dispatch("user/refreshJsCode");
-        console.log("获取手机号失败", errMsg);
+        console.log("获取用户信息失败", errMsg);
         this.$emit("fail");
       }
     },
@@ -98,7 +97,7 @@ export default {
   width: 100vw;
   height: 100vh;
   position: fixed;
-  z-index: 9998;
+  z-index: 9999;
   top: 0;
   opacity: 0;
 }
@@ -106,7 +105,7 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: 9998;
+  z-index: 9999;
   top: 0;
   left: 0;
   opacity: 0;

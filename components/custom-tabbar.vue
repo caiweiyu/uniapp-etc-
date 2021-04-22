@@ -35,6 +35,7 @@ export default {
   },
   mounted() {
     this.currentPath = "/" + this.$root.$mp.page.route;
+	// this.getTabList();
     if (this.$store.state.user.token) {
       this.getTabList();
     } else {

@@ -10,11 +10,59 @@
 import request from "@/common/request";
 
 import {G} from "@/common/constant";
+import conf from '@/config/conf.js'
 
 export function getChebaoToken(data) {
   return request({
     url: `${G}/carowner/wechat/getChebaoToken`,
     method: "POST",
+    data,
+  });
+}
+/**
+ * 获取用户信息（获取基础信息）
+ * @param {Object} params
+ */
+export function getAuthInfo(data) {
+  data.hash = conf.hash;
+  data.version = conf.version;
+  return request({
+    url: `${G}/mini-program/v1/wechat/authInfo`,
+    method: "POST",
+    data,
+  });
+}
+/**
+ * 授权登录（获取手机号并登录）
+ * @param {Object} params
+ */
+export function getAuthPhone(data) {
+  data.hash = conf.hash;
+  data.version = conf.version;
+  return request({
+    url: `${G}/mini-program/v1/wechat/authPhone`,
+    method: "POST",
+    data,
+  });
+}
+/**
+ * 静默登录（token 过期后可以拿jsCode跟手机号登录,前提是已经授权登陆过）
+ * @param {Object} params
+ */
+export function getAuthLogin(data) {
+  data.hash = conf.hash;
+  data.version = conf.version;
+  return request({
+    url: `${G}/mini-program/v1/wechat/authLogin`,
+    method: "POST",
+    data,
+  });
+}
+
+export function apiCheckLogin(data) {
+  return request({
+	url: `${G}/mini-program/v1/wechat/isLogin`,
+    method: "GET",
     data,
   });
 }
@@ -25,13 +73,6 @@ export function wechatAppletBanner() {
   });
 }
 
-export function apiCheckLogin(data) {
-  return request({
-    url: `${G}/passport/passport/user/isLogin`,
-    method: "GET",
-    data,
-  });
-}
 /**
  * 红包列表
  * @param {Object} params

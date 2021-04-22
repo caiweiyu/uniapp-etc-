@@ -126,6 +126,7 @@
       alt=""
     />
     <!--全局授权-->
+	<button-get-user-info type="global" />
     <button-get-phone-number type="global" />
     <!--底部栏-->
     <custom-tabbar />
@@ -136,6 +137,7 @@ import * as API from "@/interfaces/ytk";
 import { getOperaList } from "@/interfaces/base";
 import customTabbar from "@/components/custom-tabbar";
 import unitollCard from "@/components/unitoll-card";
+import buttonGetUserInfo from "@/components/button-getUserInfo";
 import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 import { mapState } from "vuex";
 export default {
@@ -143,6 +145,7 @@ export default {
     customTabbar,
     unitollCard,
     buttonGetPhoneNumber,
+	buttonGetUserInfo
   },
   data() {
     return {
