@@ -50,7 +50,7 @@
     <scroll-view scroll-y="true" class="bill-content">
       <view class="header-box">
         <view class="item-inner">
-          <view class="value">&yen; {{ totalMoney }}</view>
+          <view class="value">&yen; {{ passTotalMoney }}</view>
           <view class="title">本月消费</view>
         </view>
         <view class="item-inner">
@@ -257,7 +257,8 @@ export default {
       });
       let {  totalMoney=0, passTotalTimes=0,passDetail=[] } = res.data;
       this.billMonthList = passDetail;
-      this.totalMoney =totalMoney// parseFloat(passTotalMoney / 100).toFixed("2");
+      //this.totalMoney =totalMoney// parseFloat(passTotalMoney / 100).toFixed("2");
+	  this.passTotalMoney = parseFloat(passTotalMoney / 100).toFixed("2");
       this.passTotalTimes = passTotalTimes;
 
     },
