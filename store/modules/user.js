@@ -16,6 +16,7 @@ const user = {
       nickName: "未登录",
       openid: "",
       phone: "",
+	  userid: 0,
     },
 	auth_info: {
 	  openid: "",

@@ -179,6 +179,7 @@
 				headerUrl: (state) => state.user.info.headerUrl,
 				nickName: (state) => state.user.info.nickName,
 				token: (state) => state.user.token,
+				share_id: (state) => state.user.info.userid,
 			}),
 		},
 		mounted() {
@@ -192,6 +193,20 @@
 			});
 		},
 		methods: {
+			onShareAppMessage(res) {
+				return {
+					title:"ETC车宝",
+					//imageUrl:"",
+					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
+				}
+			},
+			onShareTimeline(res) {
+				return {
+					title:"ETC车宝",
+					//imageUrl:"",
+					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
+				}
+			},
 			toIntroduct() {
 				uni.navigateTo({
 					url: "/pages/coin/introduction/main",
