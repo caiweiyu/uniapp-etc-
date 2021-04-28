@@ -41,7 +41,7 @@
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</view>
 				</navigator>
-				<notice-channel type="1" styleTop="top: 80rpx"/>
+				<notice-channel type="1" styleTop="top: 80rpx" />
 				<!-- <view class="notice-box">
 					<image src="https://image.etcchebao.com/etc-min/notice-bar.png" class="icon-notice" />
 					<view>尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~</view>
@@ -109,7 +109,7 @@
               </view>
             </view> -->
 						<view class="goods-grid">
-							<view class="goods-list-item more-item">
+							<view class="goods-list-item more-item" @click="openStore">
 								<text>更多好券敬请期待</text>
 							</view>
 						</view>
@@ -133,13 +133,15 @@
 	import AnimatedNumber from "@/components/uni-animated-number/index";
 	import * as API from "@/interfaces/coin";
 	import {
+		store
+	} from "@/common/constant"
+	import {
 		getOperaList
 	} from "@/interfaces/base";
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
-	
 	import noticeChannel from "@/components/notice-channel";
-	
+
 	import {
 		mapState
 	} from "vuex";
@@ -193,16 +195,24 @@
 			});
 		},
 		methods: {
+			openStore() {
+				let src = encodeURIComponent(
+					`${store}/#/home?token=${this.token}`
+				);
+				uni.navigateTo({
+					url: `/pages/webview/main?src=${src}`,
+				});
+			},
 			onShareAppMessage(res) {
 				return {
-					title:"ETC车宝",
+					title: "ETC车宝",
 					//imageUrl:"",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
 			onShareTimeline(res) {
 				return {
-					title:"ETC车宝",
+					title: "ETC车宝",
 					//imageUrl:"",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
