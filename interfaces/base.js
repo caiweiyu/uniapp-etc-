@@ -9,14 +9,12 @@
 
 import request from "@/common/request";
 import {G} from "@/common/constant";
-import conf from '@/config/conf.js'
+
 
 /**
  * 获取选项卡接口
  */
 export function getTabList(data) {
-	data.hash = conf.hash;
-	data.version = conf.version;
 	return request({
 		url: `${G}/mini-program/v1/wx-applets/getTabList`,
 		method: "get",
@@ -28,8 +26,6 @@ export function getTabList(data) {
  * 获取运营位接口
  */
 export function getOperaList(data) {
-	data.hash = conf.hash;
-	data.version = conf.version;
 	return request({
 		url: `${G}/mini-program/v1/wx-applets/getOperaList`,
 		method: "get",
@@ -39,8 +35,7 @@ export function getOperaList(data) {
 
 //获取渠道展示
 export function getChannelList(data) {
-	data.hash = conf.hash;
-	data.version = conf.version;
+
 	return request({
 		url: `${G}/mini-program/v1/wx-applets/getChannelList`,
 		method: "get",
@@ -59,3 +54,15 @@ export function apiRepaid(data) {
 		data,
 	});
 }
+
+
+
+export function getStrategy() {
+	return request({
+		url: `${G}/mini-program/v1/wx-applets/strategy`,
+		method: "GET"
+	});
+}
+
+
+

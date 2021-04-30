@@ -30,17 +30,17 @@
 			</block>
 			<view class="act-content">
 				<image src="https://image.etcchebao.com/etc-min/icon-gl.png" class="icon-gl" @click="toIntroduct" />
-				<navigator url="/pages/user/mine/main" class="user-box">
-					<view class="user-info">
+				<view class="user-box">
+					<navigator  url="/pages/user/mine/main" class="user-info">
 						<image class="avatar" :src="headerUrl" />
 						<view class="username">{{ nickName }}</view>
-					</view>
-					<view class="coin-total">
+					</navigator>
+					<navigator  url="/pages/coin/detail/main" class="coin-total">
 						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin.png" />
 						<AnimatedNumber :value="totalCoins" />
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</view>
-				</navigator>
+				</view>
 				<notice-channel type="1" styleTop="top: 80rpx" />
 				<!-- <view class="notice-box">
 					<image src="https://image.etcchebao.com/etc-min/notice-bar.png" class="icon-notice" />
@@ -67,7 +67,7 @@
 		<view class="exchange-box">
 			<view class="launchApp-box">
 				<image src="https://image.etcchebao.com/etc-min/launchApp.png" />
-				<button open-type="launchApp" class="btn-app">打开app</button>
+				<button open-type="launchApp" class="btn-app" @error="launchAppError">打开app</button>
 			</view>
 
 			<!-- <view class="gift-icon-box">
@@ -195,6 +195,9 @@
 			});
 		},
 		methods: {
+			launchAppError(e) {
+				console.log(e)
+			},
 			openStore() {
 				let src = encodeURIComponent(
 					`${store}/#/home?token=${this.token}`

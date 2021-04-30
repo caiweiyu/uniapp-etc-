@@ -7,17 +7,33 @@
  * @LastEditTime: 2021-03-11 17:09:42
 -->
 <template>
-  <view class="introduction"> 攻略 </view>
+	<view class="introduction">
+		<image :src="imgUrl" mode="aspectFit"  class="img" />
+	</view>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      active: 0,
-    };
-  },
-};
+	import * as API from "@/interfaces/base";
+
+	export default {
+		data() {
+			return {
+				active: 0,
+				imgUrl: ''
+			};
+		},
+		async mounted() {
+			let res = await API.getStrategy()
+			this.imgUrl = res.data.value
+
+		}
+	};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.introduction {
+		.img {
+			width: 100%;
+		}
+	}
+</style>

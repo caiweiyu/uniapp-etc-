@@ -10,7 +10,7 @@
 import request from "@/common/request";
 
 import {G} from "@/common/constant";
-import conf from '@/config/conf.js'
+
 
 export function getChebaoToken(data) {
   return request({
@@ -24,8 +24,6 @@ export function getChebaoToken(data) {
  * @param {Object} params
  */
 export function getAuthInfo(data) {
-  data.hash = conf.hash;
-  data.version = conf.version;
   return request({
     url: `${G}/mini-program/v1/wechat/authInfo`,
     method: "POST",
@@ -37,8 +35,6 @@ export function getAuthInfo(data) {
  * @param {Object} params
  */
 export function getAuthPhone(data) {
-  data.hash = conf.hash;
-  data.version = conf.version;
   return request({
     url: `${G}/mini-program/v1/wechat/authPhone`,
     method: "POST",
@@ -50,8 +46,6 @@ export function getAuthPhone(data) {
  * @param {Object} params
  */
 export function getAuthLogin(data) {
-  data.hash = conf.hash;
-  data.version = conf.version;
   return request({
     url: `${G}/mini-program/v1/wechat/authLogin`,
     method: "POST",

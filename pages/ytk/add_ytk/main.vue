@@ -125,13 +125,12 @@ export default {
         });
         return false;
       }
-      // let res = await API.isBindCard({
-      //   version: "4.4.0",
-      //   cardNo: this.card_num,
-      // });
-      //  let { type, phone}=res.data;
-
-      let { type, phone } = { type: 2, phone: "13719477521" };
+      let res = await API.isBindCard({
+        version: "4.4.0",
+        cardNo: this.card_num,
+      });
+       let { type, phone}=res.data;
+     // let { type, phone } = { type: 2, phone: "13719477521" };
       if (type == 1) {
         uni.redirectTo({
           url: "/pages/ytk/bind_result/main",

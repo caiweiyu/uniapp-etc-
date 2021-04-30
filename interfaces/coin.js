@@ -22,4 +22,10 @@ export function getCoin(data) {
     data
   });
 }
-
+export function queryCoinRecord(data) {
+  return request({
+    url: `${G}/usercenter/coin/queryCoinRecord`,
+    method: "post",
+    data
+  });
+}

@@ -9,6 +9,7 @@
 
 import useIntercept from "./intercept";
 import store from "@/store/index";
+import conf from '@/config/conf.js'
 function showError(message, show = true) {
   show &&
     uni.showToast({
@@ -31,6 +32,10 @@ const interceptRequest = useIntercept(uni.request, {
     if (token) {
       params.data["token"] = token;
     }
+	if(params.url.indexOf("/mini-program/v1")>-1){
+		 params.data["hash"]= conf.hash;
+		 params.data["version"] = conf.version;
+	}
     return params;
   },
   success(res) {

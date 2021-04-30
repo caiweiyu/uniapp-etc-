@@ -11,8 +11,8 @@
 		<view class="tabs-box">
 			<van-tabs :active="active" line-width="20" line-height="3">
 				<van-tab title="我的礼包">
-					<scroll-view scroll-y class="tab-content gitf-tab-content">
-						<view class="gift-item" v-for="n in 9">
+					<scroll-view scroll-y class="tab-content empty-block">
+						<!-- 	<view class="gift-item" v-for="n in 9">
 							<view class="left">
 								<image src="" alt="" />
 							</view>
@@ -22,19 +22,20 @@
 								<view class="expire-time">有效期至2222年2月22日</view>
 								<image class="icon-tag" src="https://image.etcchebao.com/etc-min/icon-expire.png" />
 							</view>
-						</view>
+						</view> -->
+						<van-empty description="敬请期待" />
 					</scroll-view>
 				</van-tab>
 				<van-tab title="金币明细">
-					<scroll-view scroll-y class="tab-content record-tab-content">
-						<view class="record-item" v-for="n in 9">
+					<scroll-view scroll-y class="tab-content record-tab-content" enhanced >
+						<view class="record-item" v-for="(item,index) in coinRecordList" :key="index">
 							<view class="left">
-								<view class="title">金币明细</view>
-								<view class="time">2000-01-01</view>
+								<view class="title">{{item.remark}}</view>
+								<view class="time">{{item.createTime}}</view>
 							</view>
 							<view class="right">
 								<image src="https://image.etcchebao.com/etc-min/icon-coin.png" />
-								<text>+3</text>
+								<text>{{item.coins>0?`+${item.coins}`:`${item.coins}`}}</text>
 							</view>
 						</view>
 					</scroll-view>
@@ -45,12 +46,29 @@
 </template>
 
 <script>
+	import * as API from "@/interfaces/coin";
+
 	export default {
 		data() {
 			return {
 				active: 0,
+				coinRecordList: []
 			};
 		},
+		mounted() {
+			this.getCoinRecord(1);
+		},
+		methods: {
+			async getCoinRecord(pageNumber) {
+				let res = await API.queryCoinRecord({
+					pageNumber
+				})
+				let {
+					pageTotal = 0, result = []
+				} = res.data;
+				this.coinRecordList=this.coinRecordList.concat(result);
+			}
+		}
 	};
 </script>
 
@@ -88,6 +106,10 @@
 			padding: 43rpx 30rpx;
 			height: calc(100vh - 210rpx);
 			box-sizing: border-box;
+		}
+
+		.empty-block {
+			background: #fff;
 		}
 
 		.gitf-tab-content {
