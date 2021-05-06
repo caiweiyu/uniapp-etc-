@@ -12,7 +12,7 @@
 			<image class="avatar" :src="headerUrl"></image>
 			<view class="username">{{ nickName }}</view>
 		</navigator>
-		<notice-channel type="2" styleTop="top: 180rpx" />
+		<!-- 		<notice-channel type="2" styleTop="top: 180rpx" /> -->
 		<!--运营位-->
 		<swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
 			<swiper-item class="swiper-item-opera" v-for="(item, index) in operaList" :key="index">
@@ -28,7 +28,7 @@
 				<unitoll-card empty_tip="添加粤通卡" @onAddCard="onAddCard" />
 			</swiper-item>
 		</swiper>
-		<scroll-view scroll-y="true" class="bill-content">
+		<scroll-view scroll-y="true" class="bill-content" v-if="show_bill_content">
 			<view class="header-box">
 				<view class="item-inner">
 					<view class="value">&yen; {{ passTotalMoney }}</view>
@@ -85,6 +85,9 @@
 			</view>
 			<!--列表空状态 end-->
 		</scroll-view>
+		<view v-else>
+			<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png" />
+		</view>
 		<!--账单指引-->
 		<view class="bill-tip-box" v-if="is_show_guide" @click="onCloseGuide">
 			<image src="https://image.etcchebao.com/etc-min/dialog-tip.png" />
@@ -130,6 +133,7 @@
 				billMonthList: [],
 				current_swpier: 0,
 				operaList: [],
+				show_bill_content: false
 			};
 		},
 		computed: {
@@ -148,7 +152,14 @@
 				//等待授权后更新接口,订阅接口
 				this.$store.subscribe((mutation, state) => {
 					if (mutation.type == "user/setToken") {
-						this.init();
+						if (state.user.token) {
+							this.init();
+						} else {
+							this.unitollList = [];
+							this.billMonthList=[];
+							this.show_bill_content=false
+						}
+
 					}
 				});
 			}
@@ -163,7 +174,6 @@
 			onCloseGuide() {
 				if (this.is_show_collection) {
 					let timer = setTimeout(() => {
-
 						this.onCloseCollection();
 						clearTimeout(timer)
 					}, 5000)
@@ -220,6 +230,7 @@
 				if (res.data.info && res.data.info.length > 0) {
 					this.unitollList = res.data.info;
 					this.getUnitollBill();
+					this.show_bill_content = true;
 				}
 			},
 			/**
@@ -262,8 +273,10 @@
 			onSwiperChange(e) {
 				this.current_swpier = e.mp.detail.current;
 				if (this.unitollList.length <= e.mp.detail.current) {
+					this.show_bill_content = false;
 					return;
 				}
+
 				this.getUnitollBill();
 			},
 		},

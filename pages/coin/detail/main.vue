@@ -10,6 +10,21 @@
 	<view class="coin-detail">
 		<view class="tabs-box">
 			<van-tabs :active="active" line-width="20" line-height="3">
+
+				<van-tab title="金币明细">
+					<scroll-view scroll-y class="tab-content record-tab-content" enhanced @scrolltolower="scrolltolower">
+						<view class="record-item" v-for="(item,index) in coinRecordList" :key="index">
+							<view class="left">
+								<view class="title">{{item.remark}}</view>
+								<view class="time">{{item.createTime}}</view>
+							</view>
+							<view class="right">
+								<image src="https://image.etcchebao.com/etc-min/icon-coin.png" />
+								<text>{{item.coins>0?`+${item.coins}`:`${item.coins}`}}</text>
+							</view>
+						</view>
+					</scroll-view>
+				</van-tab>
 				<van-tab title="我的礼包">
 					<scroll-view scroll-y class="tab-content empty-block">
 						<!-- 	<view class="gift-item" v-for="n in 9">
@@ -26,20 +41,6 @@
 						<van-empty description="敬请期待" />
 					</scroll-view>
 				</van-tab>
-				<van-tab title="金币明细">
-					<scroll-view scroll-y class="tab-content record-tab-content" enhanced >
-						<view class="record-item" v-for="(item,index) in coinRecordList" :key="index">
-							<view class="left">
-								<view class="title">{{item.remark}}</view>
-								<view class="time">{{item.createTime}}</view>
-							</view>
-							<view class="right">
-								<image src="https://image.etcchebao.com/etc-min/icon-coin.png" />
-								<text>{{item.coins>0?`+${item.coins}`:`${item.coins}`}}</text>
-							</view>
-						</view>
-					</scroll-view>
-				</van-tab>
 			</van-tabs>
 		</view>
 	</view>
@@ -52,21 +53,37 @@
 		data() {
 			return {
 				active: 0,
-				coinRecordList: []
+				coinRecordList: [],
+				page: 1,
+				pageTotal: 0,
+				pageSize: 20,
+				is_finish: false
 			};
 		},
 		mounted() {
-			this.getCoinRecord(1);
+			this.getCoinRecord();
 		},
 		methods: {
-			async getCoinRecord(pageNumber) {
+			async getCoinRecord() {
 				let res = await API.queryCoinRecord({
-					pageNumber
+					pageNumber: this.page
 				})
 				let {
 					pageTotal = 0, result = []
 				} = res.data;
-				this.coinRecordList=this.coinRecordList.concat(result);
+				this.coinRecordList = this.coinRecordList.concat(result);
+				if (pageTotal <= this.page) {
+					this.is_finish = true;
+				} else {
+					this.is_finish = false;
+				}
+			},
+			scrolltolower() {
+				if (this.is_finish) {
+					return
+				}
+				this.page++;
+				this.getCoinRecord();
 			}
 		}
 	};

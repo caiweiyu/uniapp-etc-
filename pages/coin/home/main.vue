@@ -31,15 +31,15 @@
 			<view class="act-content">
 				<image src="https://image.etcchebao.com/etc-min/icon-gl.png" class="icon-gl" @click="toIntroduct" />
 				<view class="user-box">
-					<navigator  url="/pages/user/mine/main" class="user-info">
+					<navigator url="/pages/user/mine/main" class="user-info">
 						<image class="avatar" :src="headerUrl" />
 						<view class="username">{{ nickName }}</view>
 					</navigator>
-					<navigator  url="/pages/coin/detail/main" class="coin-total">
+					<navigator url="/pages/coin/detail/main" class="coin-total">
 						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin.png" />
 						<AnimatedNumber :value="totalCoins" />
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
-					</view>
+					</navigator>
 				</view>
 				<notice-channel type="1" styleTop="top: 80rpx" />
 				<!-- <view class="notice-box">
@@ -65,7 +65,7 @@
 			</view>
 		</view>
 		<view class="exchange-box">
-			<view class="launchApp-box">
+			<view class="launchApp-box" v-if="scene==1069 || scene==1036">
 				<image src="https://image.etcchebao.com/etc-min/launchApp.png" />
 				<button open-type="launchApp" class="btn-app" @error="launchAppError">打开app</button>
 			</view>
@@ -167,6 +167,7 @@
 				boxList: [],
 				operaList: [],
 				currentCoinNum: 0,
+				scene: 0
 			};
 		},
 		components: {
@@ -186,15 +187,31 @@
 		},
 		mounted() {
 			this.getOperaList();
-			this.getCoinTask();
-			//等待授权后更新接口,订阅接口
-			this.$store.subscribe((mutation, state) => {
-				if (mutation.type == "user/setToken") {
-					this.getCoinTask();
-				}
-			});
+			if (this.token) {
+				this.getCoinTask();
+			} else {
+				//等待授权后更新接口,订阅接口
+				this.$store.subscribe((mutation, state) => {
+					if (mutation.type == "user/setToken") {
+						if (state.user.token) {
+							this.getCoinTask();
+						} else {
+							this.boxList = []
+							this.totalCoins = 0;
+							this.currentCoinNum = 0;
+						}
+
+					}
+				});
+			}
+
+			let {
+				scene
+			} = uni.getLaunchOptionsSync();
+			this.scene = scene;
 		},
 		methods: {
+
 			launchAppError(e) {
 				console.log(e)
 			},

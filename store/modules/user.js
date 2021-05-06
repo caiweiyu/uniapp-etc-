@@ -33,6 +33,7 @@ const user = {
 		token: "",
 		is_show_guide: true,
 		is_show_collection: true,
+		is_show_home_notice: true,
 		from_type: 1,
 		share_id: 0,
 	},
@@ -61,10 +62,13 @@ const user = {
 		setShareId: (state, value) => {
 			state.share_id = value;
 		},
-		
+
 		setIsShowCollection: (state, value) => {
 			state.is_show_collection = value
-		}
+		},
+		setIsShowHomeNotice: (state, value) => {
+			state.is_show_home_notice = value
+		},
 
 	},
 	actions: {
@@ -73,6 +77,7 @@ const user = {
 			commit
 		}) {
 			let jsCode = await getJsCode();
+			console.log("===========jsCode", jsCode)
 			commit("setJscode", jsCode);
 		},
 		async checkToken({
