@@ -133,7 +133,8 @@
 				billMonthList: [],
 				current_swpier: 0,
 				operaList: [],
-				show_bill_content: false
+				show_bill_content: false,
+				unsubscribeFn:() => {}
 			};
 		},
 		computed: {
@@ -145,24 +146,28 @@
 				is_show_collection: (state) => state.user.is_show_collection,
 			}),
 		},
+		beforeDestroy() {
+			//取消订阅
+			this.unsubscribeFn();
+		},
 		mounted() {
 			if (this.token) {
 				this.init();
-			} else {
-				//等待授权后更新接口,订阅接口
-				this.$store.subscribe((mutation, state) => {
-					if (mutation.type == "user/setToken") {
-						if (state.user.token) {
-							this.init();
-						} else {
-							this.unitollList = [];
-							this.billMonthList=[];
-							this.show_bill_content=false
-						}
-
-					}
-				});
 			}
+
+			//等待授权后更新接口,订阅接口
+			this.unsubscribeFn = this.$store.subscribe((mutation, state) => {
+				if (mutation.type == "user/setToken") {
+					if (state.user.token) {
+						this.init();
+					} else {
+						this.unitollList = [];
+						this.billMonthList = [];
+						this.show_bill_content = false
+					}
+
+				}
+			});
 
 		},
 
@@ -246,8 +251,11 @@
 					startDate,
 					etcos: "3" //1=android；2=ios；3=微信小程序
 				});
+				if (!res) {
+					return;
+				}
 				let {
-					totalMoney = 0, passTotalTimes = 0, passDetail = []
+					totalMoney = 0, passTotalMoney = 0, passTotalTimes = 0, passDetail = []
 				} = res.data;
 				this.billMonthList = passDetail;
 				//this.totalMoney =totalMoney// parseFloat(passTotalMoney / 100).toFixed("2");

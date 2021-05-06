@@ -23,11 +23,11 @@ function showError(message, show = true) {
  */
 const interceptRequest = useIntercept(uni.request, {
   config(params) {
-    console.log("=====发送请求=====", params);
+    // console.log("=====发送请求=====", params);
     uni.showLoading({
       title: "请求中",
     });
-    console.log(store.state.user)
+
     let token = store.state.user.token;
     if (token) {
       params.data["token"] = token;
@@ -39,7 +39,7 @@ const interceptRequest = useIntercept(uni.request, {
     return params;
   },
   success(res) {
-    console.log("=====返回结果=====", res);
+    // console.log("=====返回结果=====", res);
     uni.hideLoading();
     if (res.statusCode == 200 && res.data.code == 0) {
       return res.data;

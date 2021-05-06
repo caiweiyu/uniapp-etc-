@@ -10,6 +10,10 @@ import {
 	apiCheckLogin,
 	getChebaoToken
 } from "@/interfaces/index";
+
+import {
+	finishTaskGetCoin
+} from "@/interfaces/coin";
 import {
 	getJsCode
 } from "@/common/utils";
@@ -77,7 +81,7 @@ const user = {
 			commit
 		}) {
 			let jsCode = await getJsCode();
-			console.log("===========jsCode", jsCode)
+			console.log("刷新jsCode", jsCode)
 			commit("setJscode", jsCode);
 		},
 		async checkToken({
@@ -122,6 +126,20 @@ const user = {
 			commit("setToken", res.data.token);
 			console.log("已刷新登录");
 		},
+
+		async finishTaskGetCoin({
+			state,
+			commit
+		}, payload) {
+			let res = await finishTaskGetCoin({
+				userId: state.info.userid,
+				from: 1, //0=app;1=小程序;(默认0)
+				taskType: 1, //0=交易完成后的任务；1=普通任务,
+				optionKey: payload, //任务名称
+				token: state.token
+			})
+			
+		}
 	},
 };
 

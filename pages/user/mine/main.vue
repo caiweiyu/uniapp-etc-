@@ -47,7 +47,7 @@ export default {
         content: "确定要退出登录吗",
         success: (res) => {
           if (res.confirm) {
-            this.$store.commit("user/setToken", "");
+            this.$store.commit("user/setToken", null);
             this.$store.commit("user/setUserInfo", {
               headerUrl:
                 "https://image.etcchebao.com/etc-min/icon-default-avatar.png",

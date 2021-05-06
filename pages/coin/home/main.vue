@@ -141,7 +141,9 @@
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 	import noticeChannel from "@/components/notice-channel";
-
+	import {
+		finishTaskGetCoin
+	} from "@/interfaces/coin";
 	import {
 		mapState
 	} from "vuex";
@@ -167,7 +169,8 @@
 				boxList: [],
 				operaList: [],
 				currentCoinNum: 0,
-				scene: 0
+				scene: 0,
+				unsubscribeFn: () => {}
 			};
 		},
 		components: {
@@ -183,27 +186,31 @@
 				nickName: (state) => state.user.info.nickName,
 				token: (state) => state.user.token,
 				share_id: (state) => state.user.info.userid,
+				userinfo: (state) => state.user.info
 			}),
+		},
+		beforeDestroy() {
+			//取消订阅
+			this.unsubscribeFn();
 		},
 		mounted() {
 			this.getOperaList();
 			if (this.token) {
-				this.getCoinTask();
-			} else {
-				//等待授权后更新接口,订阅接口
-				this.$store.subscribe((mutation, state) => {
-					if (mutation.type == "user/setToken") {
-						if (state.user.token) {
-							this.getCoinTask();
-						} else {
-							this.boxList = []
-							this.totalCoins = 0;
-							this.currentCoinNum = 0;
-						}
-
-					}
-				});
+				this.init();
 			}
+			//等待授权后更新接口,订阅接口
+			this.unsubscribeFn = this.$store.subscribe((mutation, state) => {
+				if (mutation.type == "user/setToken") {
+					if (state.user.token) {
+						this.init();
+					} else {
+						this.boxList = []
+						this.totalCoins = 0;
+						this.currentCoinNum = 0;
+					}
+
+				}
+			});
 
 			let {
 				scene
@@ -211,7 +218,33 @@
 			this.scene = scene;
 		},
 		methods: {
+			init() {
+				this.getCoinTask();
+				//是否首次登陆
+				this.$store.dispatch("user/finishTaskGetCoin","wechat_first_login")
+				//是否是新用户
+				if (this.userinfo.is_new == 1) {
+					this.$store.dispatch("user/finishTaskGetCoin","wechat_regist")
+				}
+				//是否关注公众号
+				if (this.userinfo.is_subscribe == 1) {
+					this.$store.dispatch("user/finishTaskGetCoin","wechat_focus")		
+				}
+			},
+			async putFinishTaskGetCoin(optionKey) {
+				try {
+					let res = await finishTaskGetCoin({
+						userId: this.userinfo.userid,
+						from: 1, //0=app;1=小程序;(默认0)
+						taskType:1,//0=交易完成后的任务；1=普通任务,
+						optionKey, //任务名称
+						token:this.token
+					})
+				} catch (e) {
+					console.log(e)
+				}
 
+			},
 			launchAppError(e) {
 				console.log(e)
 			},
@@ -250,7 +283,7 @@
 					},
 				} = await API.getCoinTask();
 				this.totalCoins = totalCoins;
-				this.boxList = boxList;
+				this.boxList = boxList.splice(0,5);
 				/**
      this.boxList = [
         {

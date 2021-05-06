@@ -20,6 +20,7 @@
 	import {
 		getAuthPhone
 	} from "@/interfaces/index";
+
 	import {
 		mapState
 	} from "vuex";
@@ -39,6 +40,7 @@
 				jsCode: (state) => state.user.jsCode,
 				from_type: (state) => state.user.from_type,
 				share_id: (state) => state.user.share_id,
+				userid: (state) => state.user.info.userid
 			}),
 		},
 		mounted() {
@@ -60,6 +62,7 @@
 			onGetPhoneNumber() {
 				this.$store.dispatch("user/refreshJsCode");
 			},
+	
 			async getPhoneNumber(e) {
 				let {
 					iv,
@@ -90,6 +93,8 @@
 						uni.hideLoading();
 						this.$store.commit("user/setUserInfo", other);
 						this.$store.commit("user/setToken", token);
+						
+
 						this.$emit("success");
 					} catch (error) {
 						console.error(error);

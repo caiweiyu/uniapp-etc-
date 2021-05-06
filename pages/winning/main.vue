@@ -323,22 +323,22 @@ view {
     z-index: 2;
     overflow: hidden;
     .duct_bg {
-      margin: 240px auto 0;
+      margin: 480rpx auto 0;
       text-align: center;
       font-size: 0;
       image {
-        width: 364px;
-        height: 298px;
+        width: 728rpx;
+        height: 596rpx;
       }
     }
     .duct_tips {
-      font-size: 14px;
+      font-size: 28rpx;
       text-align: center;
       margin-top: -390rpx;
       overflow: scroll;
       position: absolute;
-      left: 15px;
-      right: 15px;
+      left: 30rpx;
+      right: 30rpx;
       span {
         color: #fb8800;
       }

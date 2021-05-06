@@ -7,25 +7,44 @@
  * @LastEditTime: 2021-03-10 16:56:16
  */
 import request from "@/common/request";
-import { G } from "@/common/constant";
+import {
+	G
+} from "@/common/constant";
 
 export function getCoinTask() {
-  return request({
-    url: `${G}/usercenter/coin/wechat/coinBox`,
-    method: "post",
-  });
+	return request({
+		url: `${G}/usercenter/coin/wechat/coinBox`,
+		method: "post",
+	});
 }
 export function getCoin(data) {
-  return request({
-    url: `${G}/usercenter/coin/getTaskCoin`,
-    method: "post",
-    data
-  });
+	return request({
+		url: `${G}/usercenter/coin/getTaskCoin`,
+		method: "post",
+		data
+	});
 }
 export function queryCoinRecord(data) {
-  return request({
-    url: `${G}/usercenter/coin/queryCoinRecord`,
-    method: "post",
-    data
-  });
+	return request({
+		url: `${G}/usercenter/coin/queryCoinRecord`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 完成任务领取金币
+ */
+
+
+export function finishTaskGetCoin(data) {
+	//这个接口不需要拦截，需要单独做处理
+	return uni.request({
+		header: {
+			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输
+		},
+		url: `${G}/usercenter/coin/finishTaskGetCoin2`,
+		method: "post",
+		data
+	});
 }

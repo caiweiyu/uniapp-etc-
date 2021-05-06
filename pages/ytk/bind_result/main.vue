@@ -29,7 +29,10 @@ export default {
     return {};
   },
   computed: {},
-  mounted() {},
+  mounted() {
+	  //绑定粤通卡
+	  this.$store.dispatch("user/finishTaskGetCoin","unitoll_bind")
+  },
   methods: {
     toBill() {
       uni.redirectTo({
