@@ -50,14 +50,14 @@
 					<view class="coin-item" :style="{ 'animation-delay': random['r_' + index] + 's' }" v-for="(item, index) in boxList"
 					 :key="index">
 						<block v-if="item.status == 0">
-							<view class="coin-num">+{{ item.coins }}</view>
-							<view class="coin-title">{{ item.title }}</view>
-						</block>
-						<block v-else-if="item.status == 1">
 							<view :class="['coin-take-num', { active: index == current }]" @click="onTakeCoin(item, index)">
 								<image src="https://image.etcchebao.com/etc-min/coin-take-num.png" />
 								<view>+{{ item.coins }}</view>
 							</view>
+							<view class="coin-title">{{ item.title }}</view>
+						</block>
+						<block v-else-if="item.status == 1">
+							<view class="coin-num">+{{ item.coins }}</view>
 							<view class="coin-title">{{ item.title }}</view>
 						</block>
 					</view>
@@ -221,14 +221,14 @@
 			init() {
 				this.getCoinTask();
 				//是否首次登陆
-				this.$store.dispatch("user/finishTaskGetCoin","wechat_first_login")
+				this.$store.dispatch("user/finishTaskGetCoin", "wechat_first_login")
 				//是否是新用户
 				if (this.userinfo.is_new == 1) {
-					this.$store.dispatch("user/finishTaskGetCoin","wechat_regist")
+					this.$store.dispatch("user/finishTaskGetCoin", "wechat_regist")
 				}
 				//是否关注公众号
 				if (this.userinfo.is_subscribe == 1) {
-					this.$store.dispatch("user/finishTaskGetCoin","wechat_focus")		
+					this.$store.dispatch("user/finishTaskGetCoin", "wechat_focus")
 				}
 			},
 			async putFinishTaskGetCoin(optionKey) {
@@ -236,9 +236,9 @@
 					let res = await finishTaskGetCoin({
 						userId: this.userinfo.userid,
 						from: 1, //0=app;1=小程序;(默认0)
-						taskType:1,//0=交易完成后的任务；1=普通任务,
+						taskType: 1, //0=交易完成后的任务；1=普通任务,
 						optionKey, //任务名称
-						token:this.token
+						token: this.token
 					})
 				} catch (e) {
 					console.log(e)
@@ -283,7 +283,7 @@
 					},
 				} = await API.getCoinTask();
 				this.totalCoins = totalCoins;
-				this.boxList = boxList.splice(0,5);
+				this.boxList = boxList.splice(0, 5);
 				/**
      this.boxList = [
         {
