@@ -8,7 +8,7 @@
 -->
 <template>
 	<block v-if="!auth_info.openid">
-		<button :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'" open-type="getUserInfo" @getuserinfo="getUserInfo">
+		<button :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'" open-type="getUserInfo" lang="zh_CN" @getuserinfo="getUserInfo">
 			获取用户信息(透明度为0)
 		</button>
 	</block>
