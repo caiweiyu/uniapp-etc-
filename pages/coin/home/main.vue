@@ -7,8 +7,8 @@
  * @LastEditTime: 2021-03-11 18:37:57
 -->
 <template>
-	<view class="act">
-		<view class="act-box">
+	<view class="act" >
+		<view class="act-box" :style="{paddingTop:safeAreaTop+'px'}">
 			<image src="https://image.etcchebao.com/etc-min/coin-bg.png" class="bg-image" />
 			<image src="https://image.etcchebao.com/etc-min/icon-fish.png" class="icon-fish" />
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-left.png" class="icon-bubble-left" />
@@ -181,7 +181,8 @@
 				operaList: [],
 				currentCoinNum: 0,
 				scene: 0,
-				unsubscribeFn: () => {}
+				unsubscribeFn: () => {},
+				safeAreaTop:22
 			};
 		},
 		components: {
@@ -228,6 +229,7 @@
 				scene
 			} = uni.getLaunchOptionsSync();
 			this.scene = scene;
+			this.safeAreaTop=uni.getSystemInfoSync().safeArea.top+2
 		},
 		methods: {
 			async init() {
@@ -457,9 +459,9 @@
 		.act-box {
 			width: 750rpx;
 			height: 1080rpx;
-			padding-top: constant(safe-area-inset-top);
-			padding-top: env(safe-area-inset-top);
 			padding-top: 88rpx;
+			// padding-top: constant(safe-area-inset-top);
+			// padding-top: env(safe-area-inset-top);
 			position: relative;
 			overflow: hidden;
 
@@ -610,7 +612,7 @@
 					.user-info {
 						display: flex;
 						align-items: center;
-						padding: 20rpx 20rpx 20rpx 40rpx;
+						padding: 10rpx 20rpx 10rpx 40rpx;
 						width: inherit;
 
 						.avatar {

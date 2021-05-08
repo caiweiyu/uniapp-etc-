@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-04-06 16:23:19
 -->
 <template>
-	<view class="bill">
+	<view class="bill" :style="{paddingTop:safeAreaTop+'px'}">
 		<navigator url="/pages/user/mine/main" class="user-info">
 			<image class="avatar" :src="headerUrl"></image>
 			<view class="username">{{ nickName }}</view>
@@ -134,7 +134,8 @@
 				current_swpier: 0,
 				operaList: [],
 				show_bill_content: false,
-				unsubscribeFn:() => {}
+				unsubscribeFn: () => {},
+				safeAreaTop: 22
 			};
 		},
 		computed: {
@@ -168,7 +169,7 @@
 
 				}
 			});
-
+			this.safeAreaTop = uni.getSystemInfoSync().safeArea.top + 2
 		},
 
 		methods: {
@@ -294,9 +295,10 @@
 <style lang="scss" scoped>
 	.bill {
 		position: relative;
-		padding-top: constant(safe-area-inset-top);
-		padding-top: env(safe-area-inset-top);
 		padding-top: 88rpx;
+		// padding-top: constant(safe-area-inset-top);
+		// padding-top: env(safe-area-inset-top);
+
 
 		/deep/ .card {
 			width: 670rpx;
@@ -514,7 +516,7 @@
 				z-index: 100;
 				left: 0;
 				right: 0;
-				// top: 50%;
+				top: 50%;
 				// transform: translateY(-50%);
 				bottom: 0;
 				margin: 0 auto;
@@ -535,7 +537,7 @@
 			position: relative;
 			display: flex;
 			align-items: center;
-			padding: 40rpx;
+			padding: 12rpx 40rpx;
 
 			.avatar {
 				width: 50rpx;
@@ -555,7 +557,7 @@
 			width: 496rpx;
 			height: 120rpx;
 			position: absolute;
-			top: 170rpx;
+			top: 160rpx;
 			right: 70rpx;
 		}
 	}
