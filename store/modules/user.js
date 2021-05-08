@@ -40,6 +40,9 @@ const user = {
 		is_show_home_notice: true,
 		from_type: 1,
 		share_id: 0,
+		task_option_key: {
+
+		}
 	},
 	mutations: {
 		setUserInfo: (state, info) => {
@@ -73,6 +76,9 @@ const user = {
 		setIsShowHomeNotice: (state, value) => {
 			state.is_show_home_notice = value
 		},
+		setTaskOptionKey: (state, value) => {
+			state.task_option_key[value] = true;
+		}
 
 	},
 	actions: {
@@ -131,14 +137,26 @@ const user = {
 			state,
 			commit
 		}, payload) {
-			let res = await finishTaskGetCoin({
+			//如果已经完成任务不请求
+			if (state.task_option_key[payload]) {
+				return Promise.resolve();
+			}
+			let [error, res] = await finishTaskGetCoin({
 				userId: state.info.userid,
 				from: 1, //0=app;1=小程序;(默认0)
 				taskType: 1, //0=交易完成后的任务；1=普通任务,
 				optionKey: payload, //任务名称
 				token: state.token
 			})
-			
+
+			let json = res.data;
+			if (json.code == 0) {
+				commit("setTaskOptionKey", payload)
+				return res;
+			} else {
+				return Promise.resolve();
+			}
+
 		}
 	},
 };

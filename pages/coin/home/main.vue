@@ -123,6 +123,16 @@
 		<button-get-user-info type="global" />
 		<button-get-phone-number type="global" />
 		<view class="space-white-60"></view>
+		<van-popup :show="show_dialog" custom-style="background: none;zIndex:99999" @close="onDetailClose">
+			<view class="prize-content" @click="onDetailClose">
+				<image src="https://image.etcchebao.com/etc-min/coin-dialog.png" class="coin-dialog" />
+				<view class="prize-info-box">
+					<view class="title">签到成功</view>
+					<view class="prize-num">
+						<image src="https://image.etcchebao.com/etc-min/icon-coin-big.png" /> +{{currentCoinNum}}</view>
+				</view>
+			</view>
+		</van-popup>
 		<custom-tabbar />
 	</view>
 </template>
@@ -153,6 +163,7 @@
 				return (Math.random() * 4).toFixed(2);
 			}
 			return {
+				show_dialog: false,
 				random: {
 					r_0: getRandom(),
 					r_1: getRandom(),
@@ -186,7 +197,8 @@
 				nickName: (state) => state.user.info.nickName,
 				token: (state) => state.user.token,
 				share_id: (state) => state.user.info.userid,
-				userinfo: (state) => state.user.info
+				userinfo: (state) => state.user.info,
+				auth_info: (state) => state.user.auth_info
 			}),
 		},
 		beforeDestroy() {
@@ -218,18 +230,21 @@
 			this.scene = scene;
 		},
 		methods: {
-			init() {
-				this.getCoinTask();
+			async init() {
+				//签到
+				await this.querySign();
 				//是否首次登陆
-				this.$store.dispatch("user/finishTaskGetCoin", "wechat_first_login")
+				await this.$store.dispatch("user/finishTaskGetCoin", "wechat_first_login")
 				//是否是新用户
 				if (this.userinfo.is_new == 1) {
-					this.$store.dispatch("user/finishTaskGetCoin", "wechat_regist")
+					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_regist")
 				}
 				//是否关注公众号
 				if (this.userinfo.is_subscribe == 1) {
-					this.$store.dispatch("user/finishTaskGetCoin", "wechat_focus")
+					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_focus")
 				}
+
+				this.getCoinTask();
 			},
 			async putFinishTaskGetCoin(optionKey) {
 				try {
@@ -275,6 +290,7 @@
 					url: "/pages/coin/introduction/main",
 				});
 			},
+
 			async getCoinTask() {
 				let {
 					data: {
@@ -284,33 +300,6 @@
 				} = await API.getCoinTask();
 				this.totalCoins = totalCoins;
 				this.boxList = boxList.splice(0, 5);
-				/**
-     this.boxList = [
-        {
-          coins: 100,
-          status: 0,
-          title: "今天签到",
-        },
-        {
-          coins: 100,
-          status: 0,
-          title: "明天来签到",
-        },
-        {
-          coins: 100,
-          status: 0,
-          title: "后天再来签到",
-        },
-        {
-          coins: 100,
-          relateId: "17",
-          status: 1,
-          title: "绑卡任务",
-        },
-      ];
-
-
- */
 			},
 			toJump(url) {
 				uni.navigateTo({
@@ -346,9 +335,32 @@
 				}
 				this.current = index;
 				this.currentCoinNum = item.coins;
+				this.anmationCoin(index)
+
+			},
+			async querySign() {
+				let res = await API.querySign({
+					token: this.token,
+					city: this.auth_info.city,
+					channel: 2
+				})
+				let json = res.data;
+				if (json.sign) {
+					this.currentCoinNum = json.coins;
+					this.show_dialog = true;
+				}
+			},
+			onDetailClose() {
+				this.show_dialog = false;
+				this.anmationCoin();
+			},
+
+			anmationCoin(index) {
 				setTimeout(() => {
-					this.boxList.splice(index, 1);
-					this.current = -1;
+					if (index) {
+						this.boxList.splice(index, 1);
+						this.current = -1;
+					}
 					wx.createSelectorQuery()
 						.select("#canvas")
 						.node(async (res) => {
@@ -370,15 +382,14 @@
 							this.show_add_coin = true;
 							await this.delay(100);
 							this.show_add_coin_anmation = true;
-							await this.delay(800);
+							await this.delay(900);
 							this.show_add_coin = false;
 							this.show_add_coin_anmation = false;
-							console.log("===========");
-							this.totalCoins = this.totalCoins + item.coins;
+							this.totalCoins = this.totalCoins + this.currentCoinNum;
 						})
 						.exec();
 				}, 500);
-			},
+			}
 		},
 	};
 </script>
@@ -543,8 +554,8 @@
 				transition: all 0.8s linear;
 
 				&.anmation {
-					transform: translateY(-100px);
-					opacity: 0;
+					transform: translateY(-190px);
+					opacity: 0.7;
 				}
 
 				image {
@@ -1094,5 +1105,48 @@
 				color: #999999;
 			}
 		}
+	}
+
+	.prize-content {
+		position: relative;
+
+		.coin-dialog {
+			width: 668rpx;
+			height: 839rpx;
+		}
+
+		.prize-info-box {
+			position: absolute;
+			width: 668rpx;
+
+			margin: 0 auto;
+			top: 48%;
+			left: 0;
+			right: 0;
+			text-align: center;
+
+			.title {
+				font-size: 30rpx;
+				color: #3c280f;
+			}
+
+			.prize-num {
+				margin-top: 30rpx;
+				font-size: 40rpx;
+				font-weight: bold;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #ff4e00;
+
+				image {
+					width: 78rpx;
+					height: 78rpx;
+					margin-right: 10rpx;
+				}
+
+			}
+		}
+
 	}
 </style>

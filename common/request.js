@@ -30,7 +30,7 @@ const interceptRequest = useIntercept(uni.request, {
 
     let token = store.state.user.token;
     if (token) {
-      params.data["token"] = token;
+      params.data["token"] = "2ab4f80a5bceb9db51478a9be5fc6b47";
     }
 	if(params.url.indexOf("/mini-program/v1")>-1){
 		 params.data["hash"]= conf.hash;

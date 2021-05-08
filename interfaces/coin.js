@@ -33,6 +33,20 @@ export function queryCoinRecord(data) {
 }
 
 /**
+ * 签到领取金币
+ * @param {Object} data
+ */
+export function querySign(data) {
+	return request({
+		url: `${G}/usercenter/coin/sign`,
+		method: "post",
+		data
+	});
+}
+
+
+
+/**
  * 完成任务领取金币
  */
 
