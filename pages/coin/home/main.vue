@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-03-11 18:37:57
 -->
 <template>
-	<view class="act" >
+	<view class="act">
 		<view class="act-box" :style="{paddingTop:safeAreaTop+'px'}">
 			<image src="https://image.etcchebao.com/etc-min/coin-bg.png" class="bg-image" />
 			<image src="https://image.etcchebao.com/etc-min/icon-fish.png" class="icon-fish" />
@@ -29,6 +29,7 @@
 				<image v-else-if="totalCoins > 100" src="https://image.etcchebao.com/etc-min/coin100-later.png" class="bottle-coin" />
 			</block>
 			<view class="act-content">
+				<!--金币攻略-->
 				<image src="https://image.etcchebao.com/etc-min/icon-gl.png" class="icon-gl" @click="toIntroduct" />
 				<view class="user-box">
 					<navigator url="/pages/user/mine/main" class="user-info">
@@ -72,18 +73,26 @@
 
 			<!-- <view class="gift-icon-box">
         <image src="https://image.etcchebao.com/etc-min/gift_bg.png" />
-        <view>有新礼包到啦，快来瞅瞅~</view>
+        <view>有新礼包到啦，快来瞅瞅 autoplay~</view>
       </view> -->
-			<swiper indicator-dots autoplay class="swiper" v-if="operaList.length > 0">
-				<swiper-item v-for="(item, index) in operaList" :key="index">
-					<view class="swiper-item">
-						<image :src="item.pic_url" @click="toJump(item.jump_url)" />
-					</view>
-				</swiper-item>
-			</swiper>
+			<view class="swiper-box">
+				<swiper  class="swiper" v-if="operaList.length > 0" @change="swiperChange">
+					<swiper-item class="swiper-item" v-for="(item, index) in operaList" :key="index">
+						<view>
+							<image :src="item.pic_url" @click="toJump(item.jump_url)" />
+						</view>
+					</swiper-item>
+				</swiper>
+				<view class="dots">
+					<block v-for="(item, index) in operaList" :key="index">
+						<view class="dot" :class="{ active: index == currentSwiper}"></view>
+					</block>
+				</view>
+			</view>
+
 			<view class="panel-wrap">
 				<view class="panel-header">
-					<view class="left"> 每日精选 </view>
+					<view class="left"> 金币兑好礼 </view>
 					<!-- <view class="right">
             <image />
             <text>恭喜某…获得加油优惠券</text>
@@ -182,7 +191,8 @@
 				currentCoinNum: 0,
 				scene: 0,
 				unsubscribeFn: () => {},
-				safeAreaTop:22
+				safeAreaTop: 22,
+				currentSwiper: 0
 			};
 		},
 		components: {
@@ -229,9 +239,12 @@
 				scene
 			} = uni.getLaunchOptionsSync();
 			this.scene = scene;
-			this.safeAreaTop=uni.getSystemInfoSync().safeArea.top+2
+			this.safeAreaTop = uni.getSystemInfoSync().safeArea.top + 2
 		},
 		methods: {
+			swiperChange(e) {
+				this.currentSwiper = e.detail.current
+			},
 			async init() {
 				//签到
 				await this.querySign();
@@ -301,7 +314,7 @@
 					},
 				} = await API.getCoinTask();
 				this.totalCoins = totalCoins;
-				this.boxList = boxList.splice(0, 5);
+				this.boxList = boxList.filter((item)=>item.status!==2).splice(0, 5);
 			},
 			toJump(url) {
 				uni.navigateTo({
@@ -341,12 +354,15 @@
 
 			},
 			async querySign() {
-				let res = await API.querySign({
+				let [error, res] = await API.querySign({
 					token: this.token,
 					city: this.auth_info.city,
-					channel: 2
+					channel: 2,
+					token: this.token
 				})
-				let json = res.data;
+
+				let json = res.data.data;
+
 				if (json.sign) {
 					this.currentCoinNum = json.coins;
 					this.show_dialog = true;
@@ -575,7 +591,7 @@
 					position: absolute;
 					width: 78rpx;
 					height: 86rpx;
-					right: 20rpx;
+					right: 13rpx;
 					top: 120rpx;
 				}
 
@@ -788,23 +804,51 @@
 				}
 			}
 
-			.swiper {
-				.swiper-item {
-					height: 220px;
-					width: 690rpx;
-					background: #e7e7e7;
+			.swiper-box {
+				position: relative;
 
-					image {
-						width: 690rpx;
-						height: 220px;
-						border-radius: 10rpx;
+				.swiper {
+					height: 220rpx;
+					width: 690rpx;
+
+					.swiper-item {
+						background: #e7e7e7;
+						image {
+							width: 690rpx;
+							height: 220rpx;
+							border-radius: 10rpx;
+						}
+					}
+				}
+
+				/*用来包裹所有的小圆点 */
+				.dots {
+					display: flex;
+					flex-direction: row;
+					position: absolute;
+					left:calc(50% - 10rpx);
+					transform: translateX(-50%);
+					bottom: 15rpx;
+					/*未选中时的小圆点样式 */
+					.dot {
+						width: 8rpx;
+						height: 8rpx;
+						border-radius: 50%;
+						background-color: #CCC;
+							margin-left: 10rpx;
+						/*选中以后的小圆点样式 */
+						&.active {
+							width: 28rpx;
+							height: 8rpx;
+							background-color: #FF5C2A;
+							border-radius: 50px;
+						}
 					}
 				}
 			}
-
 			.panel-wrap {
 				.panel-header {
-					padding: 40rpx;
+					padding: 40rpx 0;
 					display: flex;
 					align-items: center;
 					justify-content: space-between;

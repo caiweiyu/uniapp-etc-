@@ -19,15 +19,24 @@
 				<image :src="item.pic_url" @click="toJump(item.jump_url)" />
 			</swiper-item>
 		</swiper>
-		<swiper class="swiper-wrapper" next-margin="10px" :current="current_swpier" @change="onSwiperChange">
-			<swiper-item class="swiper-item" v-for="(item, index) in unitollList" :key="index">
-				<unitoll-card :card_name="item.card_name" :card_num="item.card_num" :plate="item.plate" :type="item.type" :url="item.url"
-				 card_type="bill" />
-			</swiper-item>
-			<swiper-item>
-				<unitoll-card empty_tip="添加粤通卡" @onAddCard="onAddCard" />
-			</swiper-item>
-		</swiper>
+		<view class="card-box">
+			<swiper class="swiper-wrapper" :current="current_swpier" @change="onSwiperChange">
+				<swiper-item class="swiper-item" v-for="(item, index) in unitollList" :key="index">
+					<unitoll-card :card_name="item.card_name" :card_num="item.card_num" :plate="item.plate" :type="item.type" :url="item.url"
+					 card_type="bill" />
+				</swiper-item>
+				<swiper-item>
+					<unitoll-card empty_tip="添加粤通卡" @onAddCard="onAddCard" />
+				</swiper-item>
+			</swiper>
+
+			<view class="dots">
+				<block v-for="(key, index) in unitollList.length+1" :key="index">
+					<view class="dot" :class="{ active: index == current_swpier}"></view>
+				</block>
+			</view>
+		</view>
+
 		<scroll-view scroll-y="true" class="bill-content" v-if="show_bill_content">
 			<view class="header-box">
 				<view class="item-inner">
@@ -95,7 +104,7 @@
 		</view>
 		<!--账单指引 end-->
 		<!--收藏小程序提示-->
-		<image v-if="is_show_collection" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
+		<image v-if="is_show_collection" :style="{top:(safeAreaTop+40)+'px'}" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
 		 @click="onCloseCollection" alt="" />
 		<!--全局授权-->
 		<button-get-user-info type="global" />
@@ -301,26 +310,62 @@
 
 
 		/deep/ .card {
-			width: 670rpx;
+			width: 690rpx;
 		}
 
 		.swiper-wrapper-opera {
-			width: 670rpx;
+			width: 690rpx;
 			height: 108rpx;
 			margin: 20rpx auto;
 
 			.swiper-item-opera {
 				image {
-					width: 670rpx;
+					width: 690rpx;
 					height: 108rpx;
 				}
 			}
 		}
 
-		.swiper-wrapper {
-			height: 260rpx;
-			margin-left: 40rpx;
+		.card-box {
+			position: relative;
+			height: 280rpx;
+
+			/*用来包裹所有的小圆点 */
+			.dots {
+				display: flex;
+				flex-direction: row;
+				position: absolute;
+				left: calc(50% - 10rpx);
+				transform: translateX(-50%);
+				bottom: -15rpx;
+
+				/*未选中时的小圆点样式 */
+				.dot {
+					width: 12rpx;
+					height: 6rpx;
+					border-radius: 50%;
+					background-color: #CCC;
+					margin-left: 10rpx;
+
+					/*选中以后的小圆点样式 */
+					&.active {
+						width: 24rpx;
+						height: 6rpx;
+						background-color: #48485C;
+						border-radius: 50px;
+					}
+				}
+			}
+
+			.swiper-wrapper {
+				height: 260rpx;
+				width: 690rpx;
+				margin: 0 auto;
+
+			}
 		}
+
+
 
 		.bill-content {
 			background: #f9f9f9;
@@ -509,6 +554,12 @@
 		}
 
 		.bill-tip-box {
+			height: 100vh;
+			width: 100%;
+			position: fixed;
+			top: 0;
+			z-index: 2;
+
 			image {
 				width: 690rpx;
 				height: 633rpx;
@@ -517,7 +568,7 @@
 				left: 0;
 				right: 0;
 				top: 50%;
-				// transform: translateY(-50%);
+				transform: translateY(-50%);
 				bottom: 0;
 				margin: 0 auto;
 			}
@@ -558,7 +609,7 @@
 			height: 120rpx;
 			position: absolute;
 			top: 160rpx;
-			right: 70rpx;
+			right: 40rpx;
 		}
 	}
 </style>

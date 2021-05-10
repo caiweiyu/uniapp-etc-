@@ -8,7 +8,7 @@
 -->
 <template>
 	<view class="introduction">
-		<image :src="imgUrl" mode="aspectFit"  class="img" />
+		<image :src="imgUrl" mode="widthFix"  class="img" />
 	</view>
 </template>
 

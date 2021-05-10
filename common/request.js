@@ -23,14 +23,14 @@ function showError(message, show = true) {
  */
 const interceptRequest = useIntercept(uni.request, {
   config(params) {
-    // console.log("=====发送请求=====", params);
+    console.log("=====发送请求=====", params);
     uni.showLoading({
       title: "请求中",
     });
 
     let token = store.state.user.token;
     if (token) {
-      params.data["token"] = "2ab4f80a5bceb9db51478a9be5fc6b47";
+      params.data["token"] =token;
     }
 	if(params.url.indexOf("/mini-program/v1")>-1){
 		 params.data["hash"]= conf.hash;
@@ -39,7 +39,7 @@ const interceptRequest = useIntercept(uni.request, {
     return params;
   },
   success(res) {
-    // console.log("=====返回结果=====", res);
+    console.log("=====返回结果=====", res);
     uni.hideLoading();
     if (res.statusCode == 200 && res.data.code == 0) {
       return res.data;

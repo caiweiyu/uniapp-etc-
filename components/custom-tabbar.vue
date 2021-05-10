@@ -96,12 +96,12 @@
 				color: #979797;
 
 				>image {
-					width: 44rpx;
-					height: 44rpx;
+					width: 55rpx;
+					height: 55rpx;
 				}
 
 				>.title {
-					font-size: 18rpx;
+					font-size: 22rpx;
 				}
 
 				&.active {

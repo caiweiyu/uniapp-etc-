@@ -37,7 +37,10 @@ export function queryCoinRecord(data) {
  * @param {Object} data
  */
 export function querySign(data) {
-	return request({
+	return uni.request({
+		header: {
+			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输
+		},
 		url: `${G}/usercenter/coin/sign`,
 		method: "post",
 		data
