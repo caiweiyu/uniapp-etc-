@@ -8,7 +8,7 @@
 -->
 <template>
 	<block v-if="!auth_info.openid">
-		<button :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'" open-type="getUserInfo" lang="zh_CN" @getuserinfo="getUserInfo">
+		<button :class="type == 'local' ? 'auth-btn-local' : 'auth-btn-global'" @click="getUserInfo">
 			获取用户信息(透明度为0)
 		</button>
 	</block>
@@ -40,7 +40,7 @@
 		},
 		mounted() {
 			let {
-				from_type = 2,share_id = 0
+				from_type = 2, share_id = 0
 			} = this.$root.$mp.query;
 			from_type = parseInt(from_type)
 			share_id = parseInt(share_id)
@@ -56,46 +56,48 @@
 			}
 		},
 		methods: {
-			async getUserInfo(e) {
-				//console.log('e:',JSON.stringify(e))
-				let {
-					iv,
-					encryptedData,
-					errMsg
-				} = e.mp.detail;
-				if (errMsg === "getUserInfo:ok") {
-					uni.showLoading({
-						title: "正在初始化",
-					});
-					try {
-						let {
-							data: { ...other
-							},
-						} = await getAuthInfo({
-							iv,
-							encryptData: encryptedData,
-							jsCode: this.jsCode,
-							fromType: this.from_type, //注册渠道 3=粤通卡小程序 2=ETC车宝公众号
-							shareId: this.share_id,
-						});
-						uni.hideLoading();
-						this.$store.commit("user/setAuthUserInfo", other);
-						this.$emit("success");
-						uni.showToast({
-							icon: 'none',
-							duration: 3000,
-							title: "请点击授权登录",
-						});
-						this.$store.dispatch("user/refreshJsCode");
-					} catch (error) {
-						console.error(error);
-						uni.hideLoading();
+			getUserInfo() {
+				uni.getUserProfile({
+					desc: '用于完善会员资料',
+					lang: "zh_CN",
+					success: async ({
+						iv,
+						encryptedData,
+						errMsg
+					}) => {
+						if (errMsg === "getUserProfile:ok") {
+							uni.showLoading({
+								title: "正在初始化",
+							});
+							let {
+								data: { ...other
+								},
+							} = await getAuthInfo({
+								iv,
+								encryptData: encryptedData,
+								jsCode: this.jsCode,
+								fromType: this.from_type, //注册渠道 3=粤通卡小程序 2=ETC车宝公众号
+								shareId: this.share_id,
+							});
+							uni.hideLoading();
+							this.$store.commit("user/setAuthUserInfo", other);
+							this.$emit("success");
+							uni.showToast({
+								icon: 'none',
+								duration: 3000,
+								title: "请点击授权登录",
+							});
+							this.$store.dispatch("user/refreshJsCode");
+						} else {
+							this.$store.dispatch("user/refreshJsCode");
+							console.log("获取用户信息失败", errMsg);
+							this.$emit("fail");
+						}
 					}
-				} else {
-					this.$store.dispatch("user/refreshJsCode");
-					console.log("获取用户信息失败", errMsg);
-					this.$emit("fail");
-				}
+				})
+
+
+
 			},
 		},
 	};

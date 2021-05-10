@@ -76,7 +76,7 @@
         <view>有新礼包到啦，快来瞅瞅 autoplay~</view>
       </view> -->
 			<view class="swiper-box">
-				<swiper  class="swiper" v-if="operaList.length > 0" @change="swiperChange">
+				<swiper class="swiper" v-if="operaList.length > 0" @change="swiperChange">
 					<swiper-item class="swiper-item" v-for="(item, index) in operaList" :key="index">
 						<view>
 							<image :src="item.pic_url" @click="toJump(item.jump_url)" />
@@ -226,6 +226,7 @@
 				if (mutation.type == "user/setToken") {
 					if (state.user.token) {
 						this.init();
+						this.getOperaList();
 					} else {
 						this.boxList = []
 						this.totalCoins = 0;
@@ -314,7 +315,7 @@
 					},
 				} = await API.getCoinTask();
 				this.totalCoins = totalCoins;
-				this.boxList = boxList.filter((item)=>item.status!==2).splice(0, 5);
+				this.boxList = boxList.filter((item) => item.status !== 2).splice(0, 5);
 			},
 			toJump(url) {
 				uni.navigateTo({
@@ -813,6 +814,7 @@
 
 					.swiper-item {
 						background: #e7e7e7;
+
 						image {
 							width: 690rpx;
 							height: 220rpx;
@@ -826,16 +828,18 @@
 					display: flex;
 					flex-direction: row;
 					position: absolute;
-					left:calc(50% - 10rpx);
+					left: calc(50% - 10rpx);
 					transform: translateX(-50%);
 					bottom: 15rpx;
+
 					/*未选中时的小圆点样式 */
 					.dot {
 						width: 8rpx;
 						height: 8rpx;
 						border-radius: 50%;
 						background-color: #CCC;
-							margin-left: 10rpx;
+						margin-left: 10rpx;
+
 						/*选中以后的小圆点样式 */
 						&.active {
 							width: 28rpx;
@@ -846,6 +850,7 @@
 					}
 				}
 			}
+
 			.panel-wrap {
 				.panel-header {
 					padding: 40rpx 0;

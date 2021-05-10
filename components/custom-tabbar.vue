@@ -88,6 +88,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: space-around;
+				font-size: 0;
 			}
 
 			&-item {
@@ -102,6 +103,7 @@
 
 				>.title {
 					font-size: 22rpx;
+					padding-bottom: 10rpx;
 				}
 
 				&.active {
