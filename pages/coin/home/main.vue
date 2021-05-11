@@ -33,20 +33,17 @@
 				<image src="https://image.etcchebao.com/etc-min/icon-gl.png" class="icon-gl" @click="toIntroduct" />
 				<view class="user-box">
 					<navigator url="/pages/user/mine/main" class="user-info">
-						<image class="avatar" :src="headerUrl" />
-						<view class="username">{{ nickName }}</view>
+						<image class="avatar" :src="auth_info.avatar" />
+						<view class="username">{{ auth_info.nickname }}</view>
 					</navigator>
 					<navigator url="/pages/coin/detail/main" class="coin-total">
-						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin.png" />
+						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin-big.png" />
 						<AnimatedNumber :value="totalCoins" />
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</navigator>
+					<button-get-user-info type="local" />
 				</view>
 				<notice-channel type="1" styleTop="top: 80rpx" />
-				<!-- <view class="notice-box">
-					<image src="https://image.etcchebao.com/etc-min/notice-bar.png" class="icon-notice" />
-					<view>尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~</view>
-				</view> -->
 				<view class="coin-box">
 					<view class="coin-item" :style="{ 'animation-delay': random['r_' + index] + 's' }" v-for="(item, index) in boxList"
 					 :key="index">
@@ -79,7 +76,7 @@
 				<swiper class="swiper" v-if="operaList.length > 0" @change="swiperChange">
 					<swiper-item class="swiper-item" v-for="(item, index) in operaList" :key="index">
 						<view>
-							<image :src="item.pic_url" @click="toJump(item.jump_url)" />
+							<image :src="item.pic_url" @click="toJump(item)" />
 						</view>
 					</swiper-item>
 				</swiper>
@@ -118,7 +115,7 @@
               </view>
             </view> -->
 						<view class="goods-grid">
-							<view class="goods-list-item more-item" @click="openStore">
+							<view class="goods-list-item more-item">
 								<text>更多好券敬请期待</text>
 							</view>
 						</view>
@@ -129,7 +126,7 @@
 		</view>
 
 		<!--全局授权-->
-		<button-get-user-info type="global" />
+
 		<button-get-phone-number type="global" />
 		<view class="space-white-60"></view>
 		<van-popup :show="show_dialog" custom-style="background: none;zIndex:99999" @close="onDetailClose">
@@ -204,8 +201,6 @@
 		},
 		computed: {
 			...mapState({
-				headerUrl: (state) => state.user.info.headerUrl,
-				nickName: (state) => state.user.info.nickName,
 				token: (state) => state.user.token,
 				share_id: (state) => state.user.info.userid,
 				userinfo: (state) => state.user.info,
@@ -317,10 +312,32 @@
 				this.totalCoins = totalCoins;
 				this.boxList = boxList.filter((item) => item.status !== 2).splice(0, 5);
 			},
-			toJump(url) {
-				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(url)}`,
-				});
+			toJump({
+				jump_type,
+				jump_url,
+				appid
+			}) {
+				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
+				if (jump_type == 1) {
+					uni.navigateTo({
+						url: jump_url,
+					});
+				} else if (jump_type == 2) {
+					uni.navigateToMiniProgram({
+						appId: appid,
+						path: jump_url
+					})
+				} else if (jump_type == 3) {
+					if (jump_url.indexOf("?") > -1) {
+						jump_url = jump_url + "&token=" + this.token;
+					} else {
+						jump_url = jump_url + "?token=" + this.token;
+					}
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
+					});
+				}
+
 			},
 			/**
 			 * 获取运营位
@@ -401,7 +418,7 @@
 							this.show_add_coin = true;
 							await this.delay(100);
 							this.show_add_coin_anmation = true;
-							await this.delay(900);
+							await this.delay(1700);
 							this.show_add_coin = false;
 							this.show_add_coin_anmation = false;
 							this.totalCoins = this.totalCoins + this.currentCoinNum;
@@ -570,11 +587,11 @@
 				margin: 0 auto;
 				z-index: 6;
 				position: absolute;
-				transition: all 0.8s linear;
+				transition: all 1.6s linear;
 
 				&.anmation {
 					transform: translateY(-190px);
-					opacity: 0.7;
+					opacity: 0;
 				}
 
 				image {
@@ -592,7 +609,7 @@
 					position: absolute;
 					width: 78rpx;
 					height: 86rpx;
-					right: 13rpx;
+					right: 30rpx;
 					top: 120rpx;
 				}
 
@@ -622,6 +639,7 @@
 				// }
 
 				.user-box {
+					position: relative;
 					display: flex;
 					align-items: center;
 					width: 342rpx;
@@ -660,7 +678,8 @@
 						font-size: 30rpx;
 						font-weight: 500;
 						color: #fff;
-						padding: 0 20rpx;
+						padding: 0 20rpx 0 6rpx;
+						margin-left: 30rpx;
 
 						.icon-coin {
 							width: 44rpx;
@@ -1163,7 +1182,7 @@
 
 		.coin-dialog {
 			width: 668rpx;
-			height: 839rpx;
+			height: 768rpx;
 		}
 
 		.prize-info-box {
@@ -1171,7 +1190,7 @@
 			width: 668rpx;
 
 			margin: 0 auto;
-			top: 48%;
+			top: 35%;
 			left: 0;
 			right: 0;
 			text-align: center;

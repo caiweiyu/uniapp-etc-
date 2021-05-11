@@ -21,8 +21,6 @@ const user = {
 	namespaced: true,
 	state: {
 		info: {
-			headerUrl: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
-			nickName: "未登录",
 			openid: "",
 			phone: "",
 			userid: 0,
@@ -30,8 +28,8 @@ const user = {
 		auth_info: {
 			openid: "",
 			unionid: "",
-			nickname: "",
-			avatar: "",
+			nickname: "获取头像",
+			avatar: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
 		},
 		jsCode: "",
 		token: "",

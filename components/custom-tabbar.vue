@@ -81,7 +81,7 @@
 		padding-bottom: constant(safe-area-inset-bottom);
 		padding-bottom: env(safe-area-inset-bottom);
 		border-top: 1rpx solid #f0f2f5;
-		padding-top: 10rpx;
+		padding-top: 2rpx;
 
 		.tabbar {
 			&-list {

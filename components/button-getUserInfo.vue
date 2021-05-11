@@ -82,11 +82,6 @@
 							uni.hideLoading();
 							this.$store.commit("user/setAuthUserInfo", other);
 							this.$emit("success");
-							uni.showToast({
-								icon: 'none',
-								duration: 3000,
-								title: "请点击授权登录",
-							});
 							this.$store.dispatch("user/refreshJsCode");
 						} else {
 							this.$store.dispatch("user/refreshJsCode");

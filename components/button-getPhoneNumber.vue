@@ -96,6 +96,7 @@
 						
 
 						this.$emit("success");
+						this.$store.dispatch("user/refreshJsCode");
 					} catch (error) {
 						console.error(error);
 						uni.hideLoading();

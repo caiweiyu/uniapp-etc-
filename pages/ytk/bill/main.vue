@@ -8,15 +8,17 @@
 -->
 <template>
 	<view class="bill" :style="{paddingTop:safeAreaTop+'px'}">
-		<navigator url="/pages/user/mine/main" class="user-info">
-			<image class="avatar" :src="headerUrl"></image>
-			<view class="username">{{ nickName }}</view>
-		</navigator>
+		<view class="user-info" @click="toMine">
+			<image class="avatar" :src="auth_info.avatar" />
+			<view class="username">{{ auth_info.nickname }}</view>
+			<!--局部授权-->
+			<button-get-user-info type="local" />
+		</view>
 		<!-- 		<notice-channel type="2" styleTop="top: 180rpx" /> -->
 		<!--运营位-->
 		<swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
 			<swiper-item class="swiper-item-opera" v-for="(item, index) in operaList" :key="index">
-				<image :src="item.pic_url" @click="toJump(item.jump_url)" />
+				<image :src="item.pic_url" @click="toJump(item)" />
 			</swiper-item>
 		</swiper>
 		<view class="card-box">
@@ -30,7 +32,7 @@
 				</swiper-item>
 			</swiper>
 
-			<view class="dots">
+			<view class="dots" v-if="unitollList.length>0">
 				<block v-for="(key, index) in unitollList.length+1" :key="index">
 					<view class="dot" :class="{ active: index == current_swpier}"></view>
 				</block>
@@ -106,8 +108,7 @@
 		<!--收藏小程序提示-->
 		<image v-if="is_show_collection" :style="{top:(safeAreaTop+40)+'px'}" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
 		 @click="onCloseCollection" alt="" />
-		<!--全局授权-->
-		<button-get-user-info type="global" />
+
 		<button-get-phone-number type="global" />
 		<!--底部栏-->
 		<custom-tabbar />
@@ -149,8 +150,7 @@
 		},
 		computed: {
 			...mapState({
-				headerUrl: (state) => state.user.info.headerUrl,
-				nickName: (state) => state.user.info.nickName,
+				auth_info: (state) => state.user.auth_info,
 				token: (state) => state.user.token,
 				is_show_guide: (state) => state.user.is_show_guide,
 				is_show_collection: (state) => state.user.is_show_collection,
@@ -182,6 +182,13 @@
 		},
 
 		methods: {
+			toMine() {
+				if (this.auth_info.openid) {
+					uni.navigateTo({
+						url: "/pages/user/mine/main"
+					})
+				}
+			},
 			init() {
 				this.getUserCardList();
 				this.getOperaList();
@@ -228,10 +235,32 @@
 				}
 
 			},
-			toJump(url) {
-				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(url)}`,
-				});
+			toJump({
+				jump_type,
+				jump_url,
+				appid
+			}) {
+				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
+				if (jump_type == 1) {
+					uni.navigateTo({
+						url: jump_url,
+					});
+				} else if (jump_type == 2) {
+					uni.navigateToMiniProgram({
+						appId: appid,
+						path: jump_url
+					})
+				} else if (jump_type == 3) {
+					if (jump_url.indexOf("?") > -1) {
+						jump_url = jump_url + "&token=" + this.token;
+					} else {
+						jump_url = jump_url + "?token=" + this.token;
+					}
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
+					});
+				}
+
 			},
 			/**
 			 * 获取账单卡列表
@@ -273,20 +302,27 @@
 				this.passTotalTimes = passTotalTimes;
 
 			},
-			async onAddCard() {
-				let jump_url = "/pages/ytk/add_ytk/main";
-				if (this.unitollList.length > 0) {
-					let res = await API.getCardListByUsername();
-					let {
-						list = []
-					} = res.data;
-					if (list.length > 0) {
-						jump_url = "/pages/ytk/ytk_list/main";
+			onAddCard() {
+				uni.requestSubscribeMessage({
+					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
+					complete: async (res) => {
+						let jump_url = "/pages/ytk/add_ytk/main";
+						if (this.unitollList.length > 0) {
+							let res = await API.getCardListByUsername();
+							let {
+								list = []
+							} = res.data;
+							if (list.length > 0) {
+								jump_url = "/pages/ytk/ytk_list/main";
+							}
+						}
+						uni.navigateTo({
+							url: jump_url,
+						});
 					}
-				}
-				uni.navigateTo({
-					url: jump_url,
-				});
+				})
+
+
 			},
 			onSwiperChange(e) {
 				this.current_swpier = e.mp.detail.current;
@@ -329,6 +365,7 @@
 		.card-box {
 			position: relative;
 			height: 280rpx;
+			margin-top: 40rpx;
 
 			/*用来包裹所有的小圆点 */
 			.dots {

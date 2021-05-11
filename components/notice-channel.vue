@@ -8,9 +8,9 @@
 -->
 <template>
 	<block v-if="is_show_home_notice">
-		<view class="notice-box" :style="styleTop" v-if="pic_url">
-			<image :src="pic_url" class="icon-notice" @click="onClose" />
-			<view @click="toJumpUrl(jump_url)">{{note}}</view>
+		<view class="notice-box" :style="styleTop" v-if="info.pic_url">
+			<image :src="info.pic_url" class="icon-notice" @click="onClose" />
+			<view @click.stop="toJumpUrl()">{{info.note}}</view>
 		</view>
 	</block>
 </template>
@@ -32,21 +32,22 @@
 		},
 		data() {
 			return {
-				pic_url: '',//https://image.etcchebao.com/etc-min/notice-bar.png
-				jump_url: '',
-				note: ''//尊敬的粤通卡用户，ETC车宝&粤通卡欢迎您~
+
+				info: {
+
+				}
 			};
 		},
 		computed: {
 			...mapState({
 				is_show_home_notice: (state) => state.user.is_show_home_notice,
+				token: (state) => state.user.token,
 			}),
 		},
 		mounted() {
 			let {
 				from_type = 0
 			} = this.$root.$mp.query;
-			this.currentPath = "/" + this.$root.$mp.page.route;
 			this.getChannelList(from_type);
 
 		},
@@ -61,18 +62,34 @@
 					fromType: from_type,
 				});
 				if (res.data.length > 0) {
-					this.pic_url = res.data[0].pic_url;
-					this.jump_url = res.data[0].jump_url;
-					this.note = res.data[0].note;
+					this.info = res.data[0];
 				}
 			},
-			toJumpUrl(url) {
-				if (url === this.currentPath) {
-					return;
+			toJumpUrl() {
+				let {
+					jump_type,
+					jump_url,
+					appid
+				} = this.info;
+				if (jump_type == 1) {
+					uni.navigateTo({
+						url: jump_url,
+					});
+				} else if (jump_type == 2) {
+					uni.navigateToMiniProgram({
+						appId: appid,
+						path: jump_url
+					})
+				} else if (jump_type == 3) {
+					if (jump_url.indexOf("?") > -1) {
+						jump_url = jump_url + "&token=" + this.token;
+					} else {
+						jump_url = jump_url + "?token=" + this.token;
+					}
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
+					});
 				}
-				wx.redirectTo({
-					url: url,
-				});
 			},
 		},
 	};
