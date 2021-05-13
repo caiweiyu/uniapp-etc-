@@ -10,7 +10,7 @@
 	<view class="costom-tabbar">
 		<view class="tabbar-list">
 			<view :class="['tabbar-item', { active: currentPath === item.jump_url }]" v-for="(item, index) in tabbarData" :key="index"
-			 @click="toJumpUrl(item.jump_url)">
+			 @click="toJumpUrl(item)">
 				<image :src="currentPath === item.jump_url ? item.pic_url2 : item.pic_url1" />
 				<view class="title">{{ item.title }}</view>
 			</view>
@@ -29,7 +29,7 @@
 		},
 		mounted() {
 			this.currentPath = "/" + this.$root.$mp.page.route;
-			// this.getTabList();
+			this.getTabList();
 			if (this.$store.state.user.token) {
 				this.getTabList();
 			} else {
@@ -46,24 +46,40 @@
 				let res = await API.getTabList({
 					os: 1,
 				});
-				if (res.data.length > 0) {
+				if (res.data && res.data.length > 0) {
 					this.tabbarData = res.data;
 				}
 
 			},
-			toJumpUrl(url) {
-				if (url === this.currentPath) {
+			toJumpUrl({jump_url,jump_type,appid}) {
+				if (jump_url === this.currentPath) {
 					return;
 				}
 				let whiteList = ['/pages/ytk/bill/main', '/pages/coin/home/main']
-				if (whiteList.indexOf(url) > -1) {
+				if (whiteList.indexOf(jump_url) > -1) {
 					wx.redirectTo({
-						url: url,
+						url: jump_url,
 					});
 				} else {
-					wx.navigateTo({
-						url: url,
-					})
+					if (jump_type == 1) {
+						uni.navigateTo({
+							url: jump_url,
+						});
+					} else if (jump_type == 2) {
+						uni.navigateToMiniProgram({
+							appId: appid,
+							path: jump_url
+						})
+					} else if (jump_type == 3) {
+						if (jump_url.indexOf("?") > -1) {
+							jump_url = jump_url + "&token=" + this.token;
+						} else {
+							jump_url = jump_url + "?token=" + this.token;
+						}
+						uni.navigateTo({
+							url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
+						});
+					}
 				}
 
 			},
@@ -82,6 +98,7 @@
 		padding-bottom: env(safe-area-inset-bottom);
 		border-top: 1rpx solid #f0f2f5;
 		padding-top: 2rpx;
+		z-index: 999999;
 
 		.tabbar {
 			&-list {

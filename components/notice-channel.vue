@@ -10,7 +10,7 @@
 	<block v-if="is_show_home_notice">
 		<view class="notice-box" :style="styleTop" v-if="info.pic_url">
 			<image :src="info.pic_url" class="icon-notice" @click="onClose" />
-			<view @click.stop="toJumpUrl()">{{info.note}}</view>
+			<view class="note" @click.stop="toJumpUrl()">{{info.note}}</view>
 		</view>
 	</block>
 </template>
@@ -102,19 +102,22 @@
 		position: absolute;
 		z-index: 2;
 		top: 80rpx;
+		left: 50%;
+		transform: translateX(-50%);
 
 		.icon-notice {
 			width: 712rpx;
 			height: 96rpx;
 		}
 
-		>view {
+		.note {
 			position: absolute;
 			top: 30rpx;
 			font-size: 26rpx;
 			color: #fff;
 			left: 100rpx;
 			width: 520rpx;
+			height: 96rpx;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;

@@ -62,7 +62,7 @@
 			onGetPhoneNumber() {
 				this.$store.dispatch("user/refreshJsCode");
 			},
-	
+
 			async getPhoneNumber(e) {
 				let {
 					iv,
@@ -93,8 +93,7 @@
 						uni.hideLoading();
 						this.$store.commit("user/setUserInfo", other);
 						this.$store.commit("user/setToken", token);
-						
-
+						this.$store.commit("user/setNickName", "同步微信头像");
 						this.$emit("success");
 						this.$store.dispatch("user/refreshJsCode");
 					} catch (error) {
@@ -114,7 +113,7 @@
 <style lang="scss" scoped>
 	.auth-btn-global {
 		width: 100vw;
-		height: 100vh;
+		height: calc(100vh - 100px);
 		position: fixed;
 		z-index: 9998;
 		top: 0;

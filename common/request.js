@@ -24,9 +24,9 @@ function showError(message, show = true) {
 const interceptRequest = useIntercept(uni.request, {
   config(params) {
     console.log("=====发送请求=====", params);
-    uni.showLoading({
-      title: "请求中",
-    });
+    // uni.showLoading({
+    //   title: "请求中",
+    // });
 
     let token = store.state.user.token;
     if (token) {

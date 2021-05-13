@@ -35,10 +35,11 @@ export function getBillInfo(data){
   });
 }
 
-export function getCardListByUsername(){
-  return request({
+export function getCardListByUsername(data){
+  return uni.request({
     url: `${G}/api-unitoll/card/get-card-list-by-username`,
-    method: "get"
+    method: "get",
+	data
   });
 }
 
@@ -78,7 +79,7 @@ export function unifiedBindCard(data){
 
 export function getUnitollBill(data){
   return request({
-    url: `${G}/unitoll-new/unitoll/monthBill2`,
+    url: `${G}/unitoll-new/unitoll/monthBill`,
     method: "post",
     data
   });

@@ -34,7 +34,7 @@
         v-if="show_add_coin"
         :class="['coin-add-num', { anmation: show_add_coin_anmation }]"
       >
-        <image src="https://image.etcchebao.com/etc-min/icon-coin-big.png" /> +9
+        <image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +9
       </view>
       <image
         src="https://image.etcchebao.com/etc-min/icon-bottle.png"

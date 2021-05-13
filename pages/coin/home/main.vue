@@ -8,7 +8,7 @@
 -->
 <template>
 	<view class="act">
-		<view class="act-box" :style="{paddingTop:safeAreaTop+'px'}">
+		<view class="act-box" :style="{paddingTop:statusBarHeight+'px'}">
 			<image src="https://image.etcchebao.com/etc-min/coin-bg.png" class="bg-image" />
 			<image src="https://image.etcchebao.com/etc-min/icon-fish.png" class="icon-fish" />
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-left.png" class="icon-bubble-left" />
@@ -16,7 +16,7 @@
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-right-2.png" class="icon-bubble-right-2" />
 			<canvas id="canvas" type="2d"></canvas>
 			<view v-if="show_add_coin" :class="['coin-add-num', { anmation: show_add_coin_anmation }]">
-				<image src="https://image.etcchebao.com/etc-min/icon-coin-big.png" /> +{{
+				<image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +{{
           currentCoinNum
         }}
 			</view>
@@ -36,8 +36,8 @@
 						<image class="avatar" :src="auth_info.avatar" />
 						<view class="username">{{ auth_info.nickname }}</view>
 					</navigator>
-					<navigator url="/pages/coin/detail/main" class="coin-total">
-						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin-big.png" />
+					<navigator url="/pages/coin/detail/main" class="coin-total" v-if="token">
+						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" />
 						<AnimatedNumber :value="totalCoins" />
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</navigator>
@@ -54,10 +54,13 @@
 							</view>
 							<view class="coin-title">{{ item.title }}</view>
 						</block>
-						<block v-else-if="item.status == 1">
-							<view class="coin-num">+{{ item.coins }}</view>
+						<view v-else-if="item.status == 1" class="disabled">
+							<view class="coin-take-num ">
+								<image src="https://image.etcchebao.com/etc-min/coin-take-num.png" />
+								<view>+{{ item.coins }}</view>
+							</view>
 							<view class="coin-title">{{ item.title }}</view>
-						</block>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -96,33 +99,38 @@
           </view> -->
 				</view>
 				<view class="panel-content">
-					<view class="goods-list-block">
-						<!-- <view class="goods-grid" v-for="n in 1" @click="toDetail">
-              <view class="goods-list-item">
-                <view class="img-box">
-                  <image class="goods-img" />
-                  <image class="good-tag" />
-                </view>
-                <view class="info-box">
-                  <view class="title">商品最长七个字商品最长七个字</view>
-                  <view class="cost-coin">
-                    <image
-                      src="https://image.etcchebao.com/etc-min/icon-coin.png"
-                    />
-                    <text>450</text>
-                  </view>
-                </view>
-              </view>
-            </view> -->
+				<!--<view class="goods-list-block">
+					 <view class="goods-grid" v-for="n in 1" @click="toDetail">
+						  <view class="goods-list-item">
+							<view class="img-box">
+							  <image class="goods-img" />
+							  <image class="good-tag" />
+							</view>
+							<view class="info-box">
+							  <view class="title">商品最长七个字商品最长七个字</view>
+							  <view class="cost-coin">
+								<image
+								  src="https://image.etcchebao.com/etc-min/icon-coin.png"
+								/>
+								<text>450</text>
+							  </view>
+							</view>
+						  </view>
+						</view>
 						<view class="goods-grid">
 							<view class="goods-list-item more-item">
 								<text>更多好券敬请期待</text>
 							</view>
 						</view>
 					</view>
+					 -->
+					 <view class="prize-empty-box">
+						 <image src="https://image.etcchebao.com/etc-min/list-empty.png" />
+						 <view class="empty-text">更多好礼,敬请期待</view>
+					 </view>
 				</view>
 			</view>
-			<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png" />
+			<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
 		</view>
 
 		<!--全局授权-->
@@ -131,11 +139,11 @@
 		<view class="space-white-60"></view>
 		<van-popup :show="show_dialog" custom-style="background: none;zIndex:99999" @close="onDetailClose">
 			<view class="prize-content" @click="onDetailClose">
-				<image src="https://image.etcchebao.com/etc-min/coin-dialog.png" class="coin-dialog" />
+				<image src="https://image.etcchebao.com/etc-min/coin-dialog.png?v=1" class="coin-dialog" />
 				<view class="prize-info-box">
 					<view class="title">签到成功</view>
 					<view class="prize-num">
-						<image src="https://image.etcchebao.com/etc-min/icon-coin-big.png" /> +{{currentCoinNum}}</view>
+						<image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +{{currentCoinNum}}</view>
 				</view>
 			</view>
 		</van-popup>
@@ -160,6 +168,7 @@
 	import {
 		finishTaskGetCoin
 	} from "@/interfaces/coin";
+	import boxList from "./data.json"
 	import {
 		mapState
 	} from "vuex";
@@ -182,13 +191,13 @@
 				current: -1,
 				show_add_coin: false,
 				show_add_coin_anmation: false,
-				totalCoins: 0,
+				totalCoins: 25,
 				boxList: [],
 				operaList: [],
 				currentCoinNum: 0,
 				scene: 0,
 				unsubscribeFn: () => {},
-				safeAreaTop: 22,
+				statusBarHeight: 22,
 				currentSwiper: 0
 			};
 		},
@@ -215,6 +224,8 @@
 			this.getOperaList();
 			if (this.token) {
 				this.init();
+			} else {
+				this.boxList = boxList
 			}
 			//等待授权后更新接口,订阅接口
 			this.unsubscribeFn = this.$store.subscribe((mutation, state) => {
@@ -223,8 +234,8 @@
 						this.init();
 						this.getOperaList();
 					} else {
-						this.boxList = []
-						this.totalCoins = 0;
+						this.boxList = boxList
+						this.totalCoins = 25;
 						this.currentCoinNum = 0;
 					}
 
@@ -235,7 +246,8 @@
 				scene
 			} = uni.getLaunchOptionsSync();
 			this.scene = scene;
-			this.safeAreaTop = uni.getSystemInfoSync().safeArea.top + 2
+			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight + 2
+			console.log(uni.getSystemInfoSync())
 		},
 		methods: {
 			swiperChange(e) {
@@ -284,14 +296,14 @@
 			},
 			onShareAppMessage(res) {
 				return {
-					title: "ETC车宝",
+					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
 					//imageUrl:"",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
 			onShareTimeline(res) {
 				return {
-					title: "ETC车宝",
+					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
 					//imageUrl:"",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
@@ -381,7 +393,7 @@
 
 				let json = res.data.data;
 
-				if (json.sign) {
+				if (json.sign &&json.coins!=0) {
 					this.currentCoinNum = json.coins;
 					this.show_dialog = true;
 				}
@@ -482,12 +494,14 @@
 
 		#canvas {
 			position: absolute;
+			top: 0;
 			width: 400px;
 			height: 760px;
 			z-index: 5;
 			left: 50%;
 			transform: translateX(-50%);
 			pointer-events: none;
+			z-index: 9999;
 		}
 
 		.act-box {
@@ -706,6 +720,10 @@
 						color: #fffae2;
 						animation: updown 6s infinite;
 
+						.disabled {
+							opacity: 0.5;
+						}
+
 						.coin-num {
 							width: 110rpx;
 							height: 110rpx;
@@ -732,6 +750,8 @@
 								}
 							}
 
+
+
 							>image {
 								position: absolute;
 								width: 116rpx;
@@ -739,6 +759,7 @@
 								margin: 0 auto;
 								left: 0;
 								right: 0;
+
 							}
 
 							>view {
@@ -902,6 +923,19 @@
 				}
 
 				.panel-content {
+					.prize-empty-box {
+						text-align: center;
+						margin-top: 60rpx;
+						image {
+							width: 300rpx;
+							height: 200rpx;
+						}
+					
+						.empty-text {
+							font-size: 26rpx;
+							color: #cccccc;
+						}
+					}
 					.goods-list-block {
 						display: flex;
 						flex-wrap: wrap;

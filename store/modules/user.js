@@ -28,7 +28,7 @@ const user = {
 		auth_info: {
 			openid: "",
 			unionid: "",
-			nickname: "获取头像",
+			nickname: "点击登录领金币",
 			avatar: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
 		},
 		jsCode: "",
@@ -48,6 +48,9 @@ const user = {
 		},
 		setAuthUserInfo: (state, info) => {
 			state.auth_info = info;
+		},
+		setNickName: (state, name) => {
+			state.auth_info.nickname = name;
 		},
 		setToken: (state, token) => {
 			state.token = token;

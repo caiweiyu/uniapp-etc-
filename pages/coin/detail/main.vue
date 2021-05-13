@@ -26,7 +26,7 @@
 					</scroll-view>
 				</van-tab>
 				<van-tab title="我的礼包">
-					<scroll-view scroll-y class="tab-content empty-block">
+					<scroll-view scroll-y class="tab-content bill-empty-box">
 						<!-- 	<view class="gift-item" v-for="n in 9">
 							<view class="left">
 								<image src="" alt="" />
@@ -38,8 +38,12 @@
 								<image class="icon-tag" src="https://image.etcchebao.com/etc-min/icon-expire.png" />
 							</view>
 						</view> -->
-						<van-empty description="敬请期待" />
-					</scroll-view>
+						<view class="empty-content">
+							<image src="https://image.etcchebao.com/etc-min/list-empty1.png" />
+							<view class="empty-text">敬请期待</view>
+						</view>
+<!-- 						<van-empty  class="empty-image" image="https://image.etcchebao.com/etc-min/list-empty1.png" description="敬请期待" />
+ -->					</scroll-view>
 				</van-tab>
 			</van-tabs>
 		</view>
@@ -125,8 +129,30 @@
 			box-sizing: border-box;
 		}
 
-		.empty-block {
+		// .empty-block {
+		// 	background: #fff;
+		//  /deep/ .van-empty__image__img{
+		// 		width: 300rpx;
+		// 		height: 200rpx;
+		// 	}
+		// }
+		
+		.bill-empty-box {
+			text-align: center;
+			margin-top: 60rpx;
 			background: #fff;
+			.empty-content{
+				margin-top: 30%;
+			}
+			image {
+				width: 300rpx;
+				height: 200rpx;
+			}
+		
+			.empty-text {
+				font-size: 26rpx;
+				color: #cccccc;
+			}
 		}
 
 		.gitf-tab-content {

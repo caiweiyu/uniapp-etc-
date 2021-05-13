@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-04-06 16:23:19
 -->
 <template>
-	<view class="bill" :style="{paddingTop:safeAreaTop+'px'}">
+	<view class="bill" :style="{paddingTop:statusBarHeight+'px'}">
 		<view class="user-info" @click="toMine">
 			<image class="avatar" :src="auth_info.avatar" />
 			<view class="username">{{ auth_info.nickname }}</view>
@@ -16,7 +16,7 @@
 		</view>
 		<!-- 		<notice-channel type="2" styleTop="top: 180rpx" /> -->
 		<!--运营位-->
-		<swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
+		<swiper class="swiper-wrapper-opera"  v-if="operaList.length > 0">
 			<swiper-item class="swiper-item-opera" v-for="(item, index) in operaList" :key="index">
 				<image :src="item.pic_url" @click="toJump(item)" />
 			</swiper-item>
@@ -55,14 +55,14 @@
 					<block v-if="item.tradeType==3||item.tradeType==9||item.tradeType==99 ">
 						<view class="item-header">
 							<view class="item-left">{{item.name}} {{item.province}}</view>
-							<view class="item-right">
+							<!-- 							<view class="item-right">
 								<view class="coin-wrap">
 									<view class="coin-num">
 										<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin.png" />{{item.integral}}</view>
 									<view class="btn-take" v-if="item.status==0" @click="onTakeCoin(item.serialNo)">领取</view>
 									<view class="btn-take disabled" v-else>{{item.status==1?'已领取':'已过期'}}</view>
 								</view>
-							</view>
+							</view> -->
 						</view>
 						<view class="item-content">
 							<view class="toll-wrap">
@@ -91,22 +91,22 @@
 			</view>
 			<!--列表空状态-->
 			<view class="bill-empty-box" v-else>
-				<image src="https://image.etcchebao.com/etc-min/bill-empty.png" />
+				<image src="https://image.etcchebao.com/etc-min/list-empty1.png" />
 				<view class="empty-text">暂无账单信息</view>
 			</view>
 			<!--列表空状态 end-->
 		</scroll-view>
 		<view v-else>
-			<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png" />
+			<image class="bottom-logo logo-fixed" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
 		</view>
 		<!--账单指引-->
-		<view class="bill-tip-box" v-if="is_show_guide" @click="onCloseGuide">
+		<view class="bill-tip-box" v-if="is_show_guide&&delay_show" @click="onCloseGuide">
 			<image src="https://image.etcchebao.com/etc-min/dialog-tip.png" />
 			<view class="overlay"></view>
 		</view>
 		<!--账单指引 end-->
 		<!--收藏小程序提示-->
-		<image v-if="is_show_collection" :style="{top:(safeAreaTop+40)+'px'}" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
+		<image v-if="is_show_collection" :style="{top:(statusBarHeight+40)+'px'}" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
 		 @click="onCloseCollection" alt="" />
 
 		<button-get-phone-number type="global" />
@@ -145,7 +145,8 @@
 				operaList: [],
 				show_bill_content: false,
 				unsubscribeFn: () => {},
-				safeAreaTop: 22
+				statusBarHeight: 22,
+				delay_show: false
 			};
 		},
 		computed: {
@@ -161,6 +162,9 @@
 			this.unsubscribeFn();
 		},
 		mounted() {
+			setTimeout(() => {
+				this.delay_show = true
+			}, 1000)
 			if (this.token) {
 				this.init();
 			}
@@ -178,7 +182,7 @@
 
 				}
 			});
-			this.safeAreaTop = uni.getSystemInfoSync().safeArea.top + 2
+			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight + 2
 		},
 
 		methods: {
@@ -283,8 +287,8 @@
 			async getUnitollBill() {
 				let index = this.current_swpier;
 				let cardNo = this.unitollList[index].card_num;
-				let date = new Date();
-				let startDate = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2,"0")}/01` //获取当前月份
+				let date = new Date(); //+ 1
+				let startDate = `${date.getFullYear()}-${(date.getMonth()+1 ).toString().padStart(2,"0")}-01` //获取当前月份
 				let res = await API.getUnitollBill({
 					cardNo,
 					startDate,
@@ -307,13 +311,18 @@
 					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
 					complete: async (res) => {
 						let jump_url = "/pages/ytk/add_ytk/main";
-						if (this.unitollList.length > 0) {
-							let res = await API.getCardListByUsername();
+						if (this.unitollList.length == 0) {
+							let [error, res] = await API.getCardListByUsername({
+								token: this.token
+							});
 							let {
-								list = []
+								code,
+								data
 							} = res.data;
-							if (list.length > 0) {
-								jump_url = "/pages/ytk/ytk_list/main";
+							if (code == 0) {
+								if (data.list && data.list.length > 0) {
+									jump_url = "/pages/ytk/ytk_list/main";
+								}
 							}
 						}
 						uni.navigateTo({
@@ -332,6 +341,7 @@
 				}
 
 				this.getUnitollBill();
+				this.show_bill_content = true
 			},
 		},
 	};
@@ -347,6 +357,7 @@
 
 		/deep/ .card {
 			width: 690rpx;
+			margin:  0 auto;
 		}
 
 		.swiper-wrapper-opera {
@@ -396,7 +407,6 @@
 
 			.swiper-wrapper {
 				height: 260rpx;
-				width: 690rpx;
 				margin: 0 auto;
 
 			}
@@ -409,7 +419,7 @@
 			border-radius: 20rpx 20rpx 0 0;
 			padding: 30rpx;
 			margin-top: 50rpx;
-			height: calc(100vh - 420rpx);
+			height: calc(100vh - 580rpx);
 			box-sizing: border-box;
 
 			.header-box {
@@ -497,7 +507,7 @@
 						align-items: center;
 						justify-content: space-between;
 						padding: 30rpx 0;
-						margin-top: 20rpx;
+						// margin-top: 20rpx;
 
 						.title {
 							font-size: 30rpx;
@@ -564,7 +574,7 @@
 
 						.total-money {
 							font-weight: 600;
-							color: #e96600;
+							color: #FF5C2A;
 							font-size: 44rpx;
 
 							&.green-color {
@@ -575,13 +585,18 @@
 				}
 			}
 		}
-
+		.logo-fixed{
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: -50vh;
+		}
 		.bill-empty-box {
 			text-align: center;
-
+			margin-top: 150rpx;
 			image {
 				width: 300rpx;
-				height: 300rpx;
+				height: 200rpx;
 			}
 
 			.empty-text {

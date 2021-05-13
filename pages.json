@@ -74,7 +74,9 @@
 			"path": "pages/payment_result/main",
 			"style": {
 				"navigationBarTitleText": "支付结果"
+
 			}
+
 		},
 		{
 			"path": "pages/pay_result/main",
@@ -116,7 +118,10 @@
 		{
 			"path": "pages/ytk/bind_result/main",
 			"style": {
-				"navigationBarTitleText": "绑定结果"
+				"navigationBarTitleText": "绑定结果",
+				"usingComponents": {
+					"van-popup": "/wxcomponents/vant/popup/index"
+				}
 			}
 		},
 		{

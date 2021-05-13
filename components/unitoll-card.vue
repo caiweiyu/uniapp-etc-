@@ -22,13 +22,13 @@
 				</view>
 				<image class="unitoll-logo" src="https://image.etcchebao.com/etc-min/unitoll_logo.png" />
 			</view>
-			<view v-else class="item-content-confirm">
+			<view v-else class="item-content-confirm"  @click="toConfirm">
 				<view class="card-info">
 					<view class="car-plate">{{ plate }}</view>
 					<view class="card-no">{{ formatCardNum }}</view>
 				</view>
 			</view>
-			<!-- <view class="card-confirm"  @click="toConfirm">确认信息</view> -->
+			<!-- <view class="card-confirm" >确认信息</view> -->
 		</view>
 	</view>
 	<view v-else-if="empty_tip" class="card" @click="$emit('onAddCard')">

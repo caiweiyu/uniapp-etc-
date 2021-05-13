@@ -16,7 +16,7 @@
 		<div class="cell">
 			<div class="exit" @click="toLogout">退出账号</div>
 		</div>
-		<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png" />
+		<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
 	</div>
 </template>
 
@@ -52,7 +52,7 @@
 							this.$store.commit("user/setAuthUserInfo", {
 								openid: "",
 								unionid: "",
-								nickname: "获取头像",
+								nickname: "点击登录领金币",
 								avatar: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
 							});
 							this.$store.dispatch("user/refreshJsCode");

@@ -19,7 +19,8 @@
         <view class="content-right">
           <input
             class="input-item"
-            v-model="plate_detail"
+            :value="plate_detail"
+			@input="plateDetailChange"
             placeholder="填写车牌号"
           />
         </view>
@@ -89,6 +90,9 @@ export default {
   created() {},
   mounted() {},
   methods: {
+	  plateDetailChange(e){
+		 this.plate_detail= e.detail.value.toLocaleUpperCase();
+	  },
     async checkCard() {
       if (!this.plate_detail || !this.plate_value) {
         uni.showToast({
