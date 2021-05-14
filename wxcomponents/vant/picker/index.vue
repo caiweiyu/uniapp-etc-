@@ -1,11 +1,11 @@
 <template>
 <uni-shadow-root class="vant-picker-index"><template v-if="wxTemplateName === 'toolbar'">
   <view v-if="showToolbar" class="van-picker__toolbar van-hairline--top-bottom toolbar-class">
-    <view class="van-picker__cancel" hover-class="van-picker__cancel--hover" hover-stay-time="70" data-type="cancel" @click="_$self.$parent[('emit')]($event)">
+    <view class="van-picker__cancel" hover-class="van-picker__cancel--hover" hover-stay-time="70" data-type="cancel" @click="_$self.$parent.$parent[('emit')]($event)">
       {{ cancelButtonText }}
     </view>
     <view v-if="title" class="van-picker__title van-ellipsis">{{ title }}</view>
-    <view class="van-picker__confirm" hover-class="van-picker__confirm--hover" hover-stay-time="70" data-type="confirm" @click="_$self.$parent[('emit')]($event)">
+    <view class="van-picker__confirm" hover-class="van-picker__confirm--hover" hover-stay-time="70" data-type="confirm" @click="_$self.$parent.$parent[('emit')]($event)">
       {{ confirmButtonText }}
     </view>
   </view>
@@ -16,8 +16,8 @@
   <view v-if="loading" class="van-picker__loading">
     <loading color="#1989fa"></loading>
   </view>
-  <view class="van-picker__columns" :style="'height: '+(itemHeight * visibleItemCount)+'px'" @touchmove.stop.prevent="_$self.$parent[('noop')]($event)">
-    <picker-column v-for="(item,index) in (isSimple(columns) ? [columns] : columns)" :key="item.index" class="van-picker__column" :data-index="index" custom-class="column-class" :value-key="valueKey" :initial-options="isSimple(columns) ? item : item.values" :default-index="item.defaultIndex || defaultIndex" :item-height="itemHeight" :visible-item-count="visibleItemCount" active-class="active-class" @change="_$self.$parent[('onChange')]($event)"></picker-column>
+  <view class="van-picker__columns" :style="'height: '+(itemHeight * visibleItemCount)+'px'" @touchmove.stop.prevent="_$self.$parent.$parent[('noop')]($event)">
+    <picker-column v-for="(item,index) in (isSimple(columns) ? [columns] : columns)" :key="item.index" class="van-picker__column" :data-index="index" custom-class="column-class" :value-key="valueKey" :initial-options="isSimple(columns) ? item : item.values" :default-index="item.defaultIndex || defaultIndex" :item-height="itemHeight" :visible-item-count="visibleItemCount" active-class="active-class" @change="_$self.$parent.$parent[('onChange')]($event)"></picker-column>
     <view class="van-picker__frame van-hairline--top-bottom" :style="'height: '+(itemHeight)+'px'"></view>
   </view>
   <toolbar v-bind="{showToolbar, cancelButtonText, title, confirmButtonText}" v-if="toolbarPosition === 'bottom'" wx-template-name="toolbar"></toolbar>

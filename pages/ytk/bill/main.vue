@@ -310,23 +310,23 @@
 				uni.requestSubscribeMessage({
 					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
 					complete: async (res) => {
-						let jump_url = "/pages/ytk/add_ytk/main";
-						if (this.unitollList.length == 0) {
-							let [error, res] = await API.getCardListByUsername({
-								token: this.token
-							});
-							let {
-								code,
-								data
-							} = res.data;
-							if (code == 0) {
-								if (data.list && data.list.length > 0) {
-									jump_url = "/pages/ytk/ytk_list/main";
-								}
-							}
-						}
+						// let jump_url = "/pages/ytk/add_ytk/main";
+						// if (this.unitollList.length == 0) {
+						// 	let [error, res] = await API.getCardListByUsername({
+						// 		token: this.token
+						// 	});
+						// 	let {
+						// 		code,
+						// 		data
+						// 	} = res.data;
+						// 	if (code == 0) {
+						// 		if (data.list && data.list.length > 0) {
+						// 			jump_url = "/pages/ytk/ytk_list/main";
+						// 		}
+						// 	}
+						// }
 						uni.navigateTo({
-							url: jump_url,
+							url: "/pages/ytk/add_ytk/main",
 						});
 					}
 				})

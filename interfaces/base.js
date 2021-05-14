@@ -64,5 +64,12 @@ export function getStrategy() {
 	});
 }
 
-
-
+/**
+ * 用户其他信息（是否绑卡，是否关注公众号）
+ */
+export function getOtherInfo() {
+	return request({
+		url: `${G}/mini-program/v1/wechat/otherInfo`,
+		method: "GET"
+	});
+}

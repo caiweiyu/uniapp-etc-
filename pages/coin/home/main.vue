@@ -54,7 +54,7 @@
 							</view>
 							<view class="coin-title">{{ item.title }}</view>
 						</block>
-						<view v-else-if="item.status == 1" class="disabled">
+						<view v-else-if="item.status == 1" class="disabled" @click="onTakeDisableCoin(item.title)">
 							<view class="coin-take-num ">
 								<image src="https://image.etcchebao.com/etc-min/coin-take-num.png" />
 								<view>+{{ item.coins }}</view>
@@ -99,7 +99,7 @@
           </view> -->
 				</view>
 				<view class="panel-content">
-				<!--<view class="goods-list-block">
+					<!--<view class="goods-list-block">
 					 <view class="goods-grid" v-for="n in 1" @click="toDetail">
 						  <view class="goods-list-item">
 							<view class="img-box">
@@ -124,10 +124,10 @@
 						</view>
 					</view>
 					 -->
-					 <view class="prize-empty-box">
-						 <image src="https://image.etcchebao.com/etc-min/list-empty.png" />
-						 <view class="empty-text">更多好礼,敬请期待</view>
-					 </view>
+					<view class="prize-empty-box">
+						<image src="https://image.etcchebao.com/etc-min/list-empty.png" />
+						<view class="empty-text">更多好礼,敬请期待</view>
+					</view>
 				</view>
 			</view>
 			<image class="bottom-logo" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
@@ -160,7 +160,8 @@
 		store
 	} from "@/common/constant"
 	import {
-		getOperaList
+		getOperaList,
+		getOtherInfo
 	} from "@/interfaces/base";
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
@@ -256,18 +257,33 @@
 			async init() {
 				//签到
 				await this.querySign();
+				await this.getOtherInfo();
 				//是否首次登陆
 				await this.$store.dispatch("user/finishTaskGetCoin", "wechat_first_login")
 				//是否是新用户
 				if (this.userinfo.is_new == 1) {
 					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_regist")
 				}
+
+
+				this.getCoinTask();
+			},
+			async getOtherInfo() {
+				let res = await getOtherInfo();
+				let {
+					is_subscribe,
+					is_bangcard
+				} = res.data;
 				//是否关注公众号
-				if (this.userinfo.is_subscribe == 1) {
+				if (is_subscribe == 1) {
 					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_focus")
 				}
 
-				this.getCoinTask();
+				// //是否关绑卡
+				if (is_bangcard == 1) {
+					await this.$store.dispatch("user/finishTaskGetCoin", "unitoll_bind")
+				}
+
 			},
 			async putFinishTaskGetCoin(optionKey) {
 				try {
@@ -371,6 +387,24 @@
 					}, timeout);
 				});
 			},
+			onTakeDisableCoin(title) {
+				if (title == '添加粤通卡') {
+					uni.showToast({
+						title: '请进入账单添加粤通卡',
+						duration: 2000,
+						icon: 'none'
+					});
+					return;
+				}
+				if (title === '关注ETC车宝公众号') {
+					uni.showToast({
+						title: '请关注【ETC车宝】公众号',
+						duration: 2000,
+						icon: 'none'
+					});
+					return;
+				}
+			},
 			async onTakeCoin(item, index) {
 				let res = await API.getCoin({
 					relateId: item.relateId,
@@ -393,14 +427,14 @@
 
 				let json = res.data.data;
 
-				if (json.sign &&json.coins!=0) {
+				if (json.sign && json.coins != 0) {
 					this.currentCoinNum = json.coins;
 					this.show_dialog = true;
 				}
 			},
 			onDetailClose() {
 				this.show_dialog = false;
-				this.anmationCoin();
+				//this.anmationCoin();
 			},
 
 			anmationCoin(index) {
@@ -926,16 +960,18 @@
 					.prize-empty-box {
 						text-align: center;
 						margin-top: 60rpx;
+
 						image {
 							width: 300rpx;
 							height: 200rpx;
 						}
-					
+
 						.empty-text {
 							font-size: 26rpx;
 							color: #cccccc;
 						}
 					}
+
 					.goods-list-block {
 						display: flex;
 						flex-wrap: wrap;

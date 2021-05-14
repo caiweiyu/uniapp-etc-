@@ -22,7 +22,7 @@
 				</view>
 				<image class="unitoll-logo" src="https://image.etcchebao.com/etc-min/unitoll_logo.png" />
 			</view>
-			<view v-else class="item-content-confirm"  @click="toConfirm">
+			<view v-else class="item-content-confirm">
 				<view class="card-info">
 					<view class="car-plate">{{ plate }}</view>
 					<view class="card-no">{{ formatCardNum }}</view>
@@ -86,6 +86,8 @@
 				uni.navigateTo({
 					url: `/pages/ytk/bind_ytk/main?card_num=${this.card_num}`
 				})
+				
+
 			},
 			requestSubscribeMessage() {
 				wx.requestSubscribeMessage({

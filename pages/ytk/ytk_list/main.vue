@@ -9,7 +9,7 @@
 <template>
 	<view class="ytk-list">
 		<view class="tip">为您获取到以下关联粤通卡，请确认</view>
-		<view v-for="(item, index) in cardList" :key="index">
+		<view v-for="(item, index) in cardList" :key="index" @click="toConfirm(item)">
 			<!-- type 1=储蓄卡，2=记账卡 -->
 			<unitoll-card :card_name="item.card_name" :card_num="item.card_no" :plate="item.license" :type="item.card_name.indexOf('储蓄卡')?1:2"
 			 :url="item.url" card_type="confirm" />
@@ -57,6 +57,22 @@
 			this.getCardListByUsername();
 		},
 		methods: {
+			async toConfirm(item) {
+			let res = await API.isBindCard({
+			   version: "4.4.0",
+			   cardNo: item.card_no,
+			 });
+			  let { type, phone}=res.data;
+			 if (type == 1) {
+			   uni.redirectTo({
+			     url: "/pages/ytk/bind_result/main",
+			   });
+			 } else {
+			   uni.navigateTo({
+			     url: `/pages/ytk/bind_ytk/main?card_num=${item.card_no}&color_code=${item.color}&color_text=${item.color_text}&phone=${phone}&plate_number=${item.license}&type=${type}`,
+			   });
+			 }
+			},
 			async getCardListByUsername() {
 				let [error, res] = await API.getCardListByUsername({
 					token: this.token
