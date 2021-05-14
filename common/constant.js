@@ -6,7 +6,12 @@
  * @LastEditors: yongqing
  * @LastEditTime: 2021-04-06 15:53:45
  */
-let BASE_URL = "-test";
+
+import conf from '@/config/conf.js'
+let BASE_URL = "";
+if(conf.fix !==''){
+	BASE_URL = "-"+ conf.fix;
+}
 export const carowner = `https://carowner${BASE_URL}.etcchebao.com`;
 export const cp = `https://cp${BASE_URL}.etcchebao.com`;
 //export const passport = `https://passport${BASE_URL}.etcchebao.com`;
