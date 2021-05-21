@@ -16,7 +16,7 @@
 		</view>
 		<!-- 		<notice-channel type="2" styleTop="top: 180rpx" /> -->
 		<!--运营位-->
-		<swiper class="swiper-wrapper-opera"  v-if="operaList.length > 0">
+		<swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
 			<swiper-item class="swiper-item-opera" v-for="(item, index) in operaList" :key="index">
 				<image :src="item.pic_url" @click="toJump(item)" />
 			</swiper-item>
@@ -125,6 +125,9 @@
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 	import noticeChannel from "@/components/notice-channel";
 	import {
+		eventMonitor
+	} from "@/common/utils"
+	import {
 		mapState
 	} from "vuex";
 	export default {
@@ -162,6 +165,7 @@
 			this.unsubscribeFn();
 		},
 		mounted() {
+			eventMonitor("WeChat_ETCBill", 1)
 			setTimeout(() => {
 				this.delay_show = true
 			}, 1000)
@@ -245,6 +249,10 @@
 				appid
 			}) {
 				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
+
+				eventMonitor("YTKBill_Banner_YTK_Other_377_Banner_click", 2, {
+					url: jump_url
+				})
 				if (jump_type == 1) {
 					uni.navigateTo({
 						url: jump_url,
@@ -307,6 +315,7 @@
 
 			},
 			onAddCard() {
+				eventMonitor("YTKBill_Bottom_YTK_Other_118_Button_click",2)
 				uni.requestSubscribeMessage({
 					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
 					complete: async (res) => {
@@ -331,7 +340,6 @@
 					}
 				})
 
-
 			},
 			onSwiperChange(e) {
 				this.current_swpier = e.mp.detail.current;
@@ -339,7 +347,7 @@
 					this.show_bill_content = false;
 					return;
 				}
-
+				eventMonitor("YTKBill_Card_YTK_Other_377_Button_click",2)
 				this.getUnitollBill();
 				this.show_bill_content = true
 			},
@@ -357,7 +365,7 @@
 
 		/deep/ .card {
 			width: 690rpx;
-			margin:  0 auto;
+			margin: 0 auto;
 		}
 
 		.swiper-wrapper-opera {
@@ -585,15 +593,18 @@
 				}
 			}
 		}
-		.logo-fixed{
+
+		.logo-fixed {
 			position: absolute;
 			left: 0;
 			right: 0;
 			bottom: -50vh;
 		}
+
 		.bill-empty-box {
 			text-align: center;
 			margin-top: 150rpx;
+
 			image {
 				width: 300rpx;
 				height: 200rpx;

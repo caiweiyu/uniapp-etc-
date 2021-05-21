@@ -25,6 +25,9 @@
 	import unitollCard from "@/components/unitoll-card";
 	import * as API from "@/interfaces/ytk";
 	import {
+		eventMonitor
+	} from "@/common/utils"
+	import {
 		mapState
 	} from "vuex";
 	export default {
@@ -55,6 +58,7 @@
 		},
 		mounted() {
 			this.getCardListByUsername();
+			eventMonitor("YTK_BillCardlist_118",1)
 		},
 		methods: {
 			async toConfirm(item) {

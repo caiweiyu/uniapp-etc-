@@ -52,7 +52,9 @@
 
 <script>
 	import * as API from "@/interfaces/coin";
-
+	import {
+		eventMonitor
+	} from "@/common/utils"
 	export default {
 		data() {
 			return {
@@ -66,6 +68,7 @@
 		},
 		mounted() {
 			this.getCoinRecord();
+			eventMonitor("GoldCoin_Details", 1)
 		},
 		methods: {
 			async getCoinRecord() {

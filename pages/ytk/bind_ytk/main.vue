@@ -50,7 +50,7 @@
 
 <script>
 import * as API from "@/interfaces/ytk";
-import { fomatPhone } from "@/common/utils";
+import { fomatPhone,eventMonitor } from "@/common/utils";
 const APP_VERSION = "4.4.0";
 const COUNT_TIME = 60;
 export default {

@@ -20,6 +20,9 @@
 
 <script>
 	import * as API from "@/interfaces/base";
+	import {
+		eventMonitor
+	} from "@/common/utils"
 	export default {
 		data() {
 			return {
@@ -51,7 +54,16 @@
 				}
 
 			},
-			toJumpUrl({jump_url,jump_type,appid}) {
+			toJumpUrl({
+				jump_url,
+				jump_type,
+				appid
+			}) {
+				eventMonitor("WeChat_BottomNaviClick", 2, {
+					from_tab: this.currentPath,
+					to_tab: jump_url
+				})
+
 				if (jump_url === this.currentPath) {
 					return;
 				}

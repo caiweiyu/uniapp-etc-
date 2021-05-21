@@ -54,7 +54,7 @@
 							</view>
 							<view class="coin-title">{{ item.title }}</view>
 						</block>
-						<view v-else-if="item.status == 1" class="disabled" @click="onTakeDisableCoin(item.title)">
+						<view v-else-if="item.status == 1" class="disabled" @click="onTakeDisableCoin(item.title,item.coins)">
 							<view class="coin-take-num ">
 								<image src="https://image.etcchebao.com/etc-min/coin-take-num.png" />
 								<view>+{{ item.coins }}</view>
@@ -63,6 +63,10 @@
 						</view>
 					</view>
 				</view>
+			</view>
+			<view class="login-tip" v-if="!token"> 
+				<image src="https://image.etcchebao.com/etc-min/icon_finger.png" class="icon-finger" />
+				<image src="https://image.etcchebao.com/etc-min/icon_login_tip.png" class="icon-login-tip" />
 			</view>
 		</view>
 		<view class="exchange-box">
@@ -173,6 +177,9 @@
 	import {
 		mapState
 	} from "vuex";
+	import {
+		eventMonitor
+	} from "@/common/utils"
 	export default {
 		data() {
 			function getRandom() {
@@ -222,6 +229,7 @@
 			this.unsubscribeFn();
 		},
 		mounted() {
+			eventMonitor("WeChat_GoldCoin", 1)
 			this.getOperaList();
 			if (this.token) {
 				this.init();
@@ -345,6 +353,9 @@
 				jump_url,
 				appid
 			}) {
+				eventMonitor("GoldCoin_Banner_GoldCoin_Other_376_Banner_click", 2, {
+					url: jump_url
+				})
 				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
 				if (jump_type == 1) {
 					uni.navigateTo({
@@ -387,10 +398,10 @@
 					}, timeout);
 				});
 			},
-			onTakeDisableCoin(title) {
+			onTakeDisableCoin(title, coins) {
 				if (title == '添加粤通卡') {
 					uni.showToast({
-						title: '请进入账单添加粤通卡',
+						title: '请进入账单添加粤通卡，获取金币',
 						duration: 2000,
 						icon: 'none'
 					});
@@ -398,12 +409,16 @@
 				}
 				if (title === '关注ETC车宝公众号') {
 					uni.showToast({
-						title: '请关注【ETC车宝】公众号',
+						title: '请搜索【ETC车宝】公众号并关注，获取金币',
 						duration: 2000,
 						icon: 'none'
 					});
 					return;
 				}
+				eventMonitor("GoldCoin_Collect_GoldCoin_Receive_376_Icon_click", 2, {
+					coins: coins,
+					task: title
+				})
 			},
 			async onTakeCoin(item, index) {
 				let res = await API.getCoin({
@@ -415,6 +430,11 @@
 				this.current = index;
 				this.currentCoinNum = item.coins;
 				this.anmationCoin(index)
+				eventMonitor("GoldCoin_Collect_GoldCoin_Receive_376_Icon_click", 2, {
+					coins: item.coins,
+					task: item.title
+				})
+
 
 			},
 			async querySign() {
@@ -477,6 +497,52 @@
 </script>
 
 <style lang="scss" scoped>
+	@keyframes fingerAnimate {
+		0% {
+			transform: translate3d(0, 0, 0);
+		}
+
+		10% {
+			transform: translate3d(-25px, -25px, 0);
+		}
+
+		20% {
+			transform: translate3d(0, 0, 0);
+		}
+
+		30% {
+			transform: translate3d(-25px, -25px, 0);
+		}
+
+		40% {
+			transform: translate3d(0, 0, 0);
+		}
+
+		50% {
+			transform: translate3d(-25px, -25px, 0);
+		}
+
+		60% {
+			transform: translate3d(0, 0, 0);
+		}
+
+		100% {
+			transform: translate3d(0, 0, 0);
+		}
+	}
+	@keyframes updown1 {
+		0% {
+			transform: translateY(0px);
+		}
+	
+		50% {
+			transform: translateY(10px);
+		}
+	
+		100% {
+			transform: translateY(0px);
+		}
+	}
 	@keyframes updown {
 		0% {
 			transform: translateY(0px);
@@ -537,6 +603,31 @@
 			pointer-events: none;
 			z-index: 9999;
 		}
+		
+		.login-tip{
+			.icon-finger {
+				width: 201rpx;
+				height: 193rpx;
+				position: absolute;
+				bottom: 40rpx;
+				left: 50%;
+		
+				z-index: 9;
+				animation: fingerAnimate 6s infinite;
+			}
+			.icon-login-tip{
+				width: 374rpx;
+				height: 80rpx;
+				position: absolute;
+				bottom: 150px;
+				right: 40rpx;
+				z-index: 9;
+				animation: updown1 5s infinite;
+			}
+			
+		}
+		
+		
 
 		.act-box {
 			width: 750rpx;

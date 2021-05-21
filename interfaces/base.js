@@ -8,7 +8,9 @@
  */
 
 import request from "@/common/request";
-import {G} from "@/common/constant";
+import {
+	G
+} from "@/common/constant";
 
 
 /**
@@ -73,3 +75,29 @@ export function getOtherInfo() {
 		method: "GET"
 	});
 }
+
+
+
+/**
+ * 事件统计打点
+ */
+
+export function event(data = {}) {	
+	return uni.request({
+		header: {
+			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输
+		},
+		url: `${G}/api-etclog/v1/listen/event`,
+		method: "POST",
+		data
+	});
+}
+
+export function getPayPrompt() {
+	return request({
+		url: `${G}/mini-program/v1/wx-applets/payPrompt`,
+		method: "GET"
+	});
+}
+
+

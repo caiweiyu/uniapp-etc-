@@ -37,6 +37,9 @@
 	import {
 		finishTaskGetCoin
 	} from "@/interfaces/coin";
+	import {
+		eventMonitor
+	} from "@/common/utils"
 	export default {
 		data() {
 			return {
@@ -66,14 +69,17 @@
 
 			let json = res.data;
 			if (json.code == 0) {
-				this.show_dialog=true;
+				this.show_dialog = true;
 				this.title = json.data.title;
 				this.currentCoinNum = json.data.coins
 			}
 
+			eventMonitor("YTK_BindSuccess", 1)
+
 		},
 		methods: {
 			toBill() {
+				eventMonitor("BindSuccess_Middle_YTK_BindCard_329_Button_click", 2)
 				uni.redirectTo({
 					url: "/pages/ytk/bill/main",
 				});
