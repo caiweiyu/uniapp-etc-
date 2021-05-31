@@ -48,7 +48,7 @@
 			</van-tabs>
 		</view>
 	</view>
-</template>
+</template> 
 
 <script>
 	import * as API from "@/interfaces/coin";

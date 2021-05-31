@@ -42,7 +42,7 @@ export default {
         pmchan_code,
         openid,
         trade_platform: 1, //交易方式 1微信
-        trade_mode: 3, // 交易模式  1小程序
+        trade_mode: 30, // 交易模式  1小程序
       });
       let { prepaid_info } = res.data;
       uni.requestPayment({

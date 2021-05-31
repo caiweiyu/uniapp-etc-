@@ -9,7 +9,7 @@
 <template>
 	<view class="act">
 		<view class="act-box" :style="{paddingTop:statusBarHeight+'px'}">
-			<image src="https://image.etcchebao.com/etc-min/coin-bg.png" class="bg-image" />
+			<image src="https://image.etcchebao.com/etc-min/coin-bg-new.png" class="bg-image" />
 			<image src="https://image.etcchebao.com/etc-min/icon-fish.png" class="icon-fish" />
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-left.png" class="icon-bubble-left" />
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-right-1.png" class="icon-bubble-right-1" />
@@ -65,7 +65,7 @@
 				</view>
 			</view>
 			<view class="login-tip" v-if="!token"> 
-				<image src="https://image.etcchebao.com/etc-min/icon_finger.png" class="icon-finger" />
+				<image src="https://image.etcchebao.com/etc-min/icon_finger_1.png" class="icon-finger" />
 				<image src="https://image.etcchebao.com/etc-min/icon_login_tip.png" class="icon-login-tip" />
 			</view>
 		</view>

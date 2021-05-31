@@ -165,12 +165,15 @@
 			this.unsubscribeFn();
 		},
 		mounted() {
+			this.getOperaList();
 			eventMonitor("WeChat_ETCBill", 1)
 			setTimeout(() => {
 				this.delay_show = true
 			}, 1000)
+
 			if (this.token) {
 				this.init();
+				this.getOperaList();
 			}
 
 			//等待授权后更新接口,订阅接口
@@ -199,7 +202,7 @@
 			},
 			init() {
 				this.getUserCardList();
-				this.getOperaList();
+
 			},
 			onCloseGuide() {
 				if (this.is_show_collection) {
@@ -315,7 +318,7 @@
 
 			},
 			onAddCard() {
-				eventMonitor("YTKBill_Bottom_YTK_Other_118_Button_click",2)
+				eventMonitor("YTKBill_Bottom_YTK_Other_118_Button_click", 2)
 				uni.requestSubscribeMessage({
 					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
 					complete: async (res) => {
@@ -347,7 +350,7 @@
 					this.show_bill_content = false;
 					return;
 				}
-				eventMonitor("YTKBill_Card_YTK_Other_377_Button_click",2)
+				eventMonitor("YTKBill_Card_YTK_Other_377_Button_click", 2)
 				this.getUnitollBill();
 				this.show_bill_content = true
 			},
