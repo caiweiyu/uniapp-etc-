@@ -151,7 +151,13 @@
 				</view>
 			</view>
 		</van-popup>
+		<!--收藏小程序提示-->
+		<collection-guide></collection-guide>
+		<!--收藏小程序提示 end-->
+
+		<!--底部菜单-->
 		<custom-tabbar />
+		<!--底部菜单 end-->
 	</view>
 </template>
 
@@ -170,6 +176,8 @@
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 	import noticeChannel from "@/components/notice-channel";
+	import CollectionGuide from "@/components/collection-guide"
+	
 	import {
 		finishTaskGetCoin
 	} from "@/interfaces/coin";
@@ -214,7 +222,8 @@
 			AnimatedNumber,
 			buttonGetPhoneNumber,
 			buttonGetUserInfo,
-			noticeChannel
+			noticeChannel,
+			CollectionGuide
 		},
 		computed: {
 			...mapState({
