@@ -106,9 +106,15 @@
 		</view>
 		<!--账单指引 end-->
 		<!--收藏小程序提示-->
-		<image v-if="is_show_collection" :style="{top:(statusBarHeight+40)+'px'}" class="collection" src="https://image.etcchebao.com/etc-min/icon-collection.png"
-		 @click="onCloseCollection" alt="" />
-
+		<view class="main-collection-tip-box" v-if="is_show_collection" :style="{top:(statusBarHeight+40)+'px'}">
+			<view class="btn-close" @click="onCloseCollection"></view>
+			<view class="btn-add" @click="onAddCollection"></view>
+		</view>
+		<!--收藏小程序弹窗-->
+		<view class="sub-collection-tip-box" v-if="is_show_sub_collection" @click="is_show_sub_collection=false">
+			<image :style="{top:(statusBarHeight+40)+'px'}" src="https://image.etcchebao.com/etc-min/sub_guide_tip.png" />
+			<view class="overlay"></view>
+		</view>
 		<button-get-phone-number type="global" />
 		<!--底部栏-->
 		<custom-tabbar />
@@ -149,7 +155,8 @@
 				show_bill_content: false,
 				unsubscribeFn: () => {},
 				statusBarHeight: 22,
-				delay_show: false
+				delay_show: false,
+				is_show_sub_collection: false
 			};
 		},
 		computed: {
@@ -174,6 +181,8 @@
 			if (this.token) {
 				this.init();
 				this.getOperaList();
+			} else {
+				this.$store.commit("user/setIsShowBillGuide", true);
 			}
 
 			//等待授权后更新接口,订阅接口
@@ -193,6 +202,20 @@
 		},
 
 		methods: {
+			onShareAppMessage(res) {
+				return {
+					title: "粤通卡ETC账单查询，实时管理你的高速ETC费用支出",
+					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
+					path: '/pages/ytk/bill/main?from_type=2'
+				}
+			},
+			onShareTimeline(res) {
+				return {
+					title: "粤通卡ETC账单查询，实时管理你的高速ETC费用支出",
+					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
+					path: '/pages/ytk/bill/main?from_type=2'
+				}
+			},
 			toMine() {
 				if (this.auth_info.openid) {
 					uni.navigateTo({
@@ -205,16 +228,20 @@
 
 			},
 			onCloseGuide() {
-				if (this.is_show_collection) {
-					let timer = setTimeout(() => {
-						this.onCloseCollection();
-						clearTimeout(timer)
-					}, 5000)
-				}
-				this.$store.commit("user/setIsShowGuide", false);
+				// if (this.is_show_collection) {
+				// 	let timer = setTimeout(() => {
+				// 		this.onCloseCollection();
+				// 		clearTimeout(timer)
+				// 	}, 5000)
+				// }
+				this.$store.commit("user/setIsShowBillGuide", false);
+			},
+			onAddCollection() {
+				this.is_show_sub_collection = true;
 			},
 			onCloseCollection() {
 				this.$store.commit("user/setIsShowCollection", false);
+				this.is_show_sub_collection = false;
 			},
 			async onTakeCoin(serialNo) {
 				let date = new Date();
@@ -290,6 +317,8 @@
 					this.unitollList = res.data.info;
 					this.getUnitollBill();
 					this.show_bill_content = true;
+				} else {
+					this.$store.commit("user/setIsShowBillGuide", true);
 				}
 			},
 			/**
@@ -624,7 +653,7 @@
 			width: 100%;
 			position: fixed;
 			top: 0;
-			z-index: 2;
+			z-index: 10002;
 
 			image {
 				width: 690rpx;
@@ -670,12 +699,56 @@
 			}
 		}
 
-		.collection {
-			width: 496rpx;
-			height: 120rpx;
+		.main-collection-tip-box {
+			background: url("https://image.etcchebao.com/etc-min/main_guide_tip.png") no-repeat;
+			background-size: 100%;
+			width: 492rpx;
+			height: 76rpx;
 			position: absolute;
 			top: 160rpx;
 			right: 40rpx;
+			z-index: 10001;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.btn-close {
+				width: 60rpx;
+				height: 50rpx;
+			}
+
+			.btn-add {
+				width: 110rpx;
+				height: 50rpx;
+			}
+		}
+
+		.sub-collection-tip-box {
+			height: 100vh;
+			width: 100%;
+			position: fixed;
+			top: 0;
+			z-index: 10002;
+
+			image {
+				width: 460rpx;
+				height: 545rpx;
+				position: absolute;
+				top: 160rpx;
+				right: 20rpx;
+				z-index: 10001;
+
+			}
+
+			.overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				z-index: 99;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.7);
+			}
 		}
 	}
 </style>

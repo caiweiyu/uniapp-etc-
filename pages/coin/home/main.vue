@@ -64,7 +64,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="login-tip" v-if="!token"> 
+			<view class="login-tip" v-if="!token">
 				<image src="https://image.etcchebao.com/etc-min/icon_finger_1.png" class="icon-finger" />
 				<image src="https://image.etcchebao.com/etc-min/icon_login_tip.png" class="icon-login-tip" />
 			</view>
@@ -321,14 +321,14 @@
 			onShareAppMessage(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					//imageUrl:"",
+					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
 			onShareTimeline(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					//imageUrl:"",
+					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
@@ -530,19 +530,21 @@
 			transform: translate3d(0, 0, 0);
 		}
 	}
+
 	@keyframes updown1 {
 		0% {
 			transform: translateY(0px);
 		}
-	
+
 		50% {
 			transform: translateY(10px);
 		}
-	
+
 		100% {
 			transform: translateY(0px);
 		}
 	}
+
 	@keyframes updown {
 		0% {
 			transform: translateY(0px);
@@ -603,19 +605,20 @@
 			pointer-events: none;
 			z-index: 9999;
 		}
-		
-		.login-tip{
+
+		.login-tip {
 			.icon-finger {
 				width: 201rpx;
 				height: 193rpx;
 				position: absolute;
 				bottom: 40rpx;
 				left: 50%;
-		
+
 				z-index: 9;
 				animation: fingerAnimate 6s infinite;
 			}
-			.icon-login-tip{
+
+			.icon-login-tip {
 				width: 374rpx;
 				height: 80rpx;
 				position: absolute;
@@ -624,10 +627,10 @@
 				z-index: 9;
 				animation: updown1 5s infinite;
 			}
-			
+
 		}
-		
-		
+
+
 
 		.act-box {
 			width: 750rpx;

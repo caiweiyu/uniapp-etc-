@@ -58,7 +58,7 @@ const user = {
 		setJscode: (state, code) => {
 			state.jsCode = code;
 		},
-		setIsShowGuide: (state, payload) => {
+		setIsShowBillGuide: (state, payload) => {
 			state.is_show_guide = payload;
 		},
 		setShareId: (state, value) => {
