@@ -33,7 +33,7 @@ const user = {
 		},
 		jsCode: "",
 		token: "",
-		is_show_guide: false,
+		is_show_guide: true,
 		is_show_collection: true,
 		is_show_home_notice: true,
 		from_type: 1,

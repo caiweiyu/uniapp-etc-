@@ -47,8 +47,8 @@
 		background: url("https://image.etcchebao.com/etc-min/main_guide_tip.png") no-repeat;
 		background-size: 100%;
 		width: 492rpx;
-		height: 76rpx;
-		position: absolute;
+		height: 80rpx;
+		position: fixed;
 		top: 160rpx;
 		right: 30rpx;
 		z-index: 10001;

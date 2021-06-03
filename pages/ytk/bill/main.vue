@@ -175,8 +175,6 @@
 			if (this.token) {
 				this.init();
 				this.getOperaList();
-			} else {
-				this.$store.commit("user/setIsShowBillGuide", true);
 			}
 
 			//等待授权后更新接口,订阅接口

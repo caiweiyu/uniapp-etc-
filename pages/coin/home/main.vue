@@ -330,14 +330,14 @@
 			onShareAppMessage(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
+					// imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
 			onShareTimeline(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
+					// imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
