@@ -9,6 +9,8 @@
 <template>
 	<view class="act">
 		<view class="act-box" :style="{paddingTop:statusBarHeight+'px'}">
+			
+			<!-- 背景 -->
 			<image src="https://image.etcchebao.com/etc-min/coin-bg-new.png" class="bg-image" />
 			<image src="https://image.etcchebao.com/etc-min/icon-fish.png" class="icon-fish" />
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-left.png" class="icon-bubble-left" />
@@ -16,11 +18,10 @@
 			<image src="https://image.etcchebao.com/etc-min/icon-bubble-right-2.png" class="icon-bubble-right-2" />
 			<canvas id="canvas" type="2d"></canvas>
 			<view v-if="show_add_coin" :class="['coin-add-num', { anmation: show_add_coin_anmation }]">
-				<image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +{{
-          currentCoinNum
-        }}
+				<image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +{{currentCoinNum}}
 			</view>
 			<image src="https://image.etcchebao.com/etc-min/icon-bottle.png" class="icon-bottle" />
+			
 			<!--显示金币数量-->
 			<block v-if="totalCoins > 0">
 				<image src="https://image.etcchebao.com/etc-min/coin10.png" v-if="totalCoins <= 10" class="bottle-coin" />
@@ -28,22 +29,28 @@
 				<image v-else-if="totalCoins > 10 && totalCoins <= 100" src="https://image.etcchebao.com/etc-min/coin100.png" class="bottle-coin" />
 				<image v-else-if="totalCoins > 100" src="https://image.etcchebao.com/etc-min/coin100-later.png" class="bottle-coin" />
 			</block>
+			
 			<view class="act-content">
 				<!--金币攻略-->
 				<image src="https://image.etcchebao.com/etc-min/icon-gl.png" class="icon-gl" @click="toIntroduct" />
-				<view class="user-box">
-					<navigator url="/pages/user/mine/main" class="user-info">
+				<view class="user-box" :style="{top:(statusBarHeight * 2 + 10)+'rpx'}">
+					<!-- 返回按钮 -->
+					<image class="back" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" @click="bindBack" />
+					<!-- <navigator url="/pages/mine/user" class="user-info">
 						<image class="avatar" :src="auth_info.avatar" />
 						<view class="username">{{ auth_info.nickname }}</view>
-					</navigator>
+					</navigator> -->
 					<navigator url="/pages/coin/detail/main" class="coin-total" v-if="token">
 						<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" />
 						<AnimatedNumber :value="totalCoins" />
 						<image class="icon-arrow" src="https://image.etcchebao.com/etc-min/icon-arrow.png" />
 					</navigator>
-					<button-get-user-info type="local" />
+					<!-- <button-get-user-info type="local" /> -->
 				</view>
-				<notice-channel type="1" styleTop="top: 80rpx" />
+				
+				<!-- 提示notice -->
+				<notice-channel type="1" styleTop="top: -60rpx" />
+				
 				<view class="coin-box">
 					<view class="coin-item" :style="{ 'animation-delay': random['r_' + index] + 's' }" v-for="(item, index) in boxList"
 					 :key="index">
@@ -64,7 +71,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="login-tip" v-if="!token"> 
+			<view class="login-tip" v-if="!token">
 				<image src="https://image.etcchebao.com/etc-min/icon_finger_1.png" class="icon-finger" />
 				<image src="https://image.etcchebao.com/etc-min/icon_login_tip.png" class="icon-login-tip" />
 			</view>
@@ -76,14 +83,14 @@
 			</view>
 
 			<!-- <view class="gift-icon-box">
-        <image src="https://image.etcchebao.com/etc-min/gift_bg.png" />
-        <view>有新礼包到啦，快来瞅瞅 autoplay~</view>
-      </view> -->
+				<image src="https://image.etcchebao.com/etc-min/gift_bg.png" />
+				<view>有新礼包到啦，快来瞅瞅 autoplay~</view>
+			</view> -->
 			<view class="swiper-box">
 				<swiper class="swiper" v-if="operaList.length > 0" @change="swiperChange">
 					<swiper-item class="swiper-item" v-for="(item, index) in operaList" :key="index">
 						<view>
-							<image :src="item.pic_url" @click="toJump(item)" />
+							<image :src="item.pic_url" @click="toJumpUrl(item)" />
 						</view>
 					</swiper-item>
 				</swiper>
@@ -98,9 +105,9 @@
 				<view class="panel-header">
 					<view class="left"> 金币兑好礼 </view>
 					<!-- <view class="right">
-            <image />
-            <text>恭喜某…获得加油优惠券</text>
-          </view> -->
+						<image />
+						<text>恭喜某…获得加油优惠券</text>
+					</view> -->
 				</view>
 				<view class="panel-content">
 					<!--<view class="goods-list-block">
@@ -138,10 +145,12 @@
 		</view>
 
 		<!--全局授权-->
-
 		<button-get-phone-number type="global" />
-		<view class="space-white-60"></view>
-		<van-popup :show="show_dialog" custom-style="background: none;zIndex:99999" @close="onDetailClose">
+		
+		<!-- <view class="space-white-60"></view> -->
+		
+		<!-- 任务弹窗 -->
+		<u-popup v-model="show_dialog" mode="center" height="auto" @close="onDetailClose">
 			<view class="prize-content" @click="onDetailClose">
 				<image src="https://image.etcchebao.com/etc-min/coin-dialog.png?v=1" class="coin-dialog" />
 				<view class="prize-info-box">
@@ -150,15 +159,25 @@
 						<image src="https://image.etcchebao.com/etc-min/icon-coin-big-1.png" /> +{{currentCoinNum}}</view>
 				</view>
 			</view>
-		</van-popup>
-		<custom-tabbar />
+		</u-popup>
+		
+		<!--收藏小程序提示-->
+		<!-- <collection-guide></collection-guide> -->
+		<!--收藏小程序提示 end-->
+
+		<!--底部菜单-->
+		<!-- <custom-tabbar /> -->
+		<!--底部菜单 end-->
+		
+		<!-- 全局弹窗 -->
+		<dialog-window ref="dialog" flag="3"></dialog-window>
 	</view>
 </template>
 
 <script>
 	import customTabbar from "@/components/custom-tabbar";
 	import lottie from "lottie-miniprogram";
-	import AnimatedNumber from "@/components/uni-animated-number/index";
+	import AnimatedNumber from "../components/uni-animated-number/index";
 	import * as API from "@/interfaces/coin";
 	import {
 		store
@@ -170,6 +189,8 @@
 	import buttonGetUserInfo from "@/components/button-getUserInfo";
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
 	import noticeChannel from "@/components/notice-channel";
+	import CollectionGuide from "@/components/collection-guide"
+	import DialogWindow from "@/components/dialog-window"
 	import {
 		finishTaskGetCoin
 	} from "@/interfaces/coin";
@@ -206,7 +227,7 @@
 				scene: 0,
 				unsubscribeFn: () => {},
 				statusBarHeight: 22,
-				currentSwiper: 0
+				currentSwiper: 0,
 			};
 		},
 		components: {
@@ -214,7 +235,9 @@
 			AnimatedNumber,
 			buttonGetPhoneNumber,
 			buttonGetUserInfo,
-			noticeChannel
+			noticeChannel,
+			CollectionGuide,
+			DialogWindow
 		},
 		computed: {
 			...mapState({
@@ -223,6 +246,17 @@
 				userinfo: (state) => state.user.info,
 				auth_info: (state) => state.user.auth_info
 			}),
+		},
+		onShow() {
+			this.$token(() => {
+				this.init();
+				this.getOperaList();
+			});//检测page是否授权，token是否过期
+			this.$store.dispatch("home/ac_share_info",3);//分享配置
+			this.$refs.dialog.loadPopup();//全局弹窗配置
+		},
+		onHide() {
+			this.$store.commit("home/mt_share_info", "");
 		},
 		beforeDestroy() {
 			//取消订阅
@@ -247,7 +281,6 @@
 						this.totalCoins = 25;
 						this.currentCoinNum = 0;
 					}
-
 				}
 			});
 
@@ -259,9 +292,24 @@
 			console.log(uni.getSystemInfoSync())
 		},
 		methods: {
+			/**
+			 * 返回按钮
+			 */
+			bindBack() {
+				let arr = getCurrentPages();
+				if (arr.length <= 1) {
+					uni.switchTab({
+						url: "/pages/home/main"
+					})
+				} else {
+					uni.navigateBack({})
+				}
+			},
+			
 			swiperChange(e) {
 				this.currentSwiper = e.detail.current
 			},
+			
 			async init() {
 				//签到
 				await this.querySign();
@@ -272,10 +320,9 @@
 				if (this.userinfo.is_new == 1) {
 					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_regist")
 				}
-
-
 				this.getCoinTask();
 			},
+			
 			async getOtherInfo() {
 				let res = await getOtherInfo();
 				let {
@@ -286,13 +333,12 @@
 				if (is_subscribe == 1) {
 					await this.$store.dispatch("user/finishTaskGetCoin", "wechat_focus")
 				}
-
 				// //是否关绑卡
 				if (is_bangcard == 1) {
 					await this.$store.dispatch("user/finishTaskGetCoin", "unitoll_bind")
 				}
-
 			},
+			
 			async putFinishTaskGetCoin(optionKey) {
 				try {
 					let res = await finishTaskGetCoin({
@@ -305,11 +351,12 @@
 				} catch (e) {
 					console.log(e)
 				}
-
 			},
+			
 			launchAppError(e) {
 				console.log(e)
 			},
+			
 			openStore() {
 				let src = encodeURIComponent(
 					`${store}/#/home?token=${this.token}`
@@ -318,20 +365,23 @@
 					url: `/pages/webview/main?src=${src}`,
 				});
 			},
+			
 			onShareAppMessage(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					//imageUrl:"",
+					// imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
+			
 			onShareTimeline(res) {
 				return {
 					title: "粤通卡车主专享，每天领金币，兑换超值好礼",
-					//imageUrl:"",
+					// imageUrl: "https://image.etcchebao.com/etc-min/share_icon.png",
 					path: '/pages/coin/home/main?from_type=2&share_id' + this.share_id
 				}
 			},
+			
 			toIntroduct() {
 				uni.navigateTo({
 					url: "/pages/coin/introduction/main",
@@ -348,36 +398,21 @@
 				this.totalCoins = totalCoins;
 				this.boxList = boxList.filter((item) => item.status !== 2).splice(0, 5);
 			},
-			toJump({
-				jump_type,
-				jump_url,
-				appid
-			}) {
+			
+			/**
+			 * 跳转page || miniProgram
+			 */
+			toJumpUrl(item) {
 				eventMonitor("GoldCoin_Banner_GoldCoin_Other_376_Banner_click", 2, {
-					url: jump_url
+					url: item.jump_url
 				})
-				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
-				if (jump_type == 1) {
-					uni.navigateTo({
-						url: jump_url,
-					});
-				} else if (jump_type == 2) {
-					uni.navigateToMiniProgram({
-						appId: appid,
-						path: jump_url
-					})
-				} else if (jump_type == 3) {
-					if (jump_url.indexOf("?") > -1) {
-						jump_url = jump_url + "&token=" + this.token;
-					} else {
-						jump_url = jump_url + "?token=" + this.token;
-					}
-					uni.navigateTo({
-						url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
-					});
-				}
-
+				miniapp.miniProgramRouter(item, (res) => {
+				
+				}, (err) => {
+				
+				})
 			},
+			
 			/**
 			 * 获取运营位
 			 */
@@ -388,9 +423,11 @@
 				});
 				this.operaList = res.data;
 			},
+			
 			toDetail() {
 				this.show_detail = true;
 			},
+			
 			delay(timeout) {
 				return new Promise((resolve, reject) => {
 					setTimeout(() => {
@@ -398,6 +435,7 @@
 					}, timeout);
 				});
 			},
+			
 			onTakeDisableCoin(title, coins) {
 				if (title == '添加粤通卡') {
 					uni.showToast({
@@ -420,6 +458,7 @@
 					task: title
 				})
 			},
+			
 			async onTakeCoin(item, index) {
 				let res = await API.getCoin({
 					relateId: item.relateId,
@@ -434,15 +473,13 @@
 					coins: item.coins,
 					task: item.title
 				})
-
-
 			},
+			
 			async querySign() {
 				let [error, res] = await API.querySign({
 					token: this.token,
 					city: this.auth_info.city,
-					channel: 2,
-					token: this.token
+					channel: 2
 				})
 
 				let json = res.data.data;
@@ -451,7 +488,12 @@
 					this.currentCoinNum = json.coins;
 					this.show_dialog = true;
 				}
+				
+				if (json.sign) {
+					
+				}//签到成功
 			},
+			
 			onDetailClose() {
 				this.show_dialog = false;
 				//this.anmationCoin();
@@ -530,19 +572,21 @@
 			transform: translate3d(0, 0, 0);
 		}
 	}
+
 	@keyframes updown1 {
 		0% {
 			transform: translateY(0px);
 		}
-	
+
 		50% {
 			transform: translateY(10px);
 		}
-	
+
 		100% {
 			transform: translateY(0px);
 		}
 	}
+
 	@keyframes updown {
 		0% {
 			transform: translateY(0px);
@@ -603,19 +647,20 @@
 			pointer-events: none;
 			z-index: 9999;
 		}
-		
-		.login-tip{
+
+		.login-tip {
 			.icon-finger {
 				width: 201rpx;
 				height: 193rpx;
 				position: absolute;
 				bottom: 40rpx;
 				left: 50%;
-		
+
 				z-index: 9;
 				animation: fingerAnimate 6s infinite;
 			}
-			.icon-login-tip{
+
+			.icon-login-tip {
 				width: 374rpx;
 				height: 80rpx;
 				position: absolute;
@@ -624,10 +669,10 @@
 				z-index: 9;
 				animation: updown1 5s infinite;
 			}
-			
+
 		}
-		
-		
+
+
 
 		.act-box {
 			width: 750rpx;
@@ -749,7 +794,7 @@
 					width: 78rpx;
 					height: 86rpx;
 					right: 30rpx;
-					top: 120rpx;
+					top: 240rpx;
 				}
 
 				// .notice-box {
@@ -778,17 +823,23 @@
 				// }
 
 				.user-box {
-					position: relative;
+					position: fixed;
+					left: 0;
 					display: flex;
 					align-items: center;
 					width: 342rpx;
-
+					.back{
+						width: 62rpx;
+						height: 62rpx;
+						flex-shrink: 0;
+						display: flex;
+						margin-left: 26rpx;
+					}
 					.user-info {
 						display: flex;
 						align-items: center;
 						padding: 10rpx 20rpx 10rpx 40rpx;
 						width: inherit;
-
 						.avatar {
 							width: 50rpx;
 							height: 50rpx;
@@ -818,7 +869,7 @@
 						font-weight: 500;
 						color: #fff;
 						padding: 0 20rpx 0 6rpx;
-						margin-left: 30rpx;
+						margin-left: 27rpx;
 
 						.icon-coin {
 							width: 44rpx;
@@ -909,11 +960,20 @@
 		// 兑换
 		.exchange-box {
 			position: relative;
-			top: -25rpx;
-			border-radius: 20rpx 20rpx 0 0;
+			// border-radius: 20rpx 20rpx 0 0;
 			background: #f9f9f9;
 			padding: 30rpx;
-
+			&.exchange-box::before {
+				content: "";
+				display: block;
+				position: absolute;
+				left: 0;
+				top: -25rpx;
+				width: 100%;
+				height: 25rpx;
+				background: #f9f9f9;
+				border-radius: 20rpx 20rpx 0 0;
+			} 
 			.launchApp-box {
 				width: 260rpx;
 				height: 72rpx;

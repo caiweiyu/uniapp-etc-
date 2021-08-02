@@ -18,7 +18,8 @@
 		</view>
 		<view class="tip">{{payState==1?mini_pay_suc_msg:mini_pay_fail_msg}}</view>
 		<view class="btn-group" v-if="mini_pay_button_status==1">
-			<button class="ant-button" open-type="launchApp" :app-parameter="'payState='+payState" @error="launchAppError">
+			<button class="ant-button" open-type="launchApp" :app-parameter="'payState='+payState"
+				@error="launchAppError">
 				返回APP
 			</button>
 		</view>
@@ -39,6 +40,11 @@
 			};
 		},
 		computed: {},
+		onShow() {
+			this.$token(() => {
+				
+			});//检测page是否授权，token是否过期
+		},
 		mounted() {
 			let {
 				payState

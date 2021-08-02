@@ -1,135 +1,148 @@
 <!--
  * @Description:
  * @Version: 1.0
- * @Autor: yongqing
+ * @Autor: 
  * @Date: 2020-07-16 10:06:49
- * @LastEditors: yongqing
+ * @LastEditors: 
  * @LastEditTime: 2020-07-28 10:28:55
 -->
 
 <template>
-  <view class="pay-result-page">
-    <image
-      class="icon-success"
-      src="https://image.etcchebao.com/etc-min/icon_success.png"
-      alt=""
-    />
-    <view class="text">
-      支付成功
-    </view>
-    <view class="money">￥{{ money }}</view>
-    <view class="btn-group">
-      <button class="ant-button lottery" @click="toLottery" v-if="isLotteryPay">
-        去抽奖
-      </button>
-      <button class="ant-button" @click="toDownLoadApp">
-        下载APP激活会员卡
-      </button>
-      <button class="ant-button" @click="toBackHome" v-if="!isLotteryPay">
-        返回首页
-      </button>
-    </view>
-    <image
-      v-if="!isLotteryPay"
-      mode="widthFix"
-      style="width: 100%;"
-      src="https://image.etcchebao.com/etc-min/guide.jpg"
-    />
-  </view>
+	<view class="pay-result-page">
+		<image class="icon-success" src="https://image.etcchebao.com/etc-min/pay_success.png" alt="" />
+		<view class="text">支付成功</view>
+		<view class="money">{{money}}</view>
+		<view class="btn-group">
+			<view class="ant-button" @click="toBackHome">返回首页</view>
+			<view class="ant-button" @click="toOrderDetail" v-if="detailUrl">查看订单</view>
+		</view>
+	</view>
 </template>
 
 <script>
-import { wap } from "@/common/constant";
-export default {
-  data() {
-    return {
-      src: "",
-      money: "",
-      orderSource:'',//渠道id
-      isLotteryPay:false
-    };
-  },
-  computed: {},
-  mounted() {
-   let {money,src} = this.$root.$mp.query;
-    this.src=src;
-    this.money=money;
-    this.orderSource=uni.getStorageSync('lotteryFrom')
-    var lotteryTime=uni.getStorageSync('lotteryTime')
-    if(lotteryTime) {
-      var time_end = new Date()
-      var time_start = new Date(lotteryTime)
-      time_start.setTime(time_start.setHours(time_start.getHours() + 1))
-      if (new Date(time_end).getTime() < new Date(time_start).getTime()) {
-        this.isLotteryPay = true
-      }
-    }
-  },
-  methods: {
-    toBackHome() {
-      uni.redirectTo({ url: "/pages/webview/main?src=" + this.src });
-    },
-    toLottery() {
-      uni.redirectTo({ url: "/pages/lottery/main?orderSource=" + this.orderSource });
-    },
-    toDownLoadApp() {
-      uni.navigateTo({
-        url: `/pages/webview/main?src=${encodeURIComponent(
-          `${wap}/download.html`
-        )}`,
-      });
-    },
+	import {
+		store
+	} from "@/common/constant";
+	export default {
+		data() {
+			return {
+				money: "",
+				homeUrl: "",
+				backUrl: "",
+				detailUrl: ""
+			};
+		},
+		computed: {},
+		onShow() {
+			this.$token(() => {
+				
+			});//检测page是否授权，token是否过期
+		},
+		mounted() {
+			let {
+				money,
+				homeUrl = '',
+				backUrl = '',
+				detailUrl = '',
+			} = this.$root.$mp.query;
+			this.homeUrl = decodeURIComponent(homeUrl);
+			this.backUrl = decodeURIComponent(backUrl);
+			this.detailUrl = decodeURIComponent(detailUrl);
+			this.money = money;
+		},
+		methods: {
+			toBackHome() {
+				if (this.homeUrl) {
+					uni.redirectTo({
+						url: "/pages/webview/main?src=" + encodeURIComponent(this.homeUrl)
+					});
+				}else if (this.backUrl) {
+					uni.redirectTo({
+						url: "/pages/webview/main?src=" + encodeURIComponent(this.backUrl)
+					});
+				} else {
+					uni.navigateBack({
+						delta: 1
+					})
+				}
 
-  },
-};
+			},
+			toOrderDetail() {
+				uni.navigateTo({
+					url: "/pages/webview/main?src=" + encodeURIComponent(this.detailUrl)
+				});
+			}
+		},
+	};
 </script>
 <style lang="scss">
-.pay-result-page {
-  padding: 100rpx 0rpx 0;
-  text-align: center;
-  background: #ffffff;
-  .text {
-    color: #28bc93;
-    font-size: 34rpx;
-    font-weight: bold;
-    margin-top: 25rpx;
-  }
+	.hover-view {
+		opacity: 0.7;
+	}
+	.pay-result-page {
+		padding: 150rpx 0rpx 0;
+		text-align: center;
+		background: #ffffff;
 
-  .money {
-    font-size: 46rpx;
-    margin-top: 80rpx;
-    font-weight: bold;
-  }
+		.text {
+			color: #FF5C2A;
+			font-size: 34rpx;
+			font-weight: bold;
+			margin-top: 10rpx;
+		}
 
-  .icon-success {
-    height: 163rpx;
-    width: 163rpx;
-  }
+		.money {
+			font-size: 46rpx;
+			margin-top: 50rpx;
+			font-weight: bold;
+			color: #222222;
+		}
+		.money::before {
+			content: "￥";
+			display: inline-block;
+			vertical-align: bottom;
+			margin: 0 0 4rpx 0;
+			font-size: 28rpx;
+			color: #222222;
+		}
 
-  .tip {
-    padding-top: 50rpx;
-    font-size: 28rpx;
-    color: #999;
-    text-align: center;
-  }
+		.icon-success {
+			height: 102rpx;
+			width: 102rpx;
+		}
 
-  .btn-group {
-    padding: 88rpx 100rpx;
+		.tip {
+			padding-top: 50rpx;
+			font-size: 28rpx;
+			color: #999;
+			text-align: center;
+		}
 
-    .ant-button {
-      background: none;
-      border: 2rpx solid #d1a86a;
-      color: #d1a86a;
-      border-radius: 100rpx;
-      & + .ant-button {
-        margin-top: 40rpx;
-      }
-      &.lottery{
-        color: #222222;
-        border: 2rpx solid #f1cf92;
-        background-color: #f1cf92;
-      }
-    }
-  }
-}
+		.btn-group {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin: 240rpx 40rpx 0 40rpx;
+			.ant-button {
+				width: 320rpx;
+				height: 96rpx;
+				border-radius: 100rpx;
+				line-height: 96rpx;
+				font-size: 32rpx;
+			}
+			.ant-button:nth-child(1) {
+				border: 1rpx solid #FF5C2A;
+				box-sizing: border-box;
+				color: #FF5C2A;
+			}
+			.ant-button:nth-child(2) {
+				margin: 0 0 0 30rpx;
+				border: 1rpx solid #FF5C2A;
+				box-sizing: border-box;
+				background-color: #FF5C2A;
+				color: #FFFFFF;
+			}
+		}
+	}
 </style>

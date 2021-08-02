@@ -30,14 +30,6 @@
             /* android打包配置 */
             "android" : {
                 "permissions" : [
-                    "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_MOCK_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
                     "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
@@ -99,16 +91,23 @@
     },
     /* 小程序特有相关 */
     "mp-weixin" : {
-		   "cloudfunctionRoot": "cloudfunctions/", // 配置云开发目录
-
+        "cloudfunctionRoot" : "cloudfunctions/", // 配置云开发目录
         "appid" : "wx8a46eb80992f9ae8",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified" : true,
+            "es6" : true,
+            "postcss" : true,
+            "checkSiteMap" : false //关闭小程序索引提示
         },
+        "sitemapLocation" : "sitemap.json",
         "usingComponents" : true,
+        "optimization" : { //开启分包优化
+            "subPackages" : true
+        },
         "permission" : {
             "scope.userLocation" : {
-                "desc" : "演示定位能力"
+                "desc" : "用于搜索展示附近车主服务商家、导航到店等"
             }
         }
     },

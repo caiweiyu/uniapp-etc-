@@ -41,8 +41,8 @@
 		<div class="winning_btn">
 			<image @click="toLottery" mode="widthFix" src="https://image.etcchebao.com/etc-min/winning-btn.png" />
 			<!--局部授权-->
-			<button-get-user-info type="global" />
-			<button-get-phone-number type="local" />
+			<!-- <button-get-user-info type="global" /> -->
+			<button-get-phone-number type="local" :openphone="true" />
 		</div>
 
 		<div class="barrage">
@@ -117,6 +117,11 @@
 				openid: (state) => state.user.info.openid,
 			}),
 		},
+		onShow() {
+			this.$token(() => {
+				
+			});//检测page是否授权，token是否过期
+		},
 		async mounted() {
 			let {
 				orderSource = ""
@@ -131,16 +136,6 @@
 					this.getLotteryData();
 				}
 			});
-		},
-
-		onShareAppMessage() {
-			let title = "广东车主都在用的ETC会员卡小程序";
-			let imageUrl = "http://image.etcchebao.com/member/small.png";
-			return {
-				title,
-				path: "/pages/winning/main?orderSource=" + this.orderSource,
-				imageUrl,
-			};
 		},
 		methods: {
 			async wechatAppletBanner() {
@@ -177,14 +172,18 @@
 					console.log(this.smallImage);
 				}
 			},
+			
 			async toLottery() {
 				eventMonitor("VIP_Bottom_CZK_Purchase_378_Button_click", 2)
 				uni.setStorageSync("lotteryTime", new Date().getTime()); //设置时间,在支付成功后，支付结果页定制的参数
 				uni.setStorageSync("lotteryFrom", this.orderSource); //设置渠道id,在支付成功后，支付结果页定制的参数
 
 				if (this.level === 0) {
+					// let src = encodeURIComponent(
+					// 	`${chewu}/vip_shop_guide/dist/confirm?token=${this.token}&openid=${this.openid}&orderSource=${this.orderSource}&packageId=80`
+					// );
 					let src = encodeURIComponent(
-						`${chewu}/vip_shop_guide/dist/confirm?token=${this.token}&openid=${this.openid}&orderSource=${this.orderSource}&packageId=80`
+						`${chewu}/vip_shop_guide/dist/confirm?orderSource=${this.orderSource}&packageId=80`
 					);
 					// https://chewu-test.etcchebao.com/vip_shop_guide/dist/confirm?packageId=29&channelId=68
 					uni.navigateTo({
@@ -193,9 +192,7 @@
 				} else {
 					if (!this.isWinning && this.lotteryNum > 0) {
 						uni.navigateTo({
-							url: `/pages/lottery/main?orderSource=${encodeURIComponent(
-              this.orderSource
-            )}`,
+							url: `/pages/lottery/main?orderSource=${encodeURIComponent(this.orderSource)}`,
 						});
 					} else {
 						uni.showToast({
@@ -205,33 +202,23 @@
 					}
 				}
 			},
+			
 			toDownLoadApp() {
 				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(
-          `${wap}/download.html`
-        )}`,
+					url: `/pages/webview/main?src=${encodeURIComponent(`${wap}/download.html`)}`,
 				});
 			},
-			toJumpURL() {
-				let jumpURL = this.jumpUrl;
-				//let jumpURL="https://store-test.etcchebao.com/#/home"
-				if (jumpURL.indexOf("?") > -1) {
-					jumpURL = jumpURL + "&token=" + this.token;
-				} else {
-					jumpURL = jumpURL + "?token=" + this.token;
-				}
-				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(jumpURL)}`,
-				});
-			},
+			
 			toInfo() {
 				uni.navigateTo({
 					url: `/pages/winning_info/main`,
 				});
 			},
+			
 			toDialog() {
 				this.dialog = false;
 			},
+			
 			initBarrage() {
 				var that = this;
 				that.defBarrages = that.barrages_copy;
@@ -246,6 +233,7 @@
 					that.addBarrages(dl);
 				}, 2050);
 			},
+			
 			addBarrages(dl) {
 				let bs = this.barrages;
 				const keys = (this.bsKeys = this.bsKeys + 1);
@@ -257,7 +245,6 @@
 					css: "",
 				});
 				this.barrages = bs;
-
 				setTimeout(() => {
 					if (bs.length > 3) {
 						bs[keys - 4].css = "op0 mt";
@@ -265,6 +252,15 @@
 				}, 50);
 			},
 		},
+		onShareAppMessage() {
+			let title = "广东车主都在用的ETC会员卡小程序";
+			let imageUrl = "http://image.etcchebao.com/member/small.png";
+			return {
+				title,
+				path: "/pages/winning/main?orderSource=" + this.orderSource,
+				imageUrl,
+			};
+		}
 	};
 </script>
 <style lang="scss">

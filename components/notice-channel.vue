@@ -15,6 +15,10 @@
 	</block>
 </template>
 <script>
+	import miniScript from "@/common/miniScript"
+	const miniapp = miniScript.getInstance()
+	const app = getApp()
+	
 	import * as API from "@/interfaces/base";
 	import {
 		mapState
@@ -27,7 +31,7 @@
 			},
 			styleTop: {
 				type: String,
-				default: 'top: 80rpx'
+				default: 'top: 0rpx'
 			},
 		},
 		data() {
@@ -65,31 +69,16 @@
 					this.info = res.data[0];
 				}
 			},
+			
+			/**
+			 * 跳转page || miniProgram
+			 */
 			toJumpUrl() {
-				let {
-					jump_type,
-					jump_url,
-					appid
-				} = this.info;
-				if (jump_type == 1) {
-					uni.navigateTo({
-						url: jump_url,
-					});
-				} else if (jump_type == 2) {
-					uni.navigateToMiniProgram({
-						appId: appid,
-						path: jump_url
-					})
-				} else if (jump_type == 3) {
-					if (jump_url.indexOf("?") > -1) {
-						jump_url = jump_url + "&token=" + this.token;
-					} else {
-						jump_url = jump_url + "?token=" + this.token;
-					}
-					uni.navigateTo({
-						url: `/pages/webview/main?src=${encodeURIComponent(jump_url)}`,
-					});
-				}
+				miniapp.miniProgramRouter(this.info, (res) => {
+				
+				}, (err) => {
+				
+				})
 			},
 		},
 	};
@@ -101,7 +90,7 @@
 		margin: 0 auto;
 		position: absolute;
 		z-index: 2;
-		top: 80rpx;
+		top: 0;
 		left: 50%;
 		transform: translateX(-50%);
 

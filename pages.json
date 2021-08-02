@@ -1,63 +1,123 @@
 {
-	"condition": { //模式配置，仅开发期间生效
-		"current": 0, //当前激活的模式（list 的索引项）
+	"tabBar": {
+		"color": "#222222",
+		"selectedColor": "#FF5C2A",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		// #ifdef APP-PLUS || H5
+		"height": "50px",
+		"fontSize": "12px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		// #endif
 		"list": [{
-			"path": "pages/coin/home/main",
-			"query": "from_type=3&share_id=4",
-			"style": {
-				"navigationBarTitleText": "金币中心",
-				"navigationStyle": "custom",
-				"usingComponents": {
-					"van-popup": "/wxcomponents/vant/popup/index",
-					"van-button": "/wxcomponents/vant/button/index"
-				}
+				"iconPath": "static/icon_tabbar/icon-home.png",
+				"selectedIconPath": "static/icon_tabbar/icon-home-selected.png",
+				"pagePath": "pages/home/main",
+				"text": "首页"
+			},
+			// {
+			// 	"iconPath": "static/icon_tabbar/icon-store.png",
+			// 	"selectedIconPath": "static/icon_tabbar/icon-store-selected.png",
+			// 	"pagePath": "pages/store/main",
+			// 	"text": "商城"
+			// },
+			{
+				"iconPath": "static/icon_tabbar/icon-informa.png",
+				"selectedIconPath": "static/icon_tabbar/icon-informa-selected.png",
+				"pagePath": "pages/fm/home/main",
+				"text": "资讯"
+			},
+			{
+				"iconPath": "static/icon_tabbar/icon-store.png",
+				"selectedIconPath": "static/icon_tabbar/icon-store-selected.png",
+				"pagePath": "pages/bill/main",
+				"text": "账单"
+			},
+			{
+				"iconPath": "static/icon_tabbar/icon-mine.png",
+				"selectedIconPath": "static/icon_tabbar/icon-mine-selected.png",
+				"pagePath": "pages/mine/main",
+				"text": "我的"
 			}
-		}]
+		]
 	},
 	"pages": [
-		// pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/coin/home/main",
+			"path": "pages/home/main",
 			"style": {
-				"navigationBarTitleText": "金币中心",
+				"navigationBarTitleText": "首页",
 				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"usingComponents": {
-					"van-popup": "/wxcomponents/vant/popup/index",
-					"van-button": "/wxcomponents/vant/button/index"
-				}
+				"backgroundColor": "#E4F5EF",
+				"backgroundColorTop": "#E4F5EF",
+				"backgroundColorBottom": "#EBECEC",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
 			}
 		},
 		{
-			"path": "pages/winning/main",
+			"path": "pages/login/main",
 			"style": {
-				"navigationBarTitleText": "ETC车宝"
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/index/main",
+			"path": "pages/login/agreement",
 			"style": {
-				"navigationBarTitleText": "ETC车宝",
-				"usingComponents": {
-					"van-button": "/wxcomponents/vant/button/index",
-					"van-count-down": "/wxcomponents/vant/count-down/index",
-					"van-skeleton": "/wxcomponents/vant/skeleton/index"
-
-				}
-			}
-		}, {
-			"path": "pages/guide/main",
-			"style": {
-				"navigationBarTitleText": "ETC车宝",
-				"usingComponents": {
-					"van-button": "/wxcomponents/vant/button/index",
-					"van-count-down": "/wxcomponents/vant/count-down/index",
-					"van-skeleton": "/wxcomponents/vant/skeleton/index"
-
-				}
+				"navigationBarTitleText": "用户协议"
 			}
 		},
-
+		{
+			"path": "pages/home/recommend",
+			"style": {
+				"navigationBarTitleText": "推荐服务"
+			}
+		},
+		{
+			"path": "pages/bill/main",
+			"style": {
+				"navigationBarTitleText": "账单",
+				"navigationBarBackgroundColor": "#f9f9f9"
+			}
+		},
+		{
+			"path": "pages/store/main",
+			"style": {
+				"navigationBarTitleText": "商城"
+			}
+		},
+		{
+			"path": "pages/fm/home/main",
+			"style": {
+				"navigationBarTitleText": "资讯"
+			}
+		},
+		{
+			"path": "pages/fm/video/main",
+			"style": {
+				"navigationBarTitleText": "视频"
+			}
+		},
+		{
+			"path": "pages/mine/main",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/user",
+			"style": {
+				"navigationBarTitleText": "账号管理"
+			}
+		},
+		{
+			"path": "pages/mine/vip_car/main",
+			"style": {
+				"navigationBarTitleText": "开通会员"
+			}
+		},
 		{
 			"path": "pages/webview/main",
 			"style": {
@@ -74,9 +134,13 @@
 			"path": "pages/payment_result/main",
 			"style": {
 				"navigationBarTitleText": "支付结果"
-
 			}
-
+		},
+		{
+			"path": "pages/pay/main",
+			"style": {
+				"navigationBarTitleText": "调起支付"
+			}
 		},
 		{
 			"path": "pages/pay_result/main",
@@ -85,103 +149,258 @@
 			}
 		},
 		{
-			"path": "pages/lottery/main",
+			"path": "pages/location/main",
+			"style": {
+				"navigationBarTitleText": "地图位置"
+			}
+		},
+		{
+			"path": "pages/share/main",
+			"style": {
+				"navigationBarTitleText": "分享"
+			}
+		},
+		{
+			"path": "pages/index/main",
 			"style": {
 				"navigationBarTitleText": "ETC车宝"
 			}
 		},
+//		{
+//			"path": "pages/lottery/main",
+//			"style": {
+//				"navigationBarTitleText": "ETC车宝"
+//			}
+//		},
+//		{
+//			"path": "pages/winning/main",
+//			"style": {
+//				"navigationBarTitleText": "ETC车宝"
+//			}
+//		},
+//		{
+//			"path": "pages/winning_info/main",
+//			"style": {
+//				"navigationBarTitleText": "ETC车宝"
+//			}
+//		},
+//		{
+//			"path": "pages/guide/main",
+//			"style": {
+//				"navigationBarTitleText": "ETC车宝"
+//			}
+//		},
 		{
-			"path": "pages/winning_info/main",
+			"path": "pages/vip_pay_result/main",
 			"style": {
-				"navigationBarTitleText": "ETC车宝"
-			}
-		},
-		{
-			"path": "pages/ytk/add_ytk/main",
-			"style": {
-				"navigationBarTitleText": "添加粤通卡"
-			}
-		},
-		{
-			"path": "pages/ytk/bill/main",
-			"style": {
-				"navigationBarTitleText": "账单",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/ytk/bind_ytk/main",
-			"style": {
-				"navigationBarTitleText": "绑定粤通卡"
-			}
-		},
-		{
-			"path": "pages/ytk/bind_result/main",
-			"style": {
-				"navigationBarTitleText": "绑定结果",
-				"usingComponents": {
-					"van-popup": "/wxcomponents/vant/popup/index"
-				}
-			}
-		},
-		{
-			"path": "pages/ytk/ytk_list/main",
-			"style": {
-				"navigationBarTitleText": "粤通卡列表"
-			}
-		},
-		// {
-		// 	"path": "pages/coin/home/main",
-		// 	"style": {
-		// 		"navigationBarTitleText": "金币中心",
-		// 		"navigationStyle": "custom",
-		// 		"usingComponents": {
-		// 			"van-popup": "/wxcomponents/vant/popup/index",
-		// 			"van-button": "/wxcomponents/vant/button/index"
-		// 		}
-		// 	}
-		// },
-		{
-			"path": "pages/coin/detail/main",
-			"style": {
-				"navigationBarTitleText": "金币中心",
-				"navigationBarBackgroundColor": "#2D2D38",
-				"navigationBarTextStyle": "white",
-				"usingComponents": {
-					"van-popup": "/wxcomponents/vant/popup/index",
-					"van-tab": "/wxcomponents/vant/tab/index",
-					"van-tabs": "/wxcomponents/vant/tabs/index",
-					"van-empty": "/wxcomponents/vant/empty/index"
-
-				}
-			}
-		},
-		{
-			"path": "pages/coin/introduction/main",
-			"style": {
-				"navigationBarTitleText": "攻略"
-			}
-		},
-
-		{
-			"path": "pages/user/mine/main",
-			"style": {
-				"navigationBarTitleText": "ETC车宝"
+				"navigationBarTitleText": "支付成功"
 			}
 		}
 	],
+	//分包
+	"subPackages": [
+		{
+			//金币中心
+			"root": "pages/coin/",
+			"pages": [{
+					"path": "home/main",
+					"style": {
+						"navigationBarTitleText": "金币中心",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "white"
+					}
+				},
+				{
+					"path": "detail/main",
+					"style": {
+						"navigationBarTitleText": "金币中心",
+						"navigationBarBackgroundColor": "#2D2D38",
+						"navigationBarTextStyle": "white"
+					}
+				},
+				{
+					"path": "introduction/main",
+					"style": {
+						"navigationBarTitleText": "攻略"
+					}
+				}
+			]
+		},
+		{
+			//车卡模块
+			"root": "packageA/pages/ytk/",
+			"pages": [{
+					"path": "add_ytk/main",
+					"style": {
+						"navigationBarTitleText": "添加粤通卡"
+					}
+				},
+				{
+					"path": "bill/main",
+					"style": {
+						"navigationBarTitleText": "账单",
+						"navigationBarBackgroundColor": "#f9f9f9"
+					}
+				},
+				{
+					"path": "bind_car/main",
+					"style": {
+						"navigationBarTitleText": "添加车辆"
+					}
+				},
+				{
+					"path": "bind_car/vehicle_type",
+					"style": {
+						"navigationBarTitleText": "车辆类型"
+					}
+				},
+				{
+					"path": "bind_car/success",
+					"style": {
+						"navigationBarTitleText": "绑定成功"
+					}
+				},
+				{
+					"path": "bind_ytk/main",
+					"style": {
+						"navigationBarTitleText": "绑定粤通卡"
+					}
+				},
+				{
+					"path": "bind_result/main",
+					"style": {
+						"navigationBarTitleText": "绑定结果"
+					}
+				},
+				{
+					"path": "ytk_list/main",
+					"style": {
+						"navigationBarTitleText": "粤通卡列表",
+						"navigationBarBackgroundColor": "#F6F6F6"
+					}
+				},
+				{
+					"path": "ytk_list/order_detail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					}
+				},
+				{
+					"path": "ytk_list/order_refund",
+					"style": {
+						"navigationBarTitleText": "申请退款"
+					}
+				},
+				{
+					"path": "ytk_list/order_process",
+					"style": {
+						"navigationBarTitleText": "退款进度"
+					}
+				},
+				{
+					"path": "ytk_pay/main",
+					"style": {
+						"navigationBarTitleText": "选择充值金额"
+					}
+				},
+				{
+					"path": "ytk_pay/coupon",
+					"style": {
+						"navigationBarTitleText": "卡券"
+					}
+				},
+				{
+					"path": "ytk_pay/coupon_out",
+					"style": {
+						"navigationBarTitleText": "失效卡券"
+					}
+				},
+				{
+					"path": "ytk_deposit/main",
+					"style": {
+						"navigationBarTitleText": "粤通卡充值"
+					}
+				},
+				{
+					"path": "ytk_deposit/pay_success",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "充值完成"
+					}
+				},
+				{
+					"path": "car_list/main",
+					"style": {
+						"navigationBarTitleText": "我的车辆"
+					}
+				}
+			]
+		},
+		{
+			//订单、卡券模块
+			"root": "packageA/pages/order/",
+			"pages": [{
+				"path": "home/main",
+				"style": {
+					"navigationBarTitleText": "订单中心",
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "card_ticket/main",
+				"style": {
+					"navigationBarTitleText": "卡券中心"
+				}
+			}, {
+				"path": "card_ticket/components/pass_time_card",
+				"style": {
+					"navigationBarTitleText": "失效券"
+				}
+			}]
+		}
+//		{
+//			//测试
+//			"root": "packageA/pages/test/",
+//			"pages": [
+//				{
+//					"path": "test",
+//					"style": {
+//						"navigationBarTitleText": "测试"
+//					}
+//				},
+//				{
+//					"path": "nfc",
+//					"style": {
+//						"navigationBarTitleText": "nfc测试"
+//					}
+//				},
+//				{
+//					"path": "blue",
+//					"style": {
+//						"navigationBarTitleText": "蓝牙测试"
+//					}
+//				}
+////				{
+////					"path": "sand",
+////					"style": {
+////						"navigationBarTitleText": "sand"
+////					}
+////				}
+//			]
+//		}
+	],
+	"preloadRule": {
+		"pages/home/main": {
+			"network": "all",
+			"packages": ["packageA/pages/ytk/","packageA/pages/order/"]
+		}
+	},
 	"globalStyle": {
 		"backgroundTextStyle": "light",
 		"navigationBarBackgroundColor": "#fff",
 		"navigationBarTitleText": "ETC车宝",
 		"navigationBarTextStyle": "black"
-		// "navigationBarBackgroundColor": "#007AFF",
-		// "backgroundColor": "#F8F8F8",
-		// "backgroundColorTop": "#F4F5F6",
-		// "backgroundColorBottom": "#F4F5F6",
-		// "mp-360": {
-		// 	"navigationStyle": "custom"
-		// }
+	},
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 	}
-
 }

@@ -8,7 +8,7 @@
 -->
 <template>
 	<view class="introduction">
-		<image :src="imgUrl" mode="widthFix"  class="img" />
+		<image :src="imgUrl" mode="widthFix" class="img" />
 	</view>
 </template>
 
@@ -22,10 +22,22 @@
 				imgUrl: ''
 			};
 		},
-		async mounted() {
-			let res = await API.getStrategy()
-			this.imgUrl = res.data.value
-
+		onShow() {
+			this.$token(() => {
+				this.loadInit();
+			});//检测page是否授权，token是否过期
+		},
+		mounted() {
+			this.loadInit();
+		},
+		methods: {
+			/**
+			 * 初始化
+			 */
+			async loadInit() {
+				let res = await API.getStrategy();
+				this.imgUrl = res.data.value;
+			}
 		}
 	};
 </script>
@@ -34,6 +46,7 @@
 	.introduction {
 		.img {
 			width: 100%;
+			height: auto;
 		}
 	}
 </style>

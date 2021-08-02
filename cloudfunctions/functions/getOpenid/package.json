@@ -1,9 +1,0 @@
-{
-  "name": "getOpenid",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "wx-server-sdk": "^2.3.3"
-  }
-}

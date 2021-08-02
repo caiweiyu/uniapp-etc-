@@ -10,11 +10,13 @@ import Vuex from "vuex";
 import Vue from "vue";
 import createPersistedState from "vuex-persistedstate";
 import user from "./modules/user";
+import home from "./modules/home";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
     user,
+	home,
   },
   plugins: [
     createPersistedState({
@@ -23,7 +25,7 @@ const store = new Vuex.Store({
         setItem: (key, value) => uni.setStorageSync(key, value),
         removeItem: (key) => uni.removeStorageSync(key),
       },
-      paths: ["user"],
+      paths: ["user"]
     }),
   ],
 });

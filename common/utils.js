@@ -31,7 +31,9 @@ export function fomatPhone(value) {
 	return value && value.replace(/(\d{3})\d+(\d{4})/g, "$1***$2");
 }
 
-
+export function formatCardNum(card_num) {
+    return (card_num + "").replace(/(\d{4})(?=\d)/g, "$1 ");
+}
 /**
  * 事件统计
  */
@@ -50,7 +52,8 @@ export function eventMonitor(event_name, event_type, extra = {}) {
 	let url = (pages[pages.length - 1]).route;
 	let {
 		token,
-		info
+		info,
+		from_type
 	} = store.state.user;
 	let extend = {
 		...extra,
@@ -62,6 +65,7 @@ export function eventMonitor(event_name, event_type, extra = {}) {
 		ds: `${screenWidth*2}*${screenHeight*2}`,
 		loc: '',
 		event_type,
+		from_type,
 		etcos: platform == 'ios' ? 2 : 1,
 		version: conf.version,
 		token,

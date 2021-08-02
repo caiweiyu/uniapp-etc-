@@ -1,20 +1,18 @@
 import Vue from 'vue'
 import App from './App'
-
 import store from './store'
 import "./assets/scss/common.scss";
-//import conf from './config/conf.js'
+import debounceThrottle from "./common/debounceThrottle"
+import token from "./common/token"
 Vue.config.productionTip = false
-//Vue.prototype.$conf = conf
 Vue.prototype.$store = store
-// Vue.prototype.$backgroundAudioData = {
-// 	playing: false,
-// 	playTime: 0,
-// 	formatedPlayTime: '00:00:00'
-// }
-// Vue.prototype.$adpid = "1111111111"
 
-// App.mpType = 'app'
+import uView from "uview-ui";
+Vue.use(uView);
+
+Vue.prototype.$debounce = debounceThrottle.debounce
+Vue.prototype.$throttle = debounceThrottle.throttle
+Vue.prototype.$token = token.appCheckToken
 
 const app = new Vue({
 	store,

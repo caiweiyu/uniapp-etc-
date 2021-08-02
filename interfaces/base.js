@@ -12,7 +12,6 @@ import {
 	G
 } from "@/common/constant";
 
-
 /**
  * 获取选项卡接口
  */
@@ -46,8 +45,14 @@ export function getChannelList(data) {
 }
 
 /**
- * 预支付接口
- * @param data
+ * 微信支付支付链接
+ * trade_id
+ * trade_platform=1
+ * trade_mode=3
+ * openid
+ * token
+ * source_channel
+ * sourceChannel
  */
 export function apiRepaid(data) {
 	return request({
@@ -56,8 +61,6 @@ export function apiRepaid(data) {
 		data,
 	});
 }
-
-
 
 export function getStrategy() {
 	return request({
@@ -82,7 +85,7 @@ export function getOtherInfo() {
  * 事件统计打点
  */
 
-export function event(data = {}) {	
+export function event(data = {}) {
 	return uni.request({
 		header: {
 			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输

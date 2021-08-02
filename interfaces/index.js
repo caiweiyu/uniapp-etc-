@@ -10,15 +10,6 @@
 import request from "@/common/request";
 
 import {G} from "@/common/constant";
-
-
-export function getChebaoToken(data) {
-  return request({
-    url: `${G}/carowner/wechat/getChebaoToken`,
-    method: "POST",
-    data,
-  });
-}
 /**
  * 获取用户信息（获取基础信息）
  * @param {Object} params

@@ -7,8 +7,7 @@
  * @LastEditTime: 2021-03-10 15:59:28
  */
 import {
-	apiCheckLogin,
-	getChebaoToken
+	apiCheckLogin, getAuthLogin
 } from "@/interfaces/index";
 
 import {
@@ -28,19 +27,24 @@ const user = {
 		auth_info: {
 			openid: "",
 			unionid: "",
-			nickname: "点击登录领金币",
-			avatar: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
+			nickname: "点击同步微信头像",
+			// avatar: "https://image.etcchebao.com/etc-min/icon-default-avatar.png",
+			avatar:"https://image.etcchebao.com/etc-min/mine/undifine-user-logo.png"
 		},
 		jsCode: "",
 		token: "",
 		is_show_guide: true,
 		is_show_collection: true,
 		is_show_home_notice: true,
-		from_type: 1,
+		from_type: 2,
 		share_id: 0,
 		task_option_key: {
 
-		}
+		},
+		latitude: "23.101494",
+		longitude: "113.389287",
+		city: "广州",
+		city_code: "",//城市编码
 	},
 	mutations: {
 		setUserInfo: (state, info) => {
@@ -52,13 +56,16 @@ const user = {
 		setNickName: (state, name) => {
 			state.auth_info.nickname = name;
 		},
+		setAvatar: (state, name) => {
+			state.auth_info.avatar = name;
+		},
 		setToken: (state, token) => {
 			state.token = token;
 		},
 		setJscode: (state, code) => {
 			state.jsCode = code;
 		},
-		setIsShowGuide: (state, payload) => {
+		setIsShowBillGuide: (state, payload) => {
 			state.is_show_guide = payload;
 		},
 		setShareId: (state, value) => {
@@ -66,9 +73,6 @@ const user = {
 		},
 		setFromType: (state, value) => {
 			state.from_type = value;
-		},
-		setShareId: (state, value) => {
-			state.share_id = value;
 		},
 
 		setIsShowCollection: (state, value) => {
@@ -79,8 +83,20 @@ const user = {
 		},
 		setTaskOptionKey: (state, value) => {
 			state.task_option_key[value] = true;
+		},
+		setLocation: (state, {
+			latitude,
+			longitude
+		}) => {
+			state.latitude = latitude;
+			state.longitude = longitude;
+		},
+		mt_city: (state, n)=> {
+			state.city = n;
+		},
+		mt_city_code: (state, n)=> {
+			state.city_code = n;
 		}
-
 	},
 	actions: {
 		async refreshJsCode({
@@ -88,14 +104,14 @@ const user = {
 			commit
 		}) {
 			let jsCode = await getJsCode();
-			console.log("刷新jsCode", jsCode)
+			// console.log("刷新jsCode", jsCode)
 			commit("setJscode", jsCode);
 		},
 		async checkToken({
 			commit,
 			state,
 			dispatch
-		}) {
+		},payload) {
 			const token = state.token;
 			//token 存在手机号就一定存在
 			if (token) {
@@ -107,7 +123,7 @@ const user = {
 					//清空现有token
 					commit("setToken", "");
 					//重新请求token
-					dispatch("refreshToken");
+					dispatch("refreshToken",payload);
 				} else {
 					console.log("已登录");
 				}
@@ -118,19 +134,14 @@ const user = {
 		async refreshToken({
 			state,
 			commit
-		}) {
+		},payload) {
 			let jsCode = await getJsCode();
-			// let res = await getChebaoToken({
-			//   jsCode,
-			//   phone: state.info.phone,
-			//   type: 1,
-			//   fromType: 2,
-			// });
 			let res = await getAuthLogin({
 				jsCode,
 				username: state.info.phone
 			});
 			commit("setToken", res.data.token);
+			typeof payload == 'function' && payload();
 			console.log("已刷新登录");
 		},
 
@@ -149,7 +160,6 @@ const user = {
 				optionKey: payload, //任务名称
 				token: state.token
 			})
-
 			let json = res.data;
 			if (json.code == 0) {
 				commit("setTaskOptionKey", payload)
@@ -157,8 +167,14 @@ const user = {
 			} else {
 				return Promise.resolve();
 			}
+		},
 
-		}
+		ac_city: (context, obj)=> {
+			context.commit("mt_city", obj)
+		},
+		ac_city_code: (context, obj)=> {
+			context.commit("mt_city_code", obj)
+		},
 	},
 };
 
