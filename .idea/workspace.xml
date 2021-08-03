@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f034702f-8741-468e-afe8-f37bd2bb43ce" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/$CACHE_FILE$" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mini-program-uni.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/conf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/index/main.vue" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index/main.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +44,7 @@
       <updated>1627956050641</updated>
       <workItem from="1627956052960" duration="385000" />
       <workItem from="1627956460697" duration="4000" />
+      <workItem from="1627956664167" duration="705000" />
     </task>
     <servers />
   </component>

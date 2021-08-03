@@ -128,6 +128,24 @@
 				//   });
 				// }
 			},
+			/**
+			 * 分享好友/群
+			 */
+			onShareAppMessage(options) {
+				return {
+					title: '欢迎您使用粤通卡ETC车宝官方小程序',
+					//imageUrl: 'https://image.etcchebao.com/etc-min/share_icon.png',
+				}
+			},
+			/**
+			 * 分享朋友圈
+			 */
+			onShareTimeline(options) {
+				return {
+					title: '欢迎您使用粤通卡ETC车宝官方小程序',
+					//imageUrl: 'https://image.etcchebao.com/etc-min/share_icon.png',
+				}
+			},
 		},
 	};
 </script>
