@@ -175,6 +175,10 @@
 </template>
 
 <script>
+	import miniScript from "@/common/miniScript"
+	const miniapp = miniScript.getInstance()
+	const app = getApp()
+	
 	import customTabbar from "@/components/custom-tabbar";
 	import lottie from "lottie-miniprogram";
 	import AnimatedNumber from "../components/uni-animated-number/index";
