@@ -340,7 +340,7 @@
 			//中石化加油
 			"root": "packageA/pages/sinopec/",
 			"pages": [{
-				"path": "main",
+				"path": "index/main",
 				"style": {
 					"navigationBarTitleText": "中石化加油"
 				}
