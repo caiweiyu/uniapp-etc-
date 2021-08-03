@@ -1,9 +1,44 @@
+<!--
+ * @Description:
+ * @Version: 1.0
+ * @Autor: fengzhuojian
+ * @Date: 2021-08-03 14:53:47
+ * @LastEditors: fengzhuojian
+ * @LastEditTime: 2021-08-03 16:23:19
+-->
 <template>
 	<view class="content">
+		
+		<!-- **************************** -->
 		<!-- 背景图 -->
+		<!-- **************************** -->
 		<view class="bg">
-			<image src="../../../assets/cdn/01.jpg" mode="widthFix"></image>
+			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_28.png" mode="widthFix"></image>
 		</view>
+		
+		<!-- **************************** -->
+		<!-- 中石化加油券兑换 -->
+		<!-- **************************** -->
+		<view class="sinoepc">
+			<!-- 购买油券 -->
+			<buy-coupons></buy-coupons>
+			
+			<!-- 优惠券列表 -->
+			<scroll-coupons></scroll-coupons>
+			
+			<!-- 滑动banner -->
+			<swiper-banner></swiper-banner>
+			
+			<!-- 教程 -->
+			<course></course>
+			
+			<!-- 易捷便利店 -->
+			<store></store>
+			
+			<!-- 附近油站 -->
+			<oil-station></oil-station>
+		</view>
+		
 	</view>
 </template>
 
@@ -12,10 +47,28 @@
 	const miniapp = miniScript.getInstance()
 	const app = getApp()
 	
+	import { mapState } from "vuex"
 	import * as API from "@/interfaces/sinoepc"
+	
+	import BuyCoupons from "./components/buy-coupons"
+	import ScrollCoupons from "./components/scroll-coupons"
+	import SwiperBanner from "./components/swiper-banner"
+	import Course from "./components/course"
+	import Store from "./components/store"
+	import OilStation from "./components/oil-station"
 	export default {
+		components: {
+			BuyCoupons,
+			ScrollCoupons,
+			SwiperBanner,
+			Course,
+			Store,
+			OilStation
+		},
 		computed: {
-			
+			...mapState({
+				sinoepc_init: (state) => state.sinoepc.sinoepc_init
+			})
 		},
 		data() {
 			return {
@@ -57,9 +110,7 @@
 				let res = await API.axios_index({
 					source_channel: 2
 				})
-				app.log({
-					res: res
-				})
+				this.$store.commit("sinoepc/mt_sinoepc_init", res.data);
 			},
 			
 			/**
@@ -67,10 +118,8 @@
 			 */
 			async savePhoneNumber() {
 				let res = await API.axios_save_phone({
-					
-				})
-				app.log({
-					res: res
+					source_channel: 2,
+					phone: ""
 				})
 			},
 			
@@ -79,10 +128,7 @@
 			 */
 			async clearPhoneNumber() {
 				let res = await API.axios_clear_phone({
-					
-				})
-				app.log({
-					res: res
+					source_channel: 2
 				})
 			},
 			
@@ -91,10 +137,7 @@
 			 */
 			async getPhoneNumber() {
 				let res = await API.axios_get_phone_list({
-					
-				})
-				app.log({
-					res: res
+					source_channel: 2
 				})
 			},
 		}
@@ -114,6 +157,11 @@
 			top: 0;
 			z-index: -1;
 			width: 100%;
+		}
+		.sinoepc {
+			margin: 0 auto;
+			padding: 300rpx 0 0 0;
+			width: 696rpx;
 		}
 	}
 </style>
