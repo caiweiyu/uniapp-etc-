@@ -337,6 +337,26 @@
 			]
 		},
 		{
+			//中石化加油
+			"root": "packageA/pages/sinopec/",
+			"pages": [{
+				"path": "main",
+				"style": {
+					"navigationBarTitleText": "中石化加油",
+				}
+			}, {
+				"path": "components/video",
+				"style": {
+					"navigationBarTitleText": "视频"
+				}
+			}, {
+				"path": "components/detail",
+				"style": {
+					"navigationBarTitleText": "使用须知"
+				}
+			}]
+		},
+		{
 			//订单、卡券模块
 			"root": "packageA/pages/order/",
 			"pages": [{
