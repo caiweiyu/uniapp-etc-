@@ -362,7 +362,8 @@
 			},{
 				"path": "home/pay_success",
 				"style": {
-					"navigationBarTitleText": "支付结果"
+					"navigationBarTitleText": "支付结果",
+					"navigationStyle": "custom"
 				}
 			},{
 				"path": "home/coupons",
