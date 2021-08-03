@@ -342,7 +342,7 @@
 			"pages": [{
 				"path": "main",
 				"style": {
-					"navigationBarTitleText": "中石化加油",
+					"navigationBarTitleText": "中石化加油"
 				}
 			}, {
 				"path": "components/video",
@@ -353,6 +353,16 @@
 				"path": "components/detail",
 				"style": {
 					"navigationBarTitleText": "使用须知"
+				}
+			},{
+				"path": "components/checkstand",
+				"style": {
+					"navigationBarTitleText": "收银台"
+				}
+			},{
+				"path": "components/pay_success",
+				"style": {
+					"navigationBarTitleText": "支付结果"
 				}
 			}]
 		},
