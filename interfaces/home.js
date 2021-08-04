@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Version: 1.0
  * @Autor: fengzhuojian
  * @Date: 2021-03-10 15:14:15
@@ -8,6 +8,16 @@
  */
 import request from "@/common/request";
 import { G } from "@/common/constant";
+/**
+ * 获取业务h5_url地址
+ */
+export function axios_h5_url(data) {
+	return request({
+		url: `${G}/mini-program/v1/wx-applets/h5Url`,
+		method: "GET",
+		data
+	});
+}
 
 /**
  * 城市编码

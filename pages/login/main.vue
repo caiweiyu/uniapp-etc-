@@ -1,5 +1,5 @@
 <!--
- * @Description: 
+ * @Description:
  * @Version: 1.0
  * @Autor: fengzhuojian
  * @Date: 2021-06-22 11:30:00
@@ -38,11 +38,11 @@
 	import miniScript from "@/common/miniScript"
 	const  miniapp = miniScript.getInstance()
 	const app = getApp()
-	
+
 	import * as API from "@/interfaces/home"
 	import { mapState } from "vuex"
 	import { user } from "@/common/constant"
-	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber" 
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {
 			buttonGetPhoneNumber
@@ -65,9 +65,30 @@
 			}
 		},
 		mounted() {
-			
+
 		},
-		onLoad(options) {
+		async onLoad(options) {
+			if(options.scene){ // B接口生成的码(参数键值最大限制32)
+				// options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
+				let scene = decodeURIComponent(options.scene);
+				let obj = {};
+				for (let i = 0; i < scene.split('&').length;i++){
+					let arr = scene.split('&')[i].split('=');
+					obj[arr[0]] = arr[1];
+				}
+				if(obj.hasOwnProperty("b") == true){ //业务参数用于中转(内嵌业务)（以下划线隔开）
+					//this.getH5Url(obj.b)
+					await API.axios_h5_url({
+						param: obj.b
+					}).then(res => {
+						let {code, data} = res;
+						if(code == 0 && !!data.h5_url){
+							console.log('data.h5_url',data.h5_url)
+							this.url = encodeURIComponent(data.h5_url)
+						}
+					})
+				}
+			}
 			if (options.hasOwnProperty("h5_url") == true) {
 				this.url = options.h5_url;
 			}
@@ -84,6 +105,7 @@
 				this.$store.commit("user/setToken", "");
 				return
 			}//登录超时
+			console.log('this.url',this.url)
 			if (this.token != "") {
 				if (this.url == "") {
 					uni.switchTab({
@@ -102,7 +124,7 @@
 			this.loadCheckLocation();
 		},
 		onHide() {
-			
+
 		},
 		methods: {
 			/**
@@ -129,7 +151,7 @@
 								success: (result)=>{
 									if (result.confirm) {
 										uni.openSetting({
-											
+
 										})
 									}
 									miniapp.removeCacheData({key: "location"});
@@ -148,7 +170,7 @@
 					}
 				})
 			},
-			
+
 			/**
 			 * 获取用户地理位置
 			 */
@@ -188,7 +210,7 @@
 					})
 				}
 			},
-			
+
 			/**
 			 * 城市编码接口
 			 */
@@ -202,16 +224,28 @@
 				this.$store.dispatch("user/ac_city", cityName);
 				this.$store.dispatch("user/ac_city_code", cityCode);
 			},
-			
 			/**
-			 * 返回首页 
+			 * 获取业务路径
+			 */
+			async getH5Url(b) {
+				let res = await API.axios_h5_url({
+					param: b
+				})
+				let {code,data,msg} = res;
+				if(code == 0 && !!data.h5_url){
+					this.url = encodeURIComponent(data.h5_url)
+				}
+			},
+
+			/**
+			 * 返回首页
 			 */
 			bindGohome() {
 				uni.switchTab({
 					url: "/pages/home/main"
 				})
 			},
-			
+
 			/**
 			 * 隐私协议
 			 */
@@ -220,7 +254,7 @@
 					url: `/pages/webview/main?src=${encodeURIComponent(user + "/agreement/product.html")}&isNeedLogin=${0}&isGps=${0}`
 				})
 			},
-			
+
 			/**
 			 * 用户协议
 			 */
