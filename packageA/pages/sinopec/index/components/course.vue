@@ -1,6 +1,11 @@
 <template>
 	<view class="content">
 		
+		<!-- 使用教程 -->
+		<view class="course">
+			<view class="title">使用教程</view>
+		</view>
+		
 	</view>
 </template>
 
@@ -32,6 +37,15 @@
 
 <style lang="scss">
 	.content {
-		
+		color: #222222;
+		margin: 20rpx 0 0 0;
+		background-color: #FFFFFF;
+		border-radius: 20rpx;
+		.course {
+			.title {
+				font-size: 34rpx;
+				font-weight: 700;
+			}
+		}
 	}
 </style>

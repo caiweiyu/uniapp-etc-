@@ -145,6 +145,9 @@
 </script>
 
 <style lang="scss">
+	page {
+		background-color: #F2F2F2;
+	}
 	image {
 		display: block;
 		width: 100%;
@@ -160,8 +163,8 @@
 		}
 		.sinoepc {
 			margin: 0 auto;
-			padding: 300rpx 0 0 0;
-			width: 696rpx;
+			padding: 152rpx 0 0 0;
+			width: 700rpx;
 		}
 	}
 </style>
