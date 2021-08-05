@@ -342,7 +342,9 @@
 			"pages": [{
 				"path": "index/main",
 				"style": {
-					"navigationBarTitleText": "中石化加油"
+					"navigationBarTitleText": "中石化加油专区",
+					"navigationBarBackgroundColor": "#377DDD",
+					"navigationBarTextStyle": "white"
 				}
 			}, {
 				"path": "home/video",
