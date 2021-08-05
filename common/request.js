@@ -62,6 +62,8 @@ const interceptRequest = useIntercept(uni.request, {
 			// params.data["token"] = "a2afed3a6eef13cea272d8460a9af670" //正式token
 			// params.url = params.url.replace("-test","");
 		}
+		params.data["from_type"] = store.state.user.from_type
+		params.data["app_type"] = conf.app_type;
 		return params;
 	},
 	success: (res) => {
