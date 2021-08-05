@@ -1,7 +1,7 @@
 <template>
   <view class="box" @touchmove.stop="bindContent">
       <view :class="['box1']" @click="toggleWindows">
-          <text :class="['text1',status==true ? 'text1_active' : '']">全部地区</text>
+          <text :class="['text1',status==true ? 'text1_active' : '']">{{allArea}}</text>
           <image class="up" v-if="status == true" src="https://image.etcchebao.com/etc-min/sinopec-list/up.png" mode="" />
           <image class="down" v-else src="https://image.etcchebao.com/etc-min/sinopec-list/down.png" mode="" />
       </view>
@@ -42,7 +42,8 @@ export default {
             currentdetail:-1,
             city_code:'440100',
             district_code:'',
-            bindContent:()=>{}
+            bindContent:()=>{},
+            allArea:'全部地区'
         }
     },
     methods:{
@@ -60,12 +61,15 @@ export default {
             this.currentdetail = -1,
             this.current = index;
             this.city_code = item.code;
+            this.allArea = item.name;
+            this.$emit('getCity',{city:this.city_code})
         },
         showAreadetail(index,item){
             this.currentdetail = index;
             this.district_code = item.code;
+            this.allArea = item.name;
             this.status = !this.status;
-            this.$emit('getItem',{city:this.city_code,district:this.district_code})
+            this.$emit('getDistrict',{city:this.city_code,district:this.district_code})
         }
     },
     mounted() {

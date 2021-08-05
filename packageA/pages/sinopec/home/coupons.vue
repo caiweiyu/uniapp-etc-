@@ -2,7 +2,7 @@
   <view class="box">
       <image class="image" src="https://image.etcchebao.com/etc-min/sinopec/banner.png" mode="" @click="toProgram" />
       <scroll-view :scroll-y="true" v-if="loading && list.length > 0" @scrolltolower="dealScrollBottom" class="card-scroll">
-          <view class="box_container" v-for="(item,index) in list" :key="index" @click="toDetail(item.recharge_price)">
+          <view class="box_container" v-for="(item,index) in list" :key="index" @click="toDetail(item.order_id)">
               <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg1.png" mode="" v-if="nowDate > new Date(item.endtime).getTime()" />
               <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg2.png" mode="" v-else />
               <text class="title">{{item.title}}</text>
@@ -75,8 +75,9 @@ export default {
           this.getAxios_coupon_list(this.page,this.page_size)
       },
       toDetail(item){
+          console.log(item,'--item')
           uni.navigateTo({
-               url: `/packageA/pages/sinopec/home/detail?recharge_price=${item}`
+               url: `/packageA/pages/sinopec/home/pay_detail?order_id=${item}`
           })
       },
       toProgram(){

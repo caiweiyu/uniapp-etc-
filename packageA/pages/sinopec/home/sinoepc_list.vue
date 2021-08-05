@@ -1,6 +1,6 @@
 <template>
   <view class="box">
-      <selectArea @getItem="getItem"></selectArea>
+      <selectArea @getDistrict="getDistrict" @getCity="getCity"></selectArea>
       <image class="banner" src="https://image.etcchebao.com/etc-min/sinopec-list/banner.png" mode="" />
       <scroll-view :scroll-y="true" v-if="loading && list.length > 0" class="card-scroll" @scrolltolower="dealScrollBottom">
           <view class="box_container">
@@ -11,9 +11,9 @@
                       <view class="view"><image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/location.png" mode="" />{{item.address}}</view>
                       <view class="fontColor"><image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/phone.png" mode="" />{{item.telephone}}</view>
                   </view>
-                  <view class="box_container_item_right" @click="goMapLocation(item)">
-                      <image src="https://image.etcchebao.com/etc-min/sinopec-list/duil.png" mode="" />
-                      {{item.juli}}
+                  <view class="box_container_item_right">
+                      <image  @click="goMapLocation(item)" src="https://image.etcchebao.com/etc-min/sinopec-list/duil.png" mode="" />
+                      <text class="text">{{item.juli}}</text>
                   </view>
               </view>
           </view>
@@ -87,7 +87,16 @@ export default {
           this.page+=1;
           this.get_axios_station(this.page,this.page_size)
        },
-       getItem(item){
+       getCity(item){
+           this.district="";
+           this.city = item.city;
+           this.list = [];
+           this.page = 1;
+           this.page_size = 10;
+           this.lng = '',this.lat = '';
+           this.get_axios_station(this.page,this.page_size)
+       },
+       getDistrict(item){
            this.district = item.district;
            this.city = item.city;
            this.list = [];
@@ -124,6 +133,7 @@ export default {
         .card-scroll{
             position: relative;
 			height:100vh;
+            background-color: #F4F4F4;
         }
         &_container{
             // height: 218rpx;
@@ -138,8 +148,10 @@ export default {
                 // height: 218rpx;
                 display: flex;
                 border-bottom: 1rpx solid #EBEBEB;
+                position: relative;
                 justify-content: space-between;
                 &_left{
+                    width: 80%;
                     text{
                         margin: 30rpx 0 0 8rpx;
                         color: #222222;
@@ -176,12 +188,20 @@ export default {
                     text-align: center;
                     font-size: 20rpx;
                     color: #222222;
-                    margin: 67rpx 14rpx 0 0;
+                    position: absolute;
+                    right: 14rpx;
+                    top: 67rpx;
+                    // margin: 67rpx 14rpx 0 0;
                     image{
                         display: block;
                         width: 49rpx;
                         height: 49rpx;
-                        margin-bottom: 13rpx;
+                        margin:auto;
+                    }
+                    .text{
+                        text-align: center;
+                        display: block;
+                        margin-top: 13rpx;
                     }
                 }
             }
