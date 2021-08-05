@@ -42,7 +42,7 @@ export default {
             page_size:10,
             loading:false,
             emtry_list:true,
-            city:"440100",
+            city:"",
             district:"",
             lat:"",
             lng:""

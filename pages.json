@@ -347,11 +347,6 @@
 					"navigationBarTextStyle": "white"
 				}
 			}, {
-				"path": "home/video",
-				"style": {
-					"navigationBarTitleText": "视频"
-				}
-			}, {
 				"path": "home/detail",
 				"style": {
 					"navigationBarTitleText": "使用须知"
