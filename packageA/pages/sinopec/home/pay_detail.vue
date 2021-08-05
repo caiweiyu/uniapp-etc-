@@ -93,7 +93,9 @@
             </view>
         </view>
         <!--客服-->
-        <view></view>
+        <view class="server" @click="toServe">
+            <!-- <image src="https://image.etcchebao.com/etc-min/sinopec/serve_tip.png" mode="" /> -->
+        </view>
 		<!-- <view class="btn-group" v-if="isBlock && detail.order_status_id == 0">
 			<view class="ant-button" @click="$debounce(toRefund)">申请退款</view>
 			<view class="ant-button" @click="$debounce(toBule)">继续写卡</view>
@@ -112,6 +114,7 @@
 	import conf from '@/config/conf.js'
 	import { mapState } from "vuex"
 	import { eventMonitor } from "@/common/utils"
+    import {user} from "@/common/constant"
 	export default {
 		computed: {
 			...mapState({
@@ -166,6 +169,11 @@
                     this.detail = data;
                     console.log(this.detail)
                 }
+            },
+            toServe(){
+                uni.navigateTo({
+                    url: `/pages/webview/main?src=${encodeURIComponent(`${user}/qiyu/index.html?isGps=0`)}`,
+                });
             }
 		},
         mounted() {
@@ -331,5 +339,18 @@
 				}
 			}
 		}
+        .server{
+            width: 120rpx;
+            height: 120rpx;
+            // background-color: #ffffff;
+            // z-index: 9999;
+            position: fixed;
+            right: 13rpx;
+            bottom: 371rpx;
+            background:url('https://image.etcchebao.com/etc-min/sinopec/serve_tip.png') no-repeat;
+            background-size: 100% 100%;
+            border-radius: 50%;
+            box-shadow: rgba($color: #000000, $alpha: 0.1);
+        }
 	}
 </style>
