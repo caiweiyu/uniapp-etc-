@@ -3,7 +3,7 @@
       <!-- <selectArea></selectArea> -->
       <view class="box1">
         <text class="boxsize boxitem">视频教程</text>
-        <image :src="list.video_icon" mode="" />
+        <image :src="list.video_icon" mode="" @click="show = true" />
       </view>
       <view class="box2">
         <text class="boxsize boxitem">省钱教程</text>
@@ -11,11 +11,13 @@
 								:interval="5000"
 								:duration="300"
                 :circular="true"
+                @change="changeCurrent"
+                :current="current"
                 class="swiper">
-          <swiper-item class="swiper_item">
+          <swiper-item class="swiper_item" v-if="list.image_help != ''">
               <image :src="list.image_help" mode="" />
           </swiper-item>
-          <swiper-item class="swiper_item">
+          <swiper-item class="swiper_item" v-if="dots2.length > 0">
               <view class="box2_container" :style="index==0?'':'margin-top: 21rpx'" v-for="(item,index) in dots2" :key="index">
                   <view class="icon2">{{item.index}}</view>
                   <text>{{item.title}}</text>
@@ -31,9 +33,13 @@
         </view>
       </view>
       <!--易捷提货券-->
-      <view class="box4">
-          易捷提货券
+      <view class="box4" @click="changeCurrentRight">
+          <image src="https://image.etcchebao.com/etc-min/sinopec/change.png" mode="" />
       </view>
+      <!--视频播放-->
+      <u-popup class="box5" closeable="true" v-model="show" mode="center" width="100vw" height="100vh">
+            <video id="myvideo" ref="myvideo" @click="touchPlay" :src="list.video_help" :autoplay="autoplay" :play-btn-position	="'center'" class="box5_item"></video>
+      </u-popup>
   </view>
 </template>
 
@@ -47,7 +53,11 @@ export default {
       return {
         list:{},
         dots:[],
-        dots2:[]
+        dots2:[],
+        show:false,
+        player:false,
+        autoplay:true,
+        current:0
       }
     },
     methods: {
@@ -78,6 +88,22 @@ export default {
              console.log(this.dots2)
           }
         }
+      },
+      touchPlay(){
+        let newVideo = uni.createVideoContext(`myvideo`);
+        if(this.player){
+           newVideo.play();
+           this.player = false;
+        }else{
+           newVideo.pause();
+           this.player = true;
+        }
+      },
+      changeCurrent(e){
+        this.current = e.detail.current;
+      },
+      changeCurrentRight(){
+        this.current==1?this.current=0:this.current=1
       }
     },
     onShow(){
@@ -197,9 +223,20 @@ export default {
       right: 0;
       top: 50%;
       transform: translateY(-50%);
-      width: 100rpx;
-      height: 300rpx;
-      border:1rpx solid #ddd;
+      width: 79rpx;
+      height: 221rpx;
+      z-index: 9999;
+      image{
+        width: 79rpx;
+        height: 221rpx;
+      }
+    }
+    .box5{
+      z-index:9999;
+      &_item{
+        width: 100vw;
+        height: 100vh;
+      }
     }
     .boxsize{
         color: #222222;
