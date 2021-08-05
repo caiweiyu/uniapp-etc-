@@ -1,25 +1,27 @@
 <template>
-  <view class="box">
+  <view class="box" @touchmove.stop="bindContent">
       <view :class="['box1']" @click="toggleWindows">
-          全部地区 <view :class="['dots',status==true ? 'dots_up' : 'dots_down']"></view>
+          <text :class="['text1',status==true ? 'text1_active' : '']">全部地区</text>
+          <image class="up" v-if="status == true" src="https://image.etcchebao.com/etc-min/sinopec-list/up.png" mode="" />
+          <image class="down" v-else src="https://image.etcchebao.com/etc-min/sinopec-list/down.png" mode="" />
       </view>
       <view :class="['box2',status == true ? 'box2_active' : 'box2_active_off']">
-          <scroll-view scroll-y="true" v-if="status">
+          <scroll-view :scroll-y="true" v-if="status">
               <view class="box2_left">
-                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click="showArea(index)">
+                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click="showArea(index,item)">
                       {{item.name}}
                   </view>
               </view>
           </scroll-view>
           <scroll-view scroll-y="true" v-if="status">
               <view class="box2_right">
-                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']"  v-for="(item,index) in list[current].children" :key="index" @click="showAreadetail(index)">
+                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']"  v-for="(item,index) in list[current].children" :key="index" @click="showAreadetail(index,item)">
                       {{item.name}}
                   </view>
               </view>
           </scroll-view>
       </view>
-      <view :class="[status == true ? 'box3' : '']" @click="toggleWindows">
+      <view :class="[status == true ? 'box3' : '']" @click="toggleWindows" @touchmove.stop="bindContent">
 
       </view>
   </view>
@@ -27,6 +29,7 @@
 
 <script>
 import * as API from "@/interfaces/sinoepc";
+import {mapState} from "vuex"
 export default {
     props:{
  
@@ -36,7 +39,10 @@ export default {
             status:false,
             list:[],
             current:0,
-            currentdetail:-1
+            currentdetail:-1,
+            city_code:'440100',
+            district_code:'',
+            bindContent:()=>{}
         }
     },
     methods:{
@@ -50,11 +56,16 @@ export default {
         toggleWindows(){
             this.status = !this.status;
         },
-        showArea(index){
+        showArea(index,item){
+            this.currentdetail = -1,
             this.current = index;
+            this.city_code = item.code;
         },
-        showAreadetail(index){
+        showAreadetail(index,item){
             this.currentdetail = index;
+            this.district_code = item.code;
+            this.status = !this.status;
+            this.$emit('getItem',{city:this.city_code,district:this.district_code})
         }
     },
     mounted() {
@@ -71,11 +82,25 @@ export default {
             height: 79rpx;
             line-height: 79rpx;
             font-size: 30rpx;
-            margin-left: 54rpx;
-            color: #FF5C2A;
+            color: #222222;
             border-bottom: 1rpx solid #F9F9F9;
             background-color: #ffffff;
-            z-index: 997;
+            position: fixed;
+            z-index: 999;
+            .text1{
+                margin-left: 54rpx;
+            }
+            .text1_active{
+                color: #FF5C2A;
+            }
+            .up,.down{
+                margin-left: 10rpx;
+                width: 20rpx;
+                height: 12rpx;
+                line-height: 79rpx;
+                display: inline-block;
+                vertical-align: middle;
+            }
             .dots{
                 margin-left: 11rpx;
                 line-height: 79rpx;
@@ -98,7 +123,7 @@ export default {
             }
         }
         .box2{
-            position: absolute;
+            position: fixed;
             top: 79rpx;
             width: 100%;
             z-index: 999;
@@ -152,7 +177,7 @@ export default {
             width: 100%;
             height: 100vh;
             position: absolute;
-            top: 60vh;
+            top: calc(667rpx);
             z-index: 998;
             background-color: rgba(0,0,0,0.4);
 
