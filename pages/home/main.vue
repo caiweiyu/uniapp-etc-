@@ -37,7 +37,7 @@
 			</view>
 			
 			<!--卡区域列表-->
-			<swiper-cards @callback_card="callback_card" v-cloak></swiper-cards>
+			<swiper-cards @callback_card="callback_card"></swiper-cards>
 			
 			<!--图标导航-->
 			<nav-icon></nav-icon>
