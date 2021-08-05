@@ -39,7 +39,7 @@
 <style lang="scss">
 	.content {
 		color: #222222;
-		margin: 20rpx 0 0 0;
+		margin: 24rpx 0 0 0;
 		background-color: #FFFFFF;
 		border-radius: 20rpx;
 		.course {
