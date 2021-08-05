@@ -68,12 +68,13 @@
 
 		},
 		onLoad(options) {
-			
+
 		},
 		async onShow() {
 			let options = this.$root.$mp.query;
-			console.log("options", options)
-			if(options.scene){ // B接口生成的码(参数键值最大限制32)
+
+			// B接口生成的码(参数键值最大限制32)
+			if(options.scene){
 				// options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
 				let scene = decodeURIComponent(options.scene);
 				let obj = {};
@@ -81,15 +82,35 @@
 					let arr = scene.split('&')[i].split('=');
 					obj[arr[0]] = arr[1];
 				}
-				if(obj.hasOwnProperty("from_type") == true){
-					if (Number(obj.from_type) > 0) {
-						this.$store.commit("user/setFromType", Number(obj.from_type));
+				if(obj.hasOwnProperty("f") == true){ // from_type 节省字段缩写
+					if (Number(obj.f) > 0) {
+						this.$store.commit("user/setFromType", Number(obj.f));
+					}
+				}
+				if(obj.hasOwnProperty("s") == true){ // share_id 节省字段缩写
+					if (Number(obj.s) > 0) {
+						this.$store.commit("user/setShareId", Number(obj.s));
 					}
 				}
 				if(obj.hasOwnProperty("b") == true){ //业务参数用于中转(内嵌业务)（以下划线隔开）
 					await this.getH5Url(obj.b);
 				}
 			}
+			//兼容AC接口小程序码(带路径128位)
+			if (options.hasOwnProperty("b") == true) {
+				await this.getH5Url(options.b);
+			}
+			if (options.hasOwnProperty("f") == true) { // from_type 节省字段缩写
+				if (Number(options.f) > 0) {
+					this.$store.commit("user/setFromType", Number(options.f));
+				}
+			}
+			if(options.hasOwnProperty("s") == true){ // share_id 节省字段缩写
+				if (Number(options.s) > 0) {
+					this.$store.commit("user/setShareId", Number(options.s));
+				}
+			}
+
 			if (options.hasOwnProperty("h5_url") == true) {
 				this.url = options.h5_url;
 			}
