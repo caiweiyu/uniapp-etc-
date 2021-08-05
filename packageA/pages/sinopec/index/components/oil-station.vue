@@ -5,22 +5,22 @@
 		<view class="oil-station">
 			<view class="top">
 				<view class="title">附近油站</view>
-				<view class="more">更多油站</view>
+				<view class="more" @click="bindMore">更多油站</view>
 			</view>
 			<view class="bottom">
-				<view class="box" v-for="(item,index) in [0,0,0,0,0,0]" :key="index">
-					<view class="minbox u-line-1">中石化东圃加油站</view>
+				<view class="box" v-for="(item,index) in oil_station" :key="index">
+					<view class="minbox u-line-1">{{item.name}}</view>
 					<view class="minbox">
 						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_45.png"></image>
-						<view class="min-2 u-line-1">东圃大马路66号店东圃大马路66号店东圃大马路66号店东圃大马路66号店东圃大马路66号店</view>
+						<view class="min-2 u-line-1">{{item.address}}</view>
 					</view>
 					<view class="minbox">
 						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_46.png"></image>
-						<view class="min-2">020-882066</view>
+						<view class="min-2">{{item.telephone}}</view>
 					</view>
 					<view class="minbox">
 						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_44.png"></image>
-						<view class="min-2">3.2km</view>
+						<view class="min-2">{{item.juli}}</view>
 					</view>
 				</view>
 			</view>
@@ -39,7 +39,8 @@
 	export default {
 		computed: {
 			...mapState({
-				sinoepc_init: (state) => state.sinoepc.sinoepc_init
+				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
+				oil_station: (state) => state.sinoepc.oil_station
 			})
 		},
 		data() {
@@ -51,7 +52,14 @@
 			
 		},
 		methods: {
-			
+			/**
+			 * 更多油站
+			 */
+			bindMore() {
+				uni.navigateTo({
+					url: "/packageA/pages/sinopec/home/sinoepc_list"
+				})
+			}
 		}
 	}
 </script>
