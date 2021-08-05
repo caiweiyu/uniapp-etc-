@@ -13,7 +13,7 @@
 		<!-- 背景图 -->
 		<!-- **************************** -->
 		<view class="bg">
-			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_28.png" mode="widthFix"></image>
+			<image src="@/static/img/icon_36.png" mode="widthFix"></image>
 		</view>
 		
 		<!-- **************************** -->
@@ -37,6 +37,11 @@
 			
 			<!-- 附近油站 -->
 			<oil-station></oil-station>
+			
+			<!-- 我的券 -->
+			<view class="mine-coupon">
+				<image src="@/static/img/icon_37.png" mode="aspectFit"></image>
+			</view>
 		</view>
 		
 	</view>
@@ -163,8 +168,15 @@
 		}
 		.sinoepc {
 			margin: 0 auto;
-			padding: 152rpx 0 0 0;
+			padding: 152rpx 0 20rpx 0;
 			width: 700rpx;
+			.mine-coupon {
+				position: fixed;
+				right: 0;
+				bottom: 100rpx;
+				width: 120rpx;
+				height: 122rpx;
+			}
 		}
 	}
 </style>
