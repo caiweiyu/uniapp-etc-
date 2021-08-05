@@ -68,6 +68,7 @@
 
 		},
 		async onLoad(options) {
+			console.log("options", options)
 			if(options.scene){ // B接口生成的码(参数键值最大限制32)
 				// options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
 				let scene = decodeURIComponent(options.scene);
@@ -76,17 +77,11 @@
 					let arr = scene.split('&')[i].split('=');
 					obj[arr[0]] = arr[1];
 				}
+				// if(obj.hasOwnProperty("from_type") == true){
+				// 	this.$root.$mp.query.from_type=obj.from_type
+				// }
 				if(obj.hasOwnProperty("b") == true){ //业务参数用于中转(内嵌业务)（以下划线隔开）
-					//this.getH5Url(obj.b)
-					await API.axios_h5_url({
-						param: obj.b
-					}).then(res => {
-						let {code, data} = res;
-						if(code == 0 && !!data.h5_url){
-							console.log('data.h5_url',data.h5_url)
-							this.url = encodeURIComponent(data.h5_url)
-						}
-					})
+					await this.getH5Url(obj.b);
 				}
 			}
 			if (options.hasOwnProperty("h5_url") == true) {
