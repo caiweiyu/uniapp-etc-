@@ -89,7 +89,7 @@
         <view class="box_bottom">
             <view class="box_bottom_item">
                 <view class="box_bottom_item_left">在“加油广东”APP和“大家来加油”小程序扫码使用优惠券</view>
-                <view class="box_bottom_item_right">去使用</view>
+                <view class="box_bottom_item_right" @click="toProgram">去使用</view>
             </view>
         </view>
         <!--客服-->
@@ -111,6 +111,8 @@
 <script>
 	const app = getApp()
 	import * as API from "@/interfaces/sinoepc"
+	import miniScript from "@/common/miniScript"
+	const  miniapp = miniScript.getInstance()
 	import conf from '@/config/conf.js'
 	import { mapState } from "vuex"
 	import { eventMonitor } from "@/common/utils"
@@ -174,7 +176,24 @@
                 uni.navigateTo({
                     url: `/pages/webview/main?src=${encodeURIComponent(`${user}/qiyu/index.html?isGps=0`)}`,
                 });
-            }
+            },
+			toProgram(){
+				let item = {
+					jump_type:"2",
+					appid:"wx32fe2eb8b2fa221f",
+					jump_url:""
+				}
+				console.log(item)
+				this.callback(item)
+			},
+			callback(item) {
+				// 跳转page || miniProgram
+				miniapp.miniProgramRouter(item, (res)=>{
+					
+				}, (err)=> {
+					
+				})
+			},
 		},
         mounted() {
             let {
