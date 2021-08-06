@@ -7,8 +7,9 @@
 				:duration="300"
 				@change="bindchange"
 		>
-			<swiper-item class="swiper-item" v-for="(item,index) in sinoepc_init.ad_banner" :key="index" @click="bindNavBanner(item)">
+			<swiper-item class="swiper-item" v-for="(item,index) in sinoepc_init.ad_banner" :key="index" @click="$debounce(bindNavBanner,item)">
 				<image class="img" :src="item.icon" mode="aspectFill"></image>
+				<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
 			</swiper-item>
 		</swiper>
 		<view class="dots" v-if="sinoepc_init.ad_banner.length > 1">
@@ -23,7 +24,11 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
+		components: {
+			buttonGetPhoneNumber
+		},
 		computed: {
 			...mapState({
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init
