@@ -112,6 +112,7 @@ export default {
         }
         height: 100vh;
         width: 100%;
+        overflow: hidden;
         background-color: #F4F4F4;
         .image{
             width: 750rpx;
