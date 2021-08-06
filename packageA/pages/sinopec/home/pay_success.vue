@@ -6,16 +6,16 @@
                 <image class="back" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
             </navigator>
             <view>支付结果</view>
-            <view>完成</view>
+            <view></view>
         </view>
 		<!-- 充值完成 -->
 		<image class="img" src="https://image.etcchebao.com/etc-min/ytk-qc-file/icon_list_suc.png"></image>
 		<text>支付成功</text>
-        <view>
-            恭喜你，测试恭喜你，测试恭喜你，测试恭喜你，测试恭喜你，测试恭喜你，测试恭喜你，测试
+        <view class="box_text">
+            xxx
         </view>
 		<view class="box_bottom">
-			<view @click="toHome">返回首页</view>`
+			<view @click="toHome">返回首页</view>
 			<view @click="toOrder">查看订单</view>
 		</view>
   </view>
@@ -87,6 +87,9 @@ export default {
                 // left: 26rpx;
             }
             view{
+				font-size: 36rpx;
+				color: #0D0D0D;
+				font-weight: bold;
                 display: inline-block;
                 vertical-align: middle;
                 margin-top: 15rpx;
@@ -101,14 +104,18 @@ export default {
 		}
 
 		>text {
-			margin: 10rpx 0 165rpx 0;
+			margin: 10rpx 0 124rpx 0;
 			text-align: center;
 			color: #FF5C2A;
 			font-size: 34rpx;
 			font-weight: bold;
 			display: block;
 		}
-
+		.box_text{
+			width: 80%;
+			text-align: center;
+			margin: auto;
+		}
 		&_content {
 			display: flex;
 			justify-content: space-between;
@@ -142,24 +149,24 @@ export default {
 			margin-top: 64rpx;
 
 			>view:nth-child(1) {
-				border: 2rpx solid #F1CF92;
+				border: 2rpx solid #FF5C2A;
 				border-radius: 120rpx;
 				height: 100rpx;
 				width: 333rpx;
 				line-height: 100rpx;
-				color: #F1CF92;
+				color: #FF5C2A;
 				font-size: 32rpx;
 				margin-left: 28rpx;
 			}
 
 			>view:nth-child(2) {
-				border: 2rpx solid #FFFFFF;
-				background-color: #F1CF92;
+				border: 2rpx solid #FF5C2A;
+				background-color: #FF5C2A;
 				border-radius: 120rpx;
 				height: 100rpx;
 				width: 333rpx;
 				line-height: 100rpx;
-				color: #000000;
+				color: #ffffff;
 				font-size: 32rpx;
 				margin-right: 28rpx;
 			}

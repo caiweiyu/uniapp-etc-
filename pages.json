@@ -352,6 +352,11 @@
 					"navigationBarTitleText": "使用须知"
 				}
 			},{
+				"path": "home/pay_detail_add",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				}
+			},{
 				"path": "home/pay_detail",
 				"style": {
 					"navigationBarTitleText": "订单详情"

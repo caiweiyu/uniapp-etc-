@@ -83,10 +83,10 @@ export default {
       toProgram(){
           let item = {
               jump_type:"2",
-              appid:"gh_85d236dfcbaa",
+              appid:"wx32fe2eb8b2fa221f",
               jump_url:""
           }
-          console.log(item)
+          console.log(item,'------')
           this.callback(item)
       },
       callback(item) {
