@@ -2,17 +2,24 @@
   <view class="box">
         <!--返回-->
         <view class="container">
-            <navigator open-type='navigateBack'>
-                <image class="back" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
-            </navigator>
-            <view>支付结果</view>
-            <view></view>
+			<view class="nav container-item">
+				<image class="imgs" src="https://image.etcchebao.com/etc-min/etc-f/icon_3.png" />
+				<view class="boxs">
+					<navigator open-type='navigateBack'>
+						<view class="minbox1"></view>
+					</navigator>
+					<view class="minbox2" @click="loadreLaunch"></view>
+				</view>
+			</view>
+            <view class="container-item">支付结果</view>
+            <view class="container-item" style="opacity:0;width:158rpx">完成</view>
         </view>
 		<!-- 充值完成 -->
 		<image class="img" src="https://image.etcchebao.com/etc-min/ytk-qc-file/icon_list_suc.png"></image>
 		<text>支付成功</text>
         <view class="box_text">
-            xxx
+            恭喜你！中石化加油券充值成功！
+		  此订单将扣除<text class="text">{{order.point}}</text>积分，为您节省<text class="text">{{order.price}}</text>元
         </view>
 		<view class="box_bottom">
 			<view @click="toHome">返回首页</view>
@@ -23,23 +30,30 @@
 
 <script>
 const app = getApp()
-import * as API from "@/interfaces/sinoepc";
-import { mapState } from "vuex"
 export default {
     props:{
          
     },
     data(){
       return {
-        order:{},
+        order:{
+			point:0,
+			price:0
+		},
         status:true
       }
     },
     methods: {
+		loadreLaunch(){
+			this.status = false
+			uni.switchTab({
+				url: `/pages/home/main`
+			})
+		},
         toHome() {
             this.status = false
-            uni.switchTab({
-                url: `/pages/home/main`
+            uni.navigateTo({
+                url: `/packageA/pages/sinopec/index/main`
             })
         },
         toOrder() {
@@ -49,29 +63,26 @@ export default {
             })
         },
     },
-    onShow(){
-
-    },
-    onLoad(options){
-        if (options) {
-            this.order = options;
-        }
-    },
     onUnload(){
         if(this.status){
             uni.navigateTo({
-                url:`/packageA/pages/ytk/ytk_list/main`
+                url:`/packageA/pages/sinopec/index/main`
             })
         }
     },
     mounted() {
-     
+     	let {
+			point,
+			price
+		} = this.$root.$mp.query;
+		this.order.point = point;
+		this.order.price = price;
     },
 }
 </script>
 
 <style lang="scss" scoped>
-    	.box {
+    .box {
         position: relative;
         .container{
             display: flex;
@@ -79,14 +90,7 @@ export default {
             // position: absolute;
             // top: 86rpx;
             margin-top: 100rpx;
-            .back{
-                width: 62rpx;
-                height: 62rpx;
-                flex-shrink: 0;
-                display: flex;
-                // left: 26rpx;
-            }
-            view{
+            .container-item{
 				font-size: 36rpx;
 				color: #0D0D0D;
 				font-weight: bold;
@@ -94,6 +98,35 @@ export default {
                 vertical-align: middle;
                 margin-top: 15rpx;
             }
+			.nav {
+				position: relative;
+				width: 158rpx;
+				height: 58rpx;
+				.imgs {
+					width: 100%;
+					height: 100%;
+				}
+				.boxs {
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					flex-direction: row;
+					flex-wrap: nowrap;
+					justify-content: space-between;
+					.minbox1 {
+						width: 80rpx;
+						height: 58rpx;
+					}
+					.minbox2 {
+						width: 78rpx;
+						height: 58rpx;
+					}
+				}
+			}
+
         }
 		.img {
 			padding-top: 160rpx;
@@ -115,6 +148,11 @@ export default {
 			width: 80%;
 			text-align: center;
 			margin: auto;
+			color: #999999;
+			font-size: 26rpx;
+			.text{
+				margin: 0 10rpx;
+			}
 		}
 		&_content {
 			display: flex;
@@ -147,7 +185,6 @@ export default {
 			justify-content: space-between;
 			text-align: center;
 			margin-top: 64rpx;
-
 			>view:nth-child(1) {
 				border: 2rpx solid #FF5C2A;
 				border-radius: 120rpx;

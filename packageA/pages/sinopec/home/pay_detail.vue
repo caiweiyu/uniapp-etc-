@@ -39,11 +39,11 @@
 			</view>
             <view class="box">
 				<view class="minbox">开始时间</view>
-				<view class="minbox minblack">{{detail.gettime }}</view>
+				<view class="minbox minblack">{{detail.gettime || "" }}</view>
 			</view>
             <view class="box">
 				<view class="minbox">结束时间</view>
-				<view class="minbox minblack">{{detail.endtime }}</view>
+				<view class="minbox minblack">{{detail.endtime || "" }}</view>
 			</view>
 		</view>
         <view class="line"></view>
