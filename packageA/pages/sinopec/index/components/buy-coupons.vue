@@ -4,7 +4,10 @@
 		<!-- 输入手机号 -->
 		<view class="phone">
 			<view class="title">加油券充值手机号：</view>
-			<input class="input" type="number" :value="phone_number" placeholder="请输入手机号码" placeholder-style="color: #CCCCCC" maxlength="11" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
+			<!-- <view class="number_show">
+				<view class="box" v-for="(item,index) in phone_number" :key="index">{{item}}</view>
+			</view> -->
+			<input class="input" type="number" :value="phone_number" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="11" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
 		</view>
 		
 		<!-- 提示 -->
@@ -13,7 +16,7 @@
 			<view class="box">手机号为电子邮件券账号，充值成功则不能退款</view>
 			<block v-if="phone_history.length > 0">
 				<view class="history" v-show="curHistory">
-					<view class="num" hover-class="hover" v-for="(item,list) in phone_history" :key="index" @click="bindHistory(item)">
+					<view class="num" hover-class="hover" v-for="(item,index) in phone_history" :key="index" @click="bindHistory(item)">
 						<view class="num-1">{{item.phone}}</view>
 						<view class="num-2">{{item.phone_location}}</view>
 					</view>
@@ -27,17 +30,22 @@
 		
 		<!-- 充值选项 -->
 		<view class="select">
-			<view class="box" hover-class="hover" v-for="(item,index) in sinoepc_init.list" :key="index" @click="bindPay(item)">
+			<view :class="['box', !token ? 'box-bg-3' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.list" :key="index" @click="bindPay(item)">
 				<view class="minbox">
-					<view class="min-1">
+					<view :class="['min-1', !token ? 'text-color' : '']">
 						<text class="text">{{item.recharge_price}}</text>元油券
 					</view>
-					<view class="min-2">
-						{{item.coin_num}}元+{{item.price}}积分
+					<view :class="['min-2', !token ? 'text-color' : '']">
+						{{item.price}}元+{{item.coin_num}}积分
 					</view>
 				</view>
-				<view class="minbox">立即兑换</view>
-				<view class="minbox"></view>
+				<view :class="['minbox', !token ? 'text-color' : '']">立即兑换</view>
+				<view class="minbox">
+					<image :src="item.icon" mode="heightFix"></image>
+				</view>
+				<view class="minbox" v-if="item.xcx_mj > 0">
+					<text>抵扣{{item.xcx_mj}}元</text>
+				</view>
 			</view>
 		</view>
 		
@@ -45,13 +53,22 @@
 		<view class="coupon" @click="bindCouponPopup">
 			<view class="box-1">
 				<view class="minbox">优惠券抵扣</view>
-				<view class="minbox">1张可用</view>
+				<view class="minbox">{{sinoepc_init.coupon.total || 0}}张可用</view>
 			</view>
-			<view class="box-2">
-				<view class="minbox">暂无可用</view>
+			<view :class="['box-2', coupon_text == '未使用' ? '' : 'box-2-color']">
+				<view class="minbox">
+					<block v-if="sinoepc_init.coupon.total <= 0">
+						<text>暂无可用</text>
+					</block>
+					<block v-else>
+						<text>{{coupon_text}}</text>
+					</block>
+				</view>
 				<view class="minbox"></view>
 			</view>
 		</view>
+		
+		<button-getPhoneNumber type="local" />
 		
 	</view>
 </template>
@@ -62,10 +79,16 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
+		components: {
+			buttonGetPhoneNumber
+		},
 		computed: {
 			...mapState({
+				token: (state) => state.user.token,
 				info: (state) => state.user.info,
+				sinoepc_list: (state) => state.sinoepc.sinoepc_list,
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
 				phone_history: (state) => state.sinoepc.phone_history
 			})
@@ -75,14 +98,59 @@
 				phone_number: "",//手机号码
 				isfocus: false,//input 焦点
 				curHistory: false,//历史手机号码输入
+				coupon_text: "未使用",//优惠券选择文案
 			}
 		},
 		mounted() {
 			if (this.info.hasOwnProperty("phone") == true) {
 				this.phone_number = this.info.phone;
 			}
+			uni.$on("selectETCCoupon", (e)=> {
+				this.coupon_text = e.coupon_text;
+				this.calculationCoupon(e);
+			})
 		},
 		methods: {
+			/**
+			 * 计算卡券
+			 */
+			calculationCoupon(e) {
+				let sinoepc_init = this.sinoepc_init;
+				if (e.coupon_text == "未使用") {//还原原始数据
+					sinoepc_init.list = this.$u.deepClone(this.sinoepc_list);
+				} else {//计算卡券优惠
+					sinoepc_init.list = this.$u.deepClone(this.sinoepc_list);
+					let { index } = e; 
+					let rule_money = Number(sinoepc_init.coupon.coupon_list[index].rule_money);//满减金额
+					let quota = Number(sinoepc_init.coupon.coupon_list[index].quota);//抵扣金额
+					let cash = 0;//面值 - 满减金额
+					let is_zero_buy = Number(sinoepc_init.coupon.coupon_list[index].is_zero_buy);//是否支持满减后0元支付
+					for (let i = 0; i < sinoepc_init.list.length; i++) {
+						if (Number(sinoepc_init.list[i].recharge_price) >= rule_money) {//符合满减条件
+							cash = Number(sinoepc_init.list[i].recharge_price) - quota;
+							if (cash == 0) {//满减后0元支付
+								if (sinoepc_init.list[i].price > cash) {//(折扣金额 > 满减金额) => 优先满减
+									if (is_zero_buy == 1) {//支持满减后0元支付
+										sinoepc_init.list[i].xcx_mj = quota;
+										sinoepc_init.list[i].price = cash;
+									}
+								}
+							} else if (cash > 0) {//满减后大于0元支付
+								if (sinoepc_init.list[i].price > cash) {//(折扣金额 > 满减金额) => 优先满减
+									sinoepc_init.list[i].xcx_mj = quota;
+									sinoepc_init.list[i].price = cash;
+								}
+							} else {
+								// 负数不符合满减规则
+							}
+						} else {
+							//不符合满减条件
+						}
+					}
+				}
+				this.$store.commit("sinoepc/mt_sinoepc_init", sinoepc_init);
+			},
+			
 			/**
 			 * 监听input输入
 			 */
@@ -195,20 +263,43 @@
 		padding: 32rpx 20rpx 0 20rpx;
 		border-radius: 20rpx;
 		color: #222222;
+		position: relative;
 		.phone {
 			width: 100%;
 			border-bottom: 1rpx solid #EBEBEB;
+			position: relative;
 			position: relative;
 			.title {
 				padding: 0 5rpx;
 				font-size: 24rpx;
 			}
-			.input {
+			.number_show {
 				padding: 0 5rpx 20rpx 5rpx;
 				width: calc(100% - 10rpx);
 				height: 100rpx;
 				font-size: 60rpx;
 				font-family: "etccb-font";
+				display: flex;
+				flex-wrap: wrap;
+				flex-direction: row;
+				position: absolute;
+				left: 0;
+				top: 34rpx;
+				.box {
+					line-height: 100rpx;
+				}
+				.box:nth-child(3),
+				.box:nth-child(7) {
+					margin-right: 10rpx;
+				}
+			}
+			.input {
+				padding: 0 5rpx 0 5rpx;
+				width: calc(100% - 10rpx);
+				height: 100rpx;
+				font-size: 50rpx;
+				font-family: "etccb-font" !important;
+				// color: rgba($color: #000000, $alpha: 0);
 			}
 		}
 		.tip {
@@ -313,6 +404,31 @@
 					font-size: 26rpx;
 					color: #229CF4;
 				}
+				.minbox:nth-child(3) {
+					position: absolute;
+					z-index: 1;
+					right: 0;
+					top: 0;
+					height: 30rpx;
+					.img {
+						display: block;
+						height: 30rpx;
+					}
+				}
+				.minbox:nth-child(4) {
+					position: absolute;
+					z-index: 2;
+					right: 0;
+					top: 0;
+					height: 30rpx;
+					line-height: 30rpx;
+					background-color: #FC4926;
+					border-radius: 0 10rpx 0 10rpx;
+					color: #FFFFFF;
+					font-size: 20rpx;
+					font-weight: 700;
+					padding: 0 12rpx;
+				}
 			}
 			.box:nth-child(3n+1) {
 				margin-left: 0;
@@ -323,12 +439,15 @@
 				margin-top: 0;
 			}
 			.box-bg-2 {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_41.png") no-repeat;
-				background-size: 100% 100%;
+				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_41.png") no-repeat !important;
+				background-size: 100% 100% !important;
 			}
 			.box-bg-3 {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_43.png") no-repeat;
-				background-size: 100% 100%;
+				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_43.png") no-repeat !important;
+				background-size: 100% 100% !important;
+			}
+			.text-color {
+				color: #CCCCCC !important;
 			}
 		}
 		.coupon {
@@ -368,6 +487,9 @@
 					border-right: 1rpx solid #999999;
 					transform: rotate(45deg);
 				}
+			}
+			.box-2-color {
+				color: #FF5C2A !important;
 			}
 		}
 	}

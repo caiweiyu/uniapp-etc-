@@ -2,28 +2,27 @@
 	<view class="content">
 		
 		<!-- 卡券活动 -->
-		<block v-if="type == 1 && sinoepc_init.coupon && sinoepc_init.coupon.total > 0">
+		<block v-if="type == 1 && token && sinoepc_init.coupon && sinoepc_init.is_show_coupon_dialog == 1">
 			<u-popup v-model="show_coupons" mode="center" height="auto" :mask-close-able="false">
 				<view class="coupons">
 					<view class="box"></view>
 					<view class="box">
 						<scroll-view scroll-y class="scroll">
-							<view class="minbox" v-for="(item,index) in [0,0,0,0,0]" :key="index">
-								<view class="min">15</view>
-								<view class="min u-line-1">加油满减券</view>
-								<view class="min u-line-1">有效期至2021-12-31</view>
+							<view class="minbox" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index">
+								<view class="min">{{item.get_money}}</view>
+								<view class="min u-line-1">{{item.title}}</view>
+								<view class="min u-line-1">{{item.expire_time}}</view>
 							</view>
 						</scroll-view>
 					</view>
-					<view class="box"></view>
+					<view class="box" @click="bindClose_1"></view>
 					<view class="box" @click="bindClose_1"></view>
 				</view>
 			</u-popup>
 		</block>
 		
-		
 		<!-- 积分 -->
-		<block v-if="type == 2 && sinoepc_init.credit && sinoepc_init.credit > 0">
+		<block v-if="type == 2 && token && sinoepc_init.credit && sinoepc_init.credit > 0">
 			<u-popup v-model="show_integral" mode="center" height="auto" :mask-custom-style="{background: 'rgba(0, 0, 0, 0)'}">
 				<view class="integral" @click="bindClose_2">
 					<view class="box"></view>
@@ -48,15 +47,15 @@
 						<view class="text">选择卡券</view>
 						<image class="close" src="https://image.etcchebao.com/etc-min/etc-f/icon_53.png" @click="bindClose_3"></image>
 					</view>
-					<view class="select" @click="bindUserCoupon">
+					<view class="select" @click="bindUseCoupon">
 						<view class="text">不使用卡券</view>
 						<icon class="icon" type="circle" size="20" v-show="!curCoupon"></icon>
 						<icon class="icon" type="success" size="20" v-show="curCoupon"></icon>
 					</view>
-					<view class="list">
-						<view class="name">有2张卡券可用</view>
+					<view class="list" v-if="sinoepc_init.coupon.total > 0">
+						<view class="name">有{{sinoepc_init.coupon.total || 0}}张卡券可用</view>
 						<scroll-view class="scroll" scroll-y>
-							<view class="box" v-for="(item,index) in [0,0,0,0,0]" :key="index">
+							<view class="box" v-for="(item,index) in sinoepc_init.coupon.coupon_list" :key="index" @click="bindSelectCoupon(index)">
 								<view class="left-box">
 									<view class="min">{{item.discount_quota}}</view>
 									<view class="min">{{item.limit_msg}}</view>
@@ -66,12 +65,12 @@
 									<view class="min">{{item.coupon_title}}</view>
 									<view class="min">有效期至{{item.coupon_expire_time}}</view>
 								</view>
-								<icon class="icon" type="circle" size="20" v-show="!curCoupon"></icon>
-								<icon class="icon" type="success" size="20" v-show="curCoupon"></icon>
+								<icon class="icon" type="circle" size="20" v-show="!item.xcx_select"></icon>
+								<icon class="icon" type="success" size="20" v-show="item.xcx_select"></icon>
 							</view>
 						</scroll-view>
 					</view>
-					<view class="none">
+					<view class="none" v-if="sinoepc_init.coupon.length == 0 || sinoepc_init.coupon.total <= 0">
 						<image class="img" src="https://image.etcchebao.com/etc-min/order/no_card.png" mode="widthFix"></image>
 						<view class="text">暂无可用于加油的优惠券</view>
 					</view>
@@ -97,6 +96,7 @@
 		},
 		computed: {
 			...mapState({
+				token: (state) => state.user.token,
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init
 			})
 		},
@@ -111,6 +111,9 @@
 		mounted() {
 			uni.$on("couponPopup", (e)=>{
 				this.show_coupons_mine = e.show_coupons_mine;
+				if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
+					this.curCoupon = true;
+				};//未有优惠卡券
 			})
 		},
 		methods: {
@@ -130,8 +133,34 @@
 			/**
 			 * 是否使用卡券
 			 */
-			bindUserCoupon() {
+			bindUseCoupon() {
+				if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
+					return;
+				};//未有优惠卡券
 				this.curCoupon = !this.curCoupon;
+				if (this.curCoupon) {
+					for (let i = 0; i < this.sinoepc_init.coupon.coupon_list.length; i++) {
+						this.sinoepc_init.coupon.coupon_list[i].xcx_select = false;
+					}
+					uni.$emit("selectETCCoupon", {
+						coupon_text: `未使用`
+					})
+				}
+			},
+			
+			/**
+			 * 选择卡券类型
+			 */
+			bindSelectCoupon(index) {
+				for (let i = 0; i < this.sinoepc_init.coupon.coupon_list.length; i++) {
+					this.sinoepc_init.coupon.coupon_list[i].xcx_select = false;
+				}
+				this.sinoepc_init.coupon.coupon_list[index].xcx_select = true;
+				this.curCoupon = false;
+				uni.$emit("selectETCCoupon", {
+					coupon_text: `-￥${this.sinoepc_init.coupon.coupon_list[index].discount_quota}`,
+					index: index
+				})
 			}
 		}
 	}
@@ -192,6 +221,9 @@
 							font-size: 22rpx;
 							color: #999999;
 						}
+					}
+					.minbox:first-child {
+						margin-top: 0;
 					}
 				}
 			}

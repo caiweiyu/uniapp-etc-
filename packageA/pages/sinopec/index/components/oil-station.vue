@@ -5,18 +5,18 @@
 		<view class="oil-station">
 			<view class="top">
 				<view class="title">附近油站</view>
-				<view class="more" @click="bindMore">更多油站</view>
+				<view class="more" @click="$debounce(bindMore)">更多油站</view>
 			</view>
 			<view class="bottom">
-				<view class="box" v-for="(item,index) in oil_station" :key="index">
+				<view class="box" v-for="(item,index) in oil_station" :key="index" @click="$debounce(bindMap, item)">
 					<view class="minbox u-line-1">{{item.name}}</view>
 					<view class="minbox">
 						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_45.png"></image>
 						<view class="min-2 u-line-1">{{item.address}}</view>
 					</view>
 					<view class="minbox">
-						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_46.png"></image>
-						<view class="min-2">{{item.telephone}}</view>
+						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_46.png" @click.stop="bindCallPhone(item)"></image>
+						<view class="min-2" @click.stop="bindCallPhone(item)">{{item.telephone}}</view>
 					</view>
 					<view class="minbox">
 						<image class="min-1" src="https://image.etcchebao.com/etc-min/etc-f/icon_44.png"></image>
@@ -27,6 +27,8 @@
 			<view class="last">— 已为你推荐周边最近的油站 —</view>
 		</view>
 		
+		<button-getPhoneNumber type="local" />
+		
 	</view>
 </template>
 
@@ -36,7 +38,11 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
+		components: {
+			buttonGetPhoneNumber
+		},
 		computed: {
 			...mapState({
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
@@ -59,6 +65,24 @@
 				uni.navigateTo({
 					url: "/packageA/pages/sinopec/home/sinoepc_list"
 				})
+			},
+			
+			/**
+			 * 拨打电话
+			 */
+			bindCallPhone(item) {
+				uni.makePhoneCall({
+					phoneNumber: item.telephone
+				})
+			},
+			
+			/**
+			 * 去地图导航
+			 */
+			bindMap(item) {
+				uni.navigateTo({
+				    url: `/pages/location/main?latitude=${item.lat}&longitude=${item.lng}&address=${item.address}&name=${item.name}`
+				})
 			}
 		}
 	}
@@ -71,6 +95,7 @@
 		background-color: #FFFFFF;
 		color: #222222;
 		border-radius: 20rpx;
+		position: relative;
 		.oil-station {
 			.top {
 				display: flex;
@@ -139,6 +164,7 @@
 						.min-2 {
 							color: #229CF4;
 							font-size: 28rpx;
+							display: inline-block;
 						}
 					}
 					.minbox:nth-child(4) {

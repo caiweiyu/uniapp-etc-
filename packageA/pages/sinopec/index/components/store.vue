@@ -4,8 +4,10 @@
 		<!-- 易捷便利店 -->
 		<view class="store" v-if="sinoepc_init.yijie">
 			<view class="title">易捷便利店</view>
-			<image class="img" :src="sinoepc_init.yijie.icon" mode="widthFix" @click="bindNavBanner"></image>
+			<image class="img" :src="sinoepc_init.yijie.icon" mode="widthFix" @click="$debounce(bindNavBanner)"></image>
 		</view>
+		
+		<button-getPhoneNumber v-if="!sinoepc_init.yijie.is_need_login || sinoepc_init.yijie.is_need_login == '1'" type="local" :item="sinoepc_init.yijie" />
 		
 	</view>
 </template>
@@ -16,7 +18,11 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
+		components: {
+			buttonGetPhoneNumber
+		},
 		computed: {
 			...mapState({
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init
@@ -68,6 +74,7 @@
 		margin: 24rpx 0 0 0;
 		background-color: #FFFFFF;
 		border-radius: 20rpx;
+		position: relative;
 		.store {
 			padding: 25rpx 25rpx 28rpx 25rpx;
 			.title {

@@ -2,14 +2,16 @@
 	<view class="content">
 		
 		<!-- 卡券列表 -->
-		<view class="scroll-coupon" v-if="sinoepc_init.coupon.total > 0">
+		<view class="scroll-coupon" v-if="sinoepc_init.new_coupon_list.length > 0">
 			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_38.png"></image>
 			<scroll-view scroll-x class="scroll">
-				<view :class="['box']" hover-class="hover" v-for="(item,index) in sinoepc_init.coupon.coupon_list" :key="index">
-					<view class="minbox">60</view>
-					<view class="minbox">满足200元可用</view>
-					<view class="minbox">有效期至2021-12-30</view>
-					<view class="minbox">
+				<view :class="['box', item.status != 1 ? 'box-active' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index" @click="$debounce(getCoupon, item)">
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
+						￥<text class="text">{{item.get_money}}</text>
+					</view>
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">{{item.title}}</view>
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">{{item.expire_time}}</view>
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
 						<text :decode="true">立即\n领取</text>
 					</view>
 				</view>
@@ -37,10 +39,35 @@
 			}
 		},
 		mounted() {
-			
+			uni.$on("changeCoupon", (e)=> {
+				let sinoepc_init = this.sinoepc_init;
+				for (let i = 0; i < sinoepc_init.new_coupon_list.length; i++) {
+					if (e.id == sinoepc_init.new_coupon_list[i].id) {
+						sinoepc_init.new_coupon_list[i].status = 0;
+						break;
+					} 
+				}
+				this.$store.commit("sinoepc/mt_sinoepc_init", sinoepc_init);
+			})
 		},
 		methods: {
-			
+			/**
+			 * 领取电子卡券
+			 */
+			getCoupon(item) {
+				if (item.status != 1) {
+					uni.showToast({
+						title: "请不要重复领取",
+						icon: "none",
+						mask: true,
+						duration: 1500
+					})
+				} else {
+					uni.$emit("getCoupon", {
+						id: item.id
+					})
+				}
+			}
 		}
 	}
 </script>
@@ -80,19 +107,13 @@
 						transform: translate(0,-50%);
 						width: 140rpx;
 						text-align: center;
-						font-size: 62rpx;
-						font-weight: 700;
-						color: #FF401E;
-						font-family: "etccb-font";
-					}
-					.minbox:nth-child(1)::before {
-						content: "￥";
-						display: inline-block;
-						vertical-align: middle;
 						font-size: 34rpx;
 						font-weight: 700;
 						color: #FF401E;
-						padding: 4rpx 0 0 0;
+						font-family: "etccb-font";
+						.text {
+							font-size: 62rpx;
+						}
 					}
 					.minbox:nth-child(2) {
 						padding: 36rpx 0 0 0;
@@ -112,6 +133,9 @@
 						color: #FF401E;
 						font-size: 32rpx;
 						font-weight: 700;
+					}
+					.text-color {
+						color: #CCCCCC !important;
 					}
 				}
 				.box-active {
