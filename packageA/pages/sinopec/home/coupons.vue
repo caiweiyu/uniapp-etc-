@@ -86,7 +86,6 @@ export default {
               appid:"wx32fe2eb8b2fa221f",
               jump_url:""
           }
-          console.log(item,'------')
           this.callback(item)
       },
       callback(item) {
