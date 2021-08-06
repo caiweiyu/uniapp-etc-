@@ -86,6 +86,9 @@
 			...mapState({
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
 				openid: (state) => state.user.info.openid,
+				city: (state) => state.user.info.city,
+				lat: (state) => state.user.latitude,
+				lng: (state) => state.user.longitude
 			})
 		},
 		data() {
@@ -115,6 +118,7 @@
 				try {
 					await Promise.all([
 						this.loadIndex(),
+						this.loadOilStation()
 					])
 				} catch(err) {
 					app.log({
@@ -149,6 +153,22 @@
 					source_channel: 2
 				})
 				this.$store.dispatch("sinoepc/ac_sinoepc_init", res.data);
+			},
+			
+			async loadOilStation(){
+			    let res = await API.axios_station({
+			        source_channel: 2,
+			        page: 1,
+			        pageSize: 10,
+			        lng: this.lng,
+			        lat: this.lat,
+			        city: "",
+			        district: ""
+			    });
+			    let { code, msg, data } = res;
+			    if (code == 0) {
+			        this.$store.dispatch("sinoepc/ac_oil_station", res.data);
+			    }
 			},
 			
 			/**
