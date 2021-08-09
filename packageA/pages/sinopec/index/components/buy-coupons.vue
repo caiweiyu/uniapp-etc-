@@ -2,12 +2,28 @@
 	<view class="content">
 		
 		<!-- 输入手机号 -->
-		<view class="phone">
+		<view class="phone" @click="bindBlurFalse">
 			<view class="title">加油券充值手机号：</view>
 			<!-- <view class="number_show">
 				<view class="box" v-for="(item,index) in phone_number" :key="index">{{item}}</view>
 			</view> -->
-			<input class="input" type="number" :value="phone_number" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="11" cursor-spacing="10" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
+			<view class="input-box" @click.stop="bindFocusFalse">
+				<input class="input" 
+					   type="number" 
+					   :value="phone_number" 
+					   placeholder="请输入11位手机号码" 
+					   placeholder-style="color: #CCCCCC" 
+					   maxlength="11" 
+					   cursor-spacing="10" 
+					   :focus="isfocus"
+					   :hold-keyboard="false"
+					   @input="bindInput" 
+					   @confirm="bindConfirm" 
+					   @focus="bindFocus" 
+					   @blur="bindBlur" 
+					   @keyboardheightchange="keyboardheightchange"
+				/>
+			</view>
 		</view>
 		
 		<!-- 提示 -->
@@ -16,15 +32,18 @@
 			<view class="box">手机号为电子邮件券账号，充值成功则不能退款</view>
 			<block v-if="phone_history.length > 0">
 				<view class="history" v-show="curHistory">
-					<view class="num" hover-class="hover" v-for="(item,index) in phone_history" :key="index" @click="bindHistory(item)">
-						<view class="num-1">{{item.phone}}</view>
-						<view class="num-2">{{item.phone_location}}</view>
-					</view>
+					<scroll-view scroll-y class="scroll">
+						<view class="num" hover-class="hover" v-for="(item,index) in phone_history" :key="index" @click="bindHistory(item)">
+							<view class="num-1">{{item.phone}}</view>
+							<view class="num-2">{{item.phone_location}}</view>
+						</view>
+					</scroll-view>
 					<view class="last" @click="bindHistoryClear">
 						<text>清空历史记录</text>
 						<view class="line"></view>
 					</view>
 				</view>
+				<view class="history-bg" v-show="curHistory" @touchend="bindBlurFalse"></view>
 			</block>
 		</view>
 		
@@ -192,6 +211,7 @@
 					uni.$emit("savePhoneNumber", {
 						phone: this.phone_number
 					})
+					this.curHistory = false;
 				} else {
 					uni.showToast({
 						title: "请输入正确的手机号码",
@@ -209,17 +229,38 @@
 			 * 聚焦
 			 */
 			bindFocus(e) {
-				uni.$emit("getPhoneNumber", {})
-				this.curHistory = true;
+				// uni.$emit("getPhoneNumber", {})
+				// this.curHistory = true;
 			},
 			
 			/**
 			 * 失焦
 			 */
 			bindBlur(e) {
-				setTimeout(()=>{
-					this.bindConfirm();
-				},300)
+				// this.curHistory = false;
+			},
+			
+			/**
+			 * 键盘高度变化
+			 */
+			keyboardheightchange(e) {
+				// if (Number(e.detail.height) == 0) {
+				// 	this.curHistory = false;
+				// }
+			},
+			
+			/**
+			 * 模拟得到焦点
+			 */
+			bindFocusFalse() {
+				uni.$emit("getPhoneNumber", {})
+				this.curHistory = true;
+			},
+			
+			/**
+			 * 模拟失去焦点
+			 */
+			bindBlurFalse() {
 				this.curHistory = false;
 			},
 			
@@ -247,6 +288,7 @@
 			 */
 			bindHistory(item) {
 				this.phone_number = item.phone;
+				this.curHistory = false;
 			},
 			
 			/**
@@ -254,6 +296,7 @@
 			 */
 			bindHistoryClear() {
 				uni.$emit("clearPhoneNumber", {})
+				this.curHistory = false;
 			},
 			
 			/**
@@ -306,7 +349,7 @@
 			width: 100%;
 			border-bottom: 1rpx solid #EBEBEB;
 			position: relative;
-			position: relative;
+			z-index: 3;
 			.title {
 				padding: 0 5rpx;
 				font-size: 24rpx;
@@ -331,13 +374,15 @@
 					margin-right: 10rpx;
 				}
 			}
-			.input {
-				padding: 0 5rpx 0 5rpx;
-				width: calc(100% - 10rpx);
-				height: 100rpx;
-				font-size: 50rpx;
-				font-family: "etccb-font" !important;
-				// color: rgba($color: #000000, $alpha: 0);
+			.input-box {
+				.input {
+					padding: 0 5rpx 0 5rpx;
+					width: calc(100% - 10rpx);
+					height: 100rpx;
+					font-size: 50rpx;
+					font-family: "etccb-font" !important;
+					// color: rgba($color: #000000, $alpha: 0);
+				}
 			}
 		}
 		.tip {
@@ -366,20 +411,24 @@
 				width: 100%;
 				background-color: #FFFFFF;
 				color: #222222;
-				.num {
-					height: 110rpx;
-					border-bottom: 1rpx solid #EBEBEB;
-					display: flex;
-					flex-wrap: wrap;
-					flex-direction: column;
-					justify-content: center;
-					.num-1 {
-						font-size: 30rpx;
-					}
-					.num-2 {
-						font-size: 24rpx;
-						padding: 4rpx 0 0 0;
-						color: #999999;
+				.scroll {
+					width: 100%;
+					height: 330rpx;
+					.num {
+						height: 110rpx;
+						border-bottom: 1rpx solid #EBEBEB;
+						display: flex;
+						flex-wrap: wrap;
+						flex-direction: column;
+						justify-content: center;
+						.num-1 {
+							font-size: 30rpx;
+						}
+						.num-2 {
+							font-size: 24rpx;
+							padding: 4rpx 0 0 0;
+							color: #999999;
+						}
 					}
 				}
 				.last {
@@ -399,6 +448,14 @@
 						border-bottom: 1rpx solid #EBEBEB;
 					}
 				}
+			}
+			.history-bg {
+				position: fixed;
+				left: 0rpx;
+				top: 0rpx;
+				width: 100vw;
+				height: 100vh;
+				background-color: rgba($color: #000000, $alpha: 0);
 			}
 		}
 		.select {
