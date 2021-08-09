@@ -8,8 +8,8 @@
               <text class="title">{{item.title}}</text>
               <view class="view">
                   <view><text>充值面额</text>{{item.recharge_price}}元</view>
-                  <view class="view2"><text>开始时间</text>{{item.starttime.split(' ')[0]}}</view>
-                  <view><text>结束时间</text>{{item.endtime.split(' ')[0]}}</view>
+                  <view class="view2"><text>开始时间</text><block v-if="item.starttime!=null">{{item.starttime.split(' ')[0]}}</block></view>
+                  <view><text>结束时间</text><block v-if="item.endtime!=null">{{item.endtime.split(' ')[0]}}</block></view>
               </view>
           </view>
       </scroll-view>
@@ -86,7 +86,6 @@ export default {
               appid:"wx32fe2eb8b2fa221f",
               jump_url:""
           }
-          console.log(item,'------')
           this.callback(item)
       },
       callback(item) {
@@ -113,6 +112,7 @@ export default {
         }
         height: 100vh;
         width: 100%;
+        overflow: hidden;
         background-color: #F4F4F4;
         .image{
             width: 750rpx;

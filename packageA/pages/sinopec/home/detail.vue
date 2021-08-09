@@ -38,7 +38,7 @@
       </view>
       <!--视频播放-->
       <u-popup class="box5" closeable="true" v-model="show" mode="center" width="100vw" height="100vh">
-            <video id="myvideo" ref="myvideo" @click="touchPlay" :src="list.video_help" :autoplay="autoplay" :play-btn-position	="'center'" class="box5_item"></video>
+            <video id="myvideo" ref="myvideo" @click="touchPlay" :src="list.video_help" :autoplay="autoplay" class="box5_item"></video>
       </u-popup>
   </view>
 </template>

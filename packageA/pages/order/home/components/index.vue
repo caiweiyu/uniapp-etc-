@@ -47,7 +47,10 @@
 						 :refresher-triggered="triggered" :refresher-threshold="80"
 						 refresher-background="#F0F0F0" @refresherrefresh="onRefresh"
 						 @refresherrestore="onRestore" @refresherabort="onAbort"
+						 :style="card_list.length <= 3 ? 'position: fixed;' : ''"
 						 :scroll-with-animation="true"
+						 :scroll-top="scrollTops"
+						 @scroll="scrollChange"
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list"
 							:key="index">
@@ -223,7 +226,8 @@
 				isMore:false,
 				loading: false,//加载中...
 				status:'nomore',
-				triggered:false
+				triggered:false,
+				scrollTops:-1
 			}
 		},
 		methods: {
@@ -252,6 +256,7 @@
 			},
 			//获取订单下标
 			getIndex(data) {
+				this.scrollTops = 0;
 				console.log(data)
 				this.order_status = data.order_status;
 				this.isMore=false;
@@ -259,6 +264,10 @@
 				this.is_show =false;
 				this.card_list = [];
 				this.getOrderListtarget(this.page, this.page_size, this.order_status, this.sub_order_type)
+			},
+			//监听滚动
+			scrollChange(e){
+				console.log(e.detail.scrollTop)
 			},
 			//获取导航栏数据
 			getOrderStatusList(order_status, sub_order_type) {
@@ -686,7 +695,6 @@
 				}
 				overflow: auto;
 				height: 100vh;
-				position: fixed;
 				background-color: #F2F2F2;
 				// z-index:-1;
 				.order-card-first {

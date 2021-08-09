@@ -47,13 +47,13 @@
              </view>
           </view>
       </view>
-      <view class="box3" v-if="isShow">
-          <veiw class="box3_left">
+      <view class="box3" v-if="isShow && detail.count_down > 0">
+          <view class="box3_left">
             <text>共计</text>¥
             <text>{{detail.amount}}</text>
             <text>优惠￥{{detail.etc_discount}}</text>
-          </veiw>
-          <veiw class="box3_right" @click="$debounce(ApiPrepaid)">确认订单</veiw>
+          </view>
+          <view class="box3_right" @click="enterPay">确认订单</view>
       </view>
         <!--客服-->
         <view class="server" @click="toServe">
@@ -63,10 +63,11 @@
 </template>
 
 <script>
-const app = getApp()
+  import miniScript from "@/common/miniScript"
+	const miniapp = miniScript.getInstance()
+  const app = getApp()
 	import * as API from "@/interfaces/sinoepc"
-	import miniScript from "@/common/miniScript"
-	const  miniapp = miniScript.getInstance()
+  import * as API_BASE from "@/interfaces/base"
 	import conf from '@/config/conf.js'
 	import { mapState } from "vuex"
 	import { eventMonitor } from "@/common/utils"
@@ -74,7 +75,8 @@ const app = getApp()
 	export default {
 		computed: {
 			...mapState({
-				token: (state)=> state.user.token
+				token: (state)=> state.user.token,
+        openid: (state) => state.user.info.openid,
 			})
 		},
 		components:{
@@ -100,7 +102,8 @@ const app = getApp()
 					sub_order_type:"",
           etc_discount:"",
           order_type:"",
-          count_down:""
+          count_down:"",
+          credit:""
 				},
 				order_id: null,
         countTime:'',
@@ -185,6 +188,14 @@ const app = getApp()
 				})
 			},
       /**
+			 * 确认订单
+			 */
+			enterPay(){
+				if (!this.curLock) return;
+				this.curLock = false;
+			  this.apiRepaid(this.detail.trade_id)
+			},
+      /**
 			 * 调起微信小程序支付
 			 */
 			onTradePay(data) {
@@ -207,20 +218,16 @@ const app = getApp()
 			            paySign,
 			            success: (res) => {
 			                uni.redirectTo({
-			                    url: "/packageA/pages/ytk/ytk_deposit/main?orderid="+data.orderid+"&trade_id="+data.trade_id+"&summary_order_id="+data.summary_order_id
+			                    url: `/packageA/pages/sinopec/home/pay_success?point=${this.detail.credit}&price=${this.detail.etc_discount}`
 			                });
 			            },
 			            fail: (res) => {
-			                // if (failUrl) {
-			                //     uni.redirectTo({
-			                //         url: "/pages/test/blue",
-			                //     });
-			                //     return;
-			                // }
 			                uni.showToast({
-			                    title: "支付失败",
-			                    icon: "none"
-			                });
+				                title: "支付失败",
+				                icon: "none",
+                        mask: true,
+                        duration: 1500
+                      });
 			            },
 						complete: (res) => {
 							this.curLock = true;
@@ -230,20 +237,12 @@ const app = getApp()
 			        console.log(error);
 			    }
 			},
-      	/**
-			 * 下单接口
-			 */
-			ApiPrepaid() {
-				if (!this.curLock) return;
-				this.curLock = false;
-			    
-			},
       /**
 			 * 获取微信小程序支付参数
 			 */
 			apiRepaid(trade_id){
-			    API.axios_coupon_order({
-			        source_channel:2,
+			    API_BASE.apiRepaid({
+			        trade_platform:1,
 			        trade_mode:3,
 			        trade_id:trade_id,
 			        openid:this.openid,
@@ -253,10 +252,11 @@ const app = getApp()
 			    }).then(res => {
 			        let {code, data} = res;
 			        if (code == 0) {
+                  console.log(data,'---')
 			            this.onTradePay(data)
 			        }
 			    })
-			},
+			}
 		},
     mounted() {
         let {
@@ -382,6 +382,7 @@ const app = getApp()
         border-radius: 120rpx;
         text-align: center;
         color: #ffffff;
+        z-index: 2;
         font-size: 32rpx;
         margin: 20rpx 20rpx 0 0;
       }
