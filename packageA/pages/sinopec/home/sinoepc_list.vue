@@ -74,11 +74,14 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                if(data.length > 0){
+                if(data.length == 10){
                     for(let i=0;i<data.length;i++){
                         this.list.push(data[i]);
                     }
-                }else{
+                }else if(data.length > 0 && data.length < 10){
+                    for(let i=0;i<data.length;i++){
+                        this.list.push(data[i]);
+                    }
                     this.emtry_list = false
                 }
                 this.loading = true;
@@ -98,6 +101,7 @@ export default {
            this.page = 1;
            this.page_size = 10;
            this.lng = '',this.lat = '';
+           this.emtry_list = true;
            this.get_axios_station(this.page,this.page_size)
        },
        getAllCity(){
@@ -107,6 +111,7 @@ export default {
            this.page = 1;
            this.page_size = 10;
            this.lng = '',this.lat = '';
+           this.emtry_list = true;
            this.get_axios_station(this.page,this.page_size)
        },
        getDistrict(item){
@@ -116,6 +121,7 @@ export default {
            this.page = 1;
            this.page_size = 10;
            this.lng = '',this.lat = '';
+           this.emtry_list = true;
            this.get_axios_station(this.page,this.page_size)
        },
        /**

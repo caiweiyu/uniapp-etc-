@@ -8,15 +8,15 @@
       <view :class="['box2',status == true ? 'box2_active' : 'box2_active_off']">
           <scroll-view :scroll-y="true" v-if="status">
               <view class="box2_left">
-                  <view :class="['box2_left_item', -1 == current ? 'box2_left_item_active' : '']"  @click="showAreaAll(-1,'全部地区')">全部地区</view>
-                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click="showArea(index,item)">
+                  <view :class="['box2_left_item', -1 == current ? 'box2_left_item_active' : '']"  @click.stop="$debounce(showAreaAll,-1,'全部地区')">全部地区</view>
+                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click.stop="$debounce(showArea,index,item)">
                       {{item.name}}
                   </view>
               </view>
           </scroll-view>
           <scroll-view scroll-y="true" v-if="status">
               <view class="box2_right">
-                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']"  v-for="(item,index) in list[current].children" :key="index" @click="showAreadetail(index,item)">
+                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']"  v-for="(item,index) in list[current].children" :key="index" @click.stop="$debounce(showAreadetail,index,item)">
                       {{item.name}}
                   </view>
               </view>

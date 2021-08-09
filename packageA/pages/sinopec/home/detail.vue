@@ -3,7 +3,7 @@
       <!-- <selectArea></selectArea> -->
       <view class="box1" v-if="list.video_icon != ''">
         <text class="boxsize boxitem">视频教程</text>
-        <image :src="list.video_icon" mode="" @click="show = true" />
+        <image :src="list.video_icon" mode="" @click="$debounce(beginVideo,list.video_help)" />
       </view>
       <view class="box2" v-if="list.image_help != '' || dots2.length > 0">
         <text class="boxsize boxitem">省钱教程</text>
@@ -38,12 +38,8 @@
       </view>
       <!--易捷提货券-->
       <view class="box4" @click="changeCurrentRight" v-if="list.image_help != '' || dots2.length > 0">
-          <image src="https://image.etcchebao.com/etc-min/sinopec/change.png" mode="" />
+          <image :src="current == 1 ? pic_src[1] : pic_src[0]" mode="" />
       </view>
-      <!--视频播放-->
-      <u-popup class="box5" closeable="true" v-model="show" mode="center" width="100vw" height="100vh">
-            <video id="myvideo" ref="myvideo" @click="touchPlay" :src="list.video_help" :autoplay="autoplay" class="box5_item"></video>
-      </u-popup>
   </view>
 </template>
 
@@ -59,9 +55,12 @@ export default {
         dots:[],
         dots2:[],
         show:false,
-        player:false,
         autoplay:true,
-        current:0
+        current:0,
+        pic_src:[
+          'https://image.etcchebao.com/etc-min/sinopec/change.png',
+          'https://image.etcchebao.com/etc-min/sinopec/change2.png'
+        ]
       }
     },
     methods: {
@@ -89,18 +88,7 @@ export default {
                  title:arr2[i]
                })
              };
-             console.log(this.dots2)
           }
-        }
-      },
-      touchPlay(){
-        let newVideo = uni.createVideoContext(`myvideo`);
-        if(this.player){
-           newVideo.play();
-           this.player = false;
-        }else{
-           newVideo.pause();
-           this.player = true;
         }
       },
       changeCurrent(e){
@@ -108,6 +96,14 @@ export default {
       },
       changeCurrentRight(){
         this.current==1?this.current=0:this.current=1
+      },
+      /**
+       * 播放视频
+       */
+      beginVideo(item){
+        uni.navigateTo({
+           url: `/packageA/pages/sinopec/home/video?video_src=${item}`
+        });
       }
     },
     onShow(){
@@ -117,7 +113,6 @@ export default {
       let {
 				recharge_price
 			} = this.$root.$mp.query;
-      console.log(recharge_price,'--item')
       this.getAxiosUserHelp();
     },
     components:{
@@ -168,6 +163,7 @@ export default {
       .swiper{
         width: 654rpx;
         height: 250rpx;
+        overflow: hidden;
         margin: auto;
         &_item{
             image{
