@@ -7,7 +7,7 @@
 			<!-- <view class="number_show">
 				<view class="box" v-for="(item,index) in phone_number" :key="index">{{item}}</view>
 			</view> -->
-			<input class="input" type="number" v-model="phone_number_model" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="13" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
+			<input class="input" type="number" :value="phone_number" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="11" cursor-spacing="10" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
 		</view>
 		
 		<!-- 提示 -->
@@ -92,11 +92,11 @@
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
 				phone_history: (state) => state.sinoepc.phone_history
 			}),
-			phone_number_model() {
+			phone_number_format() {
 				if (this.phone_number) {
 					return this.changePhoneNumber();
 				}
-			}
+			}//修饰手机号格式
 		},
 		data() {
 			return {
@@ -224,7 +224,7 @@
 			},
 			
 			/**
-			 * 空格(修饰手机号格式)
+			 * 空格
 			 */
 			changePhoneNumber() {
 				let num = this.phone_number;
@@ -239,6 +239,7 @@
 					format = "";
 				}
 				return format;
+				// return this.phone_number.replace(/(\d{4})(?=\d)/g, "$1 ");
 			},
 			
 			/**
