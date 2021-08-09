@@ -7,7 +7,7 @@
 			<!-- <view class="number_show">
 				<view class="box" v-for="(item,index) in phone_number" :key="index">{{item}}</view>
 			</view> -->
-			<input class="input" type="number" :value="phone_number" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="11" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
+			<input class="input" type="number" :value="phone_number_format" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="13" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
 		</view>
 		
 		<!-- 提示 -->
@@ -30,16 +30,16 @@
 		
 		<!-- 充值选项 -->
 		<view class="select">
-			<view :class="['box', !token ? 'box-bg-3' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.list" :key="index" @click="bindPay(item)">
+			<view :class="['box', !token || phone_number.length < 11 ? 'box-bg-3' : '', item.icon ? 'box-bg-2' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.list" :key="index" @click="$debounce(bindPay,item)">
 				<view class="minbox">
-					<view :class="['min-1', !token ? 'text-color' : '']">
+					<view :class="['min-1', !token || phone_number.length < 11 ? 'text-color' : '']">
 						<text class="text">{{item.recharge_price}}</text>元油券
 					</view>
-					<view :class="['min-2', !token ? 'text-color' : '']">
+					<view :class="['min-2', !token || phone_number.length < 11 ? 'text-color' : '']">
 						{{item.price}}元+{{item.coin_num}}积分
 					</view>
 				</view>
-				<view :class="['minbox', !token ? 'text-color' : '']">立即兑换</view>
+				<view :class="['minbox', !token || phone_number.length < 11 ? 'text-color' : '']">立即兑换</view>
 				<view class="minbox">
 					<image :src="item.icon" mode="heightFix"></image>
 				</view>
@@ -91,7 +91,21 @@
 				sinoepc_list: (state) => state.sinoepc.sinoepc_list,
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
 				phone_history: (state) => state.sinoepc.phone_history
-			})
+			}),
+			phone_number_format() {
+				if (this.phone_number) {
+					let num = this.phone_number;
+					let format = "";
+					if (num.length < 4) {
+						format = num;
+					} else if (num.length >= 4 && num.length < 7) {
+						format = num.substring(0,3) + " " + num.substring(3,num.length);
+					} else if (num.length >= 7) {
+						format = num.substring(0,3) + " " + num.substring(3,7) + " " + num.substring(7,num.length);
+					}
+					return format;
+				}
+			}//修饰手机号格式
 		},
 		data() {
 			return {
@@ -99,6 +113,7 @@
 				isfocus: false,//input 焦点
 				curHistory: false,//历史手机号码输入
 				coupon_text: "未使用",//优惠券选择文案
+				coupon_id: "",//优惠券id
 			}
 		},
 		mounted() {
@@ -107,6 +122,7 @@
 			}
 			uni.$on("selectETCCoupon", (e)=> {
 				this.coupon_text = e.coupon_text;
+				this.coupon_id = e.coupon_id;
 				this.calculationCoupon(e);
 			})
 		},
@@ -156,8 +172,9 @@
 			 */
 			bindInput(e) {
 				let reg = /^[0-9]*$/;
-				if (reg.test(e.detail.value)) {
-					this.phone_number = e.detail.value;
+				let num = (e.detail.value).replace(/\s/g,"");
+				if (reg.test(num)) {
+					this.phone_number = num;
 				} else {
 					this.isfocus = false;
 					uni.showToast({
@@ -191,7 +208,6 @@
 							this.phone_number = "";
 						}
 					})
-					return;
 				}
 			},
 			
@@ -214,6 +230,9 @@
 			 * 失焦
 			 */
 			bindBlur(e) {
+				setTimeout(()=>{
+					this.bindConfirm();
+				},300)
 				this.curHistory = false;
 			},
 			
@@ -235,11 +254,24 @@
 			 * 选择充值 
 			 */
 			bindPay(item) {
-				this.bindConfirm();
-				item.phone_number = this.phone_number;
-				uni.$emit("pay", {
-					item: item
-				})
+				let reg = /^1[3456789]\d{9}$/;
+				if (reg.test(this.phone_number)) {
+					item.phone_number = this.phone_number;
+					item.coupon_id = this.coupon_id;
+					uni.$emit("pay", {
+						item: item
+					})
+				} else {
+					uni.showToast({
+						title: "请输入正确的手机号码",
+						icon: "none",
+						mask: true,
+						duration: 1500,
+						success: ()=> {
+							this.phone_number = "";
+						}
+					})
+				}
 			},
 			
 			/**

@@ -159,6 +159,7 @@
 				this.curCoupon = false;
 				uni.$emit("selectETCCoupon", {
 					coupon_text: `-￥${this.sinoepc_init.coupon.coupon_list[index].discount_quota}`,
+					coupon_id: this.sinoepc_init.coupon.coupon_list[index].coupon_id,
 					index: index
 				})
 			}

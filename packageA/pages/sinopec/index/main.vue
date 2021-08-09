@@ -309,7 +309,7 @@
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
 					third_no: item.third_no,
-					coupon_id: item.id,
+					coupon_id: item.coupon_id,
 					target_phone: item.phone_number
 				})
 				if (res.code == 0 && res.data.hasOwnProperty("trade_id") == true) {
