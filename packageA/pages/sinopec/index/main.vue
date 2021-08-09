@@ -119,9 +119,6 @@
 		onLoad(options) {
 			this.loadInit();
 			this.loadPageProps();
-			uni.$on("loadPopupLevel", (e)=> {
-				this.loadPopupLevel(e);
-			})
 		},
 		onShow() {
 			// this.$token(() => {
@@ -150,6 +147,12 @@
 				}
 			})
 		},
+		onUnload() {
+			this.loadPagePropsClear();
+		},
+		destroyed() {
+			this.loadPagePropsClear();
+		},
 		mounted() {
 			
 		},
@@ -171,24 +174,39 @@
 			},
 			
 			/**
-			 * 页面通讯
+			 * 创建页面通讯
 			 */
 			loadPageProps() {
 				uni.$on("savePhoneNumber", (e)=> {
 					this.savePhoneNumber(e.phone);
-				});
+				});//保存手机号码到历史记录
 				uni.$on("clearPhoneNumber", ()=> {
 					this.clearPhoneNumber();
-				});
+				});//清除历史手机号码
 				uni.$on("getPhoneNumber", ()=> {
 					this.getPhoneNumber();
-				});
+				});//获取历史记录手机号码
 				uni.$on("getCoupon", (e)=> {
 					this.getCoupon(e.id);
-				})
-				uni.$on("pay", (e)=> {
+				})//获取优惠券
+				uni.$on("pay_sinopec", (e)=> {
 					this.downOrder(e.item);
-				})
+				});//下单支付
+				uni.$on("loadPopupLevel", (e)=> {
+					this.loadPopupLevel(e);
+				});//弹窗优先级
+			},
+			
+			/**
+			 * 清空页面通讯
+			 */
+			loadPagePropsClear() {
+				uni.$off("savePhoneNumber");
+				uni.$off("clearPhoneNumber");
+				uni.$off("getPhoneNumber");
+				uni.$off("getCoupon");
+				uni.$off("pay_sinopec");
+				uni.$off("loadPopupLevel");
 			},
 			
 			/**
@@ -296,16 +314,8 @@
 			 * 下单
 			 */
 			async downOrder(item) {
-				if (!this.curLock) return;  
-				if (!this.token) {
-					uni.showToast({
-						title: "登录后才能兑换券哦",
-						duration: 1500,
-						mask: true,
-						icon: "none"
-					})
-					return;
-				};
+				console.log("pay_sinopec", this.curLock)
+				if (!this.curLock) return;
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
 					third_no: item.third_no,
@@ -320,7 +330,7 @@
 					this.apiRepaid(res.data.trade_id, trade_platform, res.data.pay_amount, item);
 				} else {
 					uni.showToast({
-						title: "订单异常",
+						title: res.msg,
 						mask: true,
 						duration: 1500,
 						icon: 'none'

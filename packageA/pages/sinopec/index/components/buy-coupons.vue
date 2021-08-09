@@ -7,7 +7,7 @@
 			<!-- <view class="number_show">
 				<view class="box" v-for="(item,index) in phone_number" :key="index">{{item}}</view>
 			</view> -->
-			<input class="input" type="number" :value="phone_number_format" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="13" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
+			<input class="input" type="number" v-model="phone_number_model" placeholder="请输入11位手机号码" placeholder-style="color: #CCCCCC" maxlength="13" :focus="isfocus" @input="bindInput" @confirm="bindConfirm" @focus="bindFocus" @blur="bindBlur" />
 		</view>
 		
 		<!-- 提示 -->
@@ -92,20 +92,11 @@
 				sinoepc_init: (state) => state.sinoepc.sinoepc_init,
 				phone_history: (state) => state.sinoepc.phone_history
 			}),
-			phone_number_format() {
+			phone_number_model() {
 				if (this.phone_number) {
-					let num = this.phone_number;
-					let format = "";
-					if (num.length < 4) {
-						format = num;
-					} else if (num.length >= 4 && num.length < 7) {
-						format = num.substring(0,3) + " " + num.substring(3,num.length);
-					} else if (num.length >= 7) {
-						format = num.substring(0,3) + " " + num.substring(3,7) + " " + num.substring(7,num.length);
-					}
-					return format;
+					return this.changePhoneNumber();
 				}
-			}//修饰手机号格式
+			}
 		},
 		data() {
 			return {
@@ -125,6 +116,9 @@
 				this.coupon_id = e.coupon_id;
 				this.calculationCoupon(e);
 			})
+		},
+		destroyed() {
+			uni.$off("selectETCCoupon");
 		},
 		methods: {
 			/**
@@ -212,13 +206,6 @@
 			},
 			
 			/**
-			 * 空格
-			 */
-			changePhoneNumber(item) {
-				return (item + "").replace(/(\d{4})(?=\d)/g, "$1 ");
-			},
-			
-			/**
 			 * 聚焦
 			 */
 			bindFocus(e) {
@@ -234,6 +221,24 @@
 					this.bindConfirm();
 				},300)
 				this.curHistory = false;
+			},
+			
+			/**
+			 * 空格(修饰手机号格式)
+			 */
+			changePhoneNumber() {
+				let num = this.phone_number;
+				let format = "";
+				if (num.length > 0 && num.length < 4) {
+					format = num;
+				} else if (num.length >= 4 && num.length < 7) {
+					format = num.substring(0,3) + " " + num.substring(3,num.length);
+				} else if (num.length >= 7) {
+					format = num.substring(0,3) + " " + num.substring(3,7) + " " + num.substring(7,num.length);
+				} else {
+					format = "";
+				}
+				return format;
 			},
 			
 			/**
@@ -258,7 +263,7 @@
 				if (reg.test(this.phone_number)) {
 					item.phone_number = this.phone_number;
 					item.coupon_id = this.coupon_id;
-					uni.$emit("pay", {
+					uni.$emit("pay_sinopec", {
 						item: item
 					})
 				} else {
