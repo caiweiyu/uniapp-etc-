@@ -309,11 +309,15 @@
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
 					third_no: item.third_no,
-					coupon_id: item.coupon_id,
+					coupon_id: item.coupon_id || 0,
 					target_phone: item.phone_number
 				})
 				if (res.code == 0 && res.data.hasOwnProperty("trade_id") == true) {
-					this.apiRepaid(res.data.trade_id);
+					let trade_platform = 1;
+					if (Number(res.data.pay_amount) <= 0) {//实际支付0元时
+						trade_platform = 6;
+					}
+					this.apiRepaid(res.data.trade_id, trade_platform, res.data.pay_amount, item);
 				} else {
 					uni.showToast({
 						title: "订单异常",
@@ -328,14 +332,21 @@
 			/**
 			 * 获取微信小程序支付参数
 			 */
-			apiRepaid(trade_id){
+			apiRepaid(trade_id, trade_platform, pay_amount, item){
 			    API_BASE.apiRepaid({
-			        trade_platform: 1,
+			        trade_platform: trade_platform,
 			        trade_mode: 3,
 			        trade_id: trade_id,
 			        openid: this.openid
 			    }).then(res => {
 			        let {code, data} = res;
+					if (data.prepaid_info.hasOwnProperty("trade_status") == true && Number(data.prepaid_info.trade_status) == 3) {
+						uni.navigateTo({
+							url: `/packageA/pages/sinopec/home/pay_success?point=${item.coin_num}&price=${(item.recharge_price - pay_amount).toFixed(2)}`
+						})
+						this.curLock = true;
+						return;
+					}
 			        if (code == 0) {
 			            this.toPay(data)
 			        } else {

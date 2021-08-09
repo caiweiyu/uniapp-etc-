@@ -341,7 +341,7 @@
 			display: flex;
 			align-items: center;
 			position: relative;
-			z-index: 1;
+			z-index: 2;
 			.box:nth-child(1) {
 				margin: 0 10rpx 0 0;
 				font-size: 20rpx;
@@ -354,6 +354,7 @@
 			}
 			.history {
 				position: absolute;
+				z-index: 3;
 				left: 0;
 				top: 0;
 				width: 100%;
