@@ -2,15 +2,17 @@
   <view class="box">
       <image class="image" src="https://image.etcchebao.com/etc-min/sinopec/banner.png" mode="" @click="toProgram" />
       <scroll-view :scroll-y="true" v-if="loading && list.length > 0" @scrolltolower="dealScrollBottom" class="card-scroll">
-          <view class="box_container" v-for="(item,index) in list" :key="index" @click="toDetail(item.order_id)">
-              <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg1.png" mode="" v-if="nowDate > new Date(item.endtime).getTime()" />
-              <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg2.png" mode="" v-else />
-              <text class="title">{{item.title}}</text>
-              <view class="view">
-                  <view><text>充值面额</text>{{item.recharge_price}}元</view>
-                  <view class="view2"><text>开始时间</text><block v-if="item.starttime!=null">{{item.starttime.split(' ')[0]}}</block></view>
-                  <view><text>结束时间</text><block v-if="item.endtime!=null">{{item.endtime.split(' ')[0]}}</block></view>
-              </view>
+          <view class="title">
+                <view :class="['box_container']" v-for="(item,index) in list" :key="index" @click="toDetail(item.order_id)">
+                    <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg1.png" mode="" v-if="nowDate > new Date(item.endtime).getTime()" />
+                    <image src="https://image.etcchebao.com/etc-min/sinopec/quan_bg2.png" mode="" v-else />
+                    <text class="title">{{item.title}}</text>
+                    <view class="view">
+                        <view><text>充值面额</text>{{item.recharge_price}}元</view>
+                        <view class="view2"><text>开始时间</text><block v-if="item.starttime!=null">{{item.starttime.split(' ')[0]}}</block></view>
+                        <view><text>结束时间</text><block v-if="item.endtime!=null">{{item.endtime.split(' ')[0]}}</block></view>
+                    </view>
+                </view>
           </view>
       </scroll-view>
       <view class="no_card" v-else-if="loading && list.length == 0">
@@ -108,54 +110,65 @@ export default {
         .card-scroll{
             position: relative;
 			height:100vh;
+            padding-top: 140rpx;
 			background-color: #F9F9F9; 
+            .title{
+                width: 100%;
+                height: 100%;
+                >view:last-child{
+                    margin-bottom: 24rpx;
+                }
+                .box_container{
+                    width: 702rpx;
+                    height: 298rpx;
+                    margin: auto;
+                    margin-top: 24rpx;
+                    position: relative;
+                    .title{
+                        position: absolute;
+                        top: 18rpx;
+                        left: 47rpx;
+                        font-size: 30rpx;
+                        color: #222222;
+                        font-weight: bold;
+                    }
+                    .view{
+                        position: absolute;
+                        left: 47rpx;
+                        top: 102rpx;
+                        display: flex;
+                        flex-direction: column;
+                        font-size: 30rpx;
+                        view{
+                            color: #222222;
+                        }
+                        text{
+                            color: #666666;
+                            margin-right: 33rpx;
+                        }
+                        .view2{
+                            margin: 26rpx 0 25rpx 0;
+                        }
+                    }
+                    image{
+                        width: 702rpx;
+                        height: 298rpx;
+                        position:absolute;
+                    }
+                }
+            }
+
         }
         height: 100vh;
         width: 100%;
-        overflow: hidden;
         background-color: #F4F4F4;
         .image{
             width: 750rpx;
             height: 140rpx;
+            position: fixed;
+            z-index: 1;
+            top: 0;
         }     
-        &_container{
-            width: 702rpx;
-            height: 298rpx;
-            margin: auto;
-            margin-top: 24rpx;
-            position: relative;
-            .title{
-                position: absolute;
-                top: 18rpx;
-                left: 47rpx;
-                font-size: 30rpx;
-                color: #222222;
-                font-weight: bold;
-            }
-            .view{
-                position: absolute;
-                left: 47rpx;
-                top: 102rpx;
-                display: flex;
-                flex-direction: column;
-                font-size: 30rpx;
-                view{
-                    color: #222222;
-                }
-                text{
-                    color: #666666;
-                    margin-right: 33rpx;
-                }
-                .view2{
-                    margin: 26rpx 0 25rpx 0;
-                }
-            }
-            image{
-                width: 702rpx;
-                height: 298rpx;
-                position:absolute;
-            }
-        }
         .no_card{
             position: absolute;
             left: 50%;

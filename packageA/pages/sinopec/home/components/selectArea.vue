@@ -8,6 +8,7 @@
       <view :class="['box2',status == true ? 'box2_active' : 'box2_active_off']">
           <scroll-view :scroll-y="true" v-if="status">
               <view class="box2_left">
+                  <view :class="['box2_left_item', -1 == current ? 'box2_left_item_active' : '']"  @click="showAreaAll(-1,'全部地区')">全部地区</view>
                   <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click="showArea(index,item)">
                       {{item.name}}
                   </view>
@@ -24,6 +25,7 @@
       <view :class="[status == true ? 'box3' : '']" @click="toggleWindows" @touchmove.stop="bindContent">
 
       </view>
+      <view :class="['box4',status == true ? 'box4_active' : 'box4_active_off']"></view>
   </view>
 </template>
 
@@ -38,7 +40,7 @@ export default {
         return {
             status:false,
             list:[],
-            current:0,
+            current:-1,
             currentdetail:-1,
             city_code:'440100',
             district_code:'',
@@ -63,6 +65,12 @@ export default {
             this.city_code = item.code;
             this.allArea = item.name;
             this.$emit('getCity',{city:this.city_code})
+        },
+        showAreaAll(index,name){
+            this.currentdetail = -1,
+            this.current = index;
+            this.allArea = name;
+            this.$emit('getAllCity')
         },
         showAreadetail(index,item){
             this.currentdetail = index;
@@ -183,8 +191,22 @@ export default {
             position: absolute;
             top: calc(667rpx);
             z-index: 998;
+            background-color: none;
+        }
+        .box4{
+            width: 100%;
+            position: absolute;
+            top: 0rpx;
+            z-index: 997;
             background-color: rgba(0,0,0,0.4);
-
+        }
+        .box4_active{
+            height: 100vh;
+            transition: height linear 0s;
+        }   
+        .box4_active_off{
+            height: 0vh;
+            transition: height linear 0s;
         }
     }
 </style>

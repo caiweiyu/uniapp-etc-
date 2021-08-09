@@ -1,11 +1,11 @@
 <template>
   <view class="box">
       <!-- <selectArea></selectArea> -->
-      <view class="box1">
+      <view class="box1" v-if="list.video_icon != ''">
         <text class="boxsize boxitem">视频教程</text>
         <image :src="list.video_icon" mode="" @click="show = true" />
       </view>
-      <view class="box2">
+      <view class="box2" v-if="list.image_help != '' || dots2.length > 0">
         <text class="boxsize boxitem">省钱教程</text>
         <swiper :autoplay="true"
 								:interval="5000"
@@ -18,22 +18,26 @@
               <image :src="list.image_help" mode="" />
           </swiper-item>
           <swiper-item class="swiper_item" v-if="dots2.length > 0">
-              <view class="box2_container" :style="index==0?'':'margin-top: 21rpx'" v-for="(item,index) in dots2" :key="index">
-                  <view class="icon2">{{item.index}}</view>
-                  <text>{{item.title}}</text>
-              </view>
+              <scroll-view :scroll-y="true" style="width:100%;height:100%;">
+                  <view class="box2_container" :style="index==0?'':'margin-top: 21rpx'" v-for="(item,index) in dots2" :key="index">
+                      <view class="icon2">{{item.index}}</view>
+                      <text>{{item.title}}</text>
+                  </view>
+              </scroll-view>
           </swiper-item>
         </swiper> 
       </view>
       <view class="box3">
         <text class="boxsize box3-item">使用须知</text>
-        <view class="box3_container" v-for="(item,index) in dots" :key="index">
-          <view class="icon">{{item.index}}</view>
-          <text>{{item.title}}</text>
-        </view>
+        <scroll-view :scroll-y="true" style="width:100%;height:100%;">
+            <view class="box3_container" v-for="(item,index) in dots" :key="index">
+              <view class="icon">{{item.index}}</view>
+              <text>{{item.title}}</text>
+            </view>
+        </scroll-view>
       </view>
       <!--易捷提货券-->
-      <view class="box4" @click="changeCurrentRight">
+      <view class="box4" @click="changeCurrentRight" v-if="list.image_help != '' || dots2.length > 0">
           <image src="https://image.etcchebao.com/etc-min/sinopec/change.png" mode="" />
       </view>
       <!--视频播放-->
@@ -145,7 +149,6 @@ export default {
           line-height: 30rpx;
           border-radius: 50%;
           text-align: center;
-          border-radius: 50%;
           color: #ffffff;
           background-color: #414141;
         }
