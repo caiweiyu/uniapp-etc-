@@ -1,21 +1,22 @@
 <template>
   <view class="box">
-      <selectArea @getDistrict="getDistrict" @getCity="getCity"></selectArea>
+      <selectArea @getDistrict="getDistrict" @getCity="getCity" @getAllCity="getAllCity"></selectArea>
       <image class="banner" src="https://image.etcchebao.com/etc-min/sinopec-list/banner.png" mode="" />
       <scroll-view :scroll-y="true" v-if="loading && list.length > 0" class="card-scroll" @scrolltolower="dealScrollBottom">
           <view class="box_container">
               <!--卡片区域-->
-              <view :class="['box_container_item']" v-for="(item,index) in list" :key="index">
+              <view :class="['box_container_item']" v-for="(item,index) in list" :key="index" @click.stop="$debounce(goMapLocation,item)">
                   <view class="box_container_item_left">
                       <text>{{item.name}}</text>
                       <view class="view"><image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/location.png" mode="" />{{item.address}}</view>
-                      <view class="fontColor" @click="bindCallPhone(item)">
+                      <br>
+                      <view class="fontColor" @click.stop="$debounce(bindCallPhone,item)">
                           <image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/phone.png" mode="" />
                           {{item.telephone}}
                       </view>
                   </view>
                   <view class="box_container_item_right">
-                      <image  @click="goMapLocation(item)" src="https://image.etcchebao.com/etc-min/sinopec-list/duil.png" mode="" />
+                      <image src="https://image.etcchebao.com/etc-min/sinopec-list/duil.png" mode="" />
                       <text class="text">{{item.juli}}</text>
                   </view>
               </view>
@@ -99,6 +100,15 @@ export default {
            this.lng = '',this.lat = '';
            this.get_axios_station(this.page,this.page_size)
        },
+       getAllCity(){
+           this.district="";
+           this.city = "";
+           this.list = [];
+           this.page = 1;
+           this.page_size = 10;
+           this.lng = '',this.lat = '';
+           this.get_axios_station(this.page,this.page_size)
+       },
        getDistrict(item){
            this.district = item.district;
            this.city = item.city;
@@ -108,6 +118,9 @@ export default {
            this.lng = '',this.lat = '';
            this.get_axios_station(this.page,this.page_size)
        },
+       /**
+        * 跳转地图h5
+        */
        goMapLocation(item){
            uni.navigateTo({
                url: `/pages/location/main?latitude=${item.lat}&longitude=${item.lng}&address=${item.address}&name=${item.name}`
@@ -188,6 +201,7 @@ export default {
                         }
                     }
                     .fontColor{
+                        display: inline-block;
                         margin: 14rpx 0 41rpx 8rpx;
                         color: #229CF4;
                         .image{
