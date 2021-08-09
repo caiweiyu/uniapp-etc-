@@ -5,11 +5,14 @@
       <scroll-view :scroll-y="true" v-if="loading && list.length > 0" class="card-scroll" @scrolltolower="dealScrollBottom">
           <view class="box_container">
               <!--卡片区域-->
-              <view class="box_container_item" v-for="(item,index) in list" :key="index">
+              <view :class="['box_container_item']" v-for="(item,index) in list" :key="index">
                   <view class="box_container_item_left">
                       <text>{{item.name}}</text>
                       <view class="view"><image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/location.png" mode="" />{{item.address}}</view>
-                      <view class="fontColor"><image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/phone.png" mode="" />{{item.telephone}}</view>
+                      <view class="fontColor" @click="bindCallPhone(item)">
+                          <image class="image" src="https://image.etcchebao.com/etc-min/sinopec-list/phone.png" mode="" />
+                          {{item.telephone}}
+                      </view>
                   </view>
                   <view class="box_container_item_right">
                       <image  @click="goMapLocation(item)" src="https://image.etcchebao.com/etc-min/sinopec-list/duil.png" mode="" />
@@ -109,7 +112,15 @@ export default {
            uni.navigateTo({
                url: `/pages/location/main?latitude=${item.lat}&longitude=${item.lng}&address=${item.address}&name=${item.name}`
            })
-       }
+       },
+       /**
+         * 拨打电话
+         */
+        bindCallPhone(item) {
+            uni.makePhoneCall({
+                phoneNumber: item.telephone
+            })
+        },
     },
     mounted() {
         this.lng = this.longitude,this.lat = this.latitude;
@@ -122,6 +133,7 @@ export default {
     .box{
         width: 100%;
         height: 100vh;
+        overflow: hidden;
         background-color: #F4F4F4;
         .banner{
             width: 702rpx;
@@ -142,6 +154,9 @@ export default {
             margin: auto;
             border-radius: 14rpx;
             background-color: #FFFFFF;
+            >view:last-child{
+                margin-bottom: 336rpx;
+            }
             &_item{
                 width: 666rpx;
                 margin-left: 18rpx;
