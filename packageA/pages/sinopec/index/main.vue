@@ -121,10 +121,10 @@
 			this.loadPageProps();
 		},
 		onShow() {
-			// this.$token(() => {
-			// 	this.loadInit();
-			// 	this.loadPageProps();
-			// });//检测page是否授权，token是否过期
+			this.$token(() => {
+				this.loadInit();
+				this.loadPageProps();
+			});//检测page是否授权，token是否过期
 			// this.$store.dispatch("home/ac_share_info",10);//分享配置
 			this.$refs.dialog.loadPopup();//全局弹窗配置
 		},
@@ -235,7 +235,10 @@
 				this.$store.dispatch("sinoepc/ac_sinoepc_init", res.data);
 			},
 			
-			async loadOilStation(){
+			/**
+			 * 油站列表
+			 */
+			async loadOilStation() {
 			    let res = await API.axios_station({
 			        source_channel: 2,
 			        page: 1,
