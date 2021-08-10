@@ -9,10 +9,13 @@
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
 						￥<text class="text">{{item.get_money}}</text>
 					</view>
-					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">{{item.title}}</view>
-					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">{{item.expire_time}}</view>
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
-						<text :decode="true">立即\n领取</text>
+						<view class="min">{{item.title}}</view>
+						<view :class="['min', item.status != 1 ? 'text-color' : '']">{{item.expire_time}}</view>
+					</view>
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
+						<text :decode="true" v-if="item.status != 1">已经\n领取</text>
+						<text :decode="true" v-else>立即\n领取</text>
 					</view>
 				</view>
 			</scroll-view>
@@ -39,16 +42,7 @@
 			}
 		},
 		mounted() {
-			uni.$on("changeCoupon", (e)=> {
-				let sinoepc_init = this.sinoepc_init;
-				for (let i = 0; i < sinoepc_init.new_coupon_list.length; i++) {
-					if (e.id == sinoepc_init.new_coupon_list[i].id) {
-						sinoepc_init.new_coupon_list[i].status = 0;
-						break;
-					} 
-				}
-				this.$store.commit("sinoepc/mt_sinoepc_init", sinoepc_init);
-			})
+			
 		},
 		methods: {
 			/**
@@ -94,18 +88,18 @@
 					display: inline-block;
 					vertical-align: top;
 					margin: 0 0 0 20rpx;
-					padding: 0 148rpx 0 140rpx;
+					padding: 0 148rpx 0 0;
 					width: 570rpx;
 					height: 150rpx;
 					background: url("https://image.etcchebao.com/etc-min/etc-f/icon_39.png") no-repeat;
 					background-size: 100% 100%;
 					position: relative;
 					.minbox:nth-child(1) {
-						position: absolute;
-						left: 0;
-						top: 50%;
-						transform: translate(0,-50%);
-						width: 140rpx;
+						display: inline-block;
+						vertical-align: top;
+						padding: 0 40rpx 0 10rpx;
+						min-width: 140rpx;
+						line-height: 150rpx;
 						text-align: center;
 						font-size: 34rpx;
 						font-weight: 700;
@@ -116,20 +110,25 @@
 						}
 					}
 					.minbox:nth-child(2) {
-						padding: 36rpx 0 0 0;
-						font-size: 34rpx;
-						font-weight: 700;
+						display: inline-block;
+						vertical-align: top;
+						.min:nth-child(1) {
+							padding: 36rpx 0 0 0;
+							font-size: 34rpx;
+							font-weight: 700;
+						}
+						.min:nth-child(2) {
+							padding: 4rpx 0 0 0;
+							font-size: 26rpx;
+							color: #666666;
+						}
 					}
 					.minbox:nth-child(3) {
-						padding: 4rpx 0 0 0;
-						font-size: 26rpx;
-						color: #666666;
-					}
-					.minbox:nth-child(4) {
 						position: absolute;
 						right: 32rpx;
 						top: 50%;
 						transform: translate(0,-50%);
+						text-align: center;
 						color: #FF401E;
 						font-size: 32rpx;
 						font-weight: 700;

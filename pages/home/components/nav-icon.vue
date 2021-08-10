@@ -103,7 +103,7 @@
 	}
 	.nav-icon {
 		position: relative;
-		margin: 36rpx 0 20rpx 0;
+		margin: 36rpx 28rpx 20rpx 28rpx;
 		.sub-icon-block {
 			margin-top: 28rpx;
 		}

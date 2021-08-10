@@ -151,7 +151,7 @@
 					uni.setStorageSync("cacheDialog", [data]);
 					this.show = true;
 					this.showAnimate = true;
-					this.loadPopupLevel();
+					this.loadDialogWindow();
 				} else { //已有签到缓存
 					if (uni.getStorageSync("cacheDialogTime") != miniapp.clock(new Date().getTime())) { //第二天重置弹窗
 						uni.setStorageSync("cacheDialogTime", miniapp.clock(new Date().getTime()));
@@ -196,7 +196,7 @@
 									uni.setStorageSync("cacheDialog", cacheDialog);
 									this.show = true;
 									this.showAnimate = true;
-									this.loadPopupLevel();
+									this.loadDialogWindow();
 								}
 								break;
 							// 每天跳转一次
@@ -206,14 +206,14 @@
 									uni.setStorageSync("cacheDialog", cacheDialog);
 									this.show = true;
 									this.showAnimate = true;
-									this.loadPopupLevel();
+									this.loadDialogWindow();
 								}
 								break;
 							// 每次打开跳转(供测试用)
 							case 3:
 								this.show = true;
 								this.showAnimate = true;
-								this.loadPopupLevel();
+								this.loadDialogWindow();
 								break;
 						}
 						return;
@@ -226,7 +226,7 @@
 				}
 				this.show = true;
 				this.showAnimate = true;
-				this.loadPopupLevel();
+				this.loadDialogWindow();
 			},
 			
 			/**
@@ -284,8 +284,8 @@
 			/**
 			 * 中石化弹窗优先级校验
 			 */
-			loadPopupLevel() {
-				uni.$emit("loadPopupLevel", {
+			loadDialogWindow() {
+				uni.$emit("loadDialogWindow", {
 					dialog_window: 2
 				})
 			}
