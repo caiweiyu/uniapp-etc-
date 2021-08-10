@@ -117,3 +117,25 @@ export function articleClick(data) {
 		data
 	});
 }
+
+/**
+ * 点击点赞
+ */
+ export function focusLikeClick(data) {
+	return request({
+		url: `${G}/fm-new/fm/like`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 提交评论
+ */
+ export function formaddComment(data) {
+	return request({
+		url: `${G}/fm-new/fm/addComment`,
+		method: "post",
+		data
+	});
+}
