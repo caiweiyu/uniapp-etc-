@@ -6,17 +6,17 @@
           <image class="down" v-else src="https://image.etcchebao.com/etc-min/sinopec-list/down.png" mode="" />
       </view>
       <view :class="['box2',status == true ? 'box2_active' : 'box2_active_off']">
-          <scroll-view :scroll-y="true" v-if="status">
+          <scroll-view :scroll-y="true" v-if="status" :scroll-into-view="scrollLeft" :scroll-with-animation="true">
               <view class="box2_left">
-                  <view :class="['box2_left_item', -1 == current ? 'box2_left_item_active' : '']"  @click.stop="$debounce(showAreaAll,-1,'全部地区')">全部地区</view>
-                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" v-for="(item,index) in list" :key="index" @click.stop="$debounce(showArea,index,item)">
+                  <view :class="['box2_left_item', -1 == current ? 'box2_left_item_active' : '']" :id="'into_left'+ -1" @click.stop="$debounce(showAreaAll,-1,'全部地区')">全部地区</view>
+                  <view :class="['box2_left_item',index == current ? 'box2_left_item_active' : '']" :id="'into_left'+ index" v-for="(item,index) in list" :key="index" @click.stop="$debounce(showArea,index,item)">
                       {{item.name}}
                   </view>
               </view>
           </scroll-view>
-          <scroll-view scroll-y="true" v-if="status">
+          <scroll-view :scroll-y="true" v-if="status" :scroll-into-view="scrollRight" :scroll-with-animation="true">
               <view class="box2_right">
-                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']"  v-for="(item,index) in list[current].children" :key="index" @click.stop="$debounce(showAreadetail,index,item)">
+                  <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']" :id="'into_right'+ index"  v-for="(item,index) in list[current].children" :key="index" @click.stop="$debounce(showAreadetail,index,item)">
                       {{item.name}}
                   </view>
               </view>
@@ -45,7 +45,9 @@ export default {
             city_code:'440100',
             district_code:'',
             bindContent:()=>{},
-            allArea:'全部地区'
+            allArea:'全部地区',
+            scrollLeft:"",
+            scrollRight:""
         }
     },
     methods:{
@@ -64,12 +66,20 @@ export default {
             this.current = index;
             this.city_code = item.code;
             this.allArea = item.name;
+            this.$nextTick(()=>{
+               this.scrollLeft = 'into_left'+ index
+            });
+            this.scrollLeft = '';
             this.$emit('getCity',{city:this.city_code})
         },
         showAreaAll(index,name){
             this.currentdetail = -1,
             this.current = index;
             this.allArea = name;
+            this.$nextTick(()=>{
+               this.scrollLeft = 'into_left'+ index
+            });
+            this.scrollLeft = '';
             this.$emit('getAllCity')
         },
         showAreadetail(index,item){
@@ -77,6 +87,10 @@ export default {
             this.district_code = item.code;
             this.allArea = item.name;
             this.status = !this.status;
+            this.$nextTick(()=>{
+               this.scrollRight = 'into_right'+ index
+            });
+            this.scrollRight = '';
             this.$emit('getDistrict',{city:this.city_code,district:this.district_code})
         }
     },
