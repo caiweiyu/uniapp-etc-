@@ -2,7 +2,7 @@
 	<view class="content">
 		
 		<!-- 卡券活动 -->
-		<block v-if="type == 1 && token && sinoepc_init.coupon && sinoepc_init.is_show_coupon_dialog == 1">
+		<block v-if="type == 1 && token && sinoepc_init.is_show_coupon_dialog == 1">
 			<u-popup v-model="show_coupons" mode="center" height="auto" :mask-close-able="false">
 				<view class="coupons">
 					<view class="box"></view>

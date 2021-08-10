@@ -180,7 +180,6 @@
 				this.loadCardPlate();//车卡
 			});//监听车卡emit触发刷新
 			eventMonitor("WeChat_HomePage", 1);
-			console.log(new RegExp(0-9))
 		},
 		onShow() {
 			this.$token(() => {
