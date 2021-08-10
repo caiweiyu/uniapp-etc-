@@ -38,7 +38,7 @@
       </view>
       <!--易捷提货券-->
       <view class="box4" @click="changeCurrentRight" v-if="list.image_help != '' || dots2.length > 0">
-          <image :src="current == 1 ? pic_src[1] : pic_src[0]" mode="" />
+          <image :src="current == 1 ? pic_src[0] : pic_src[1]" mode="" />
       </view>
   </view>
 </template>
