@@ -9,7 +9,7 @@
 					<view class="order-text" @click="toggle">
 						{{menuName}}
 						<view class="order-icon-up" v-if="!show"></view>
-						<view class="order-icon-down" v-if="show"></view>
+						<view class="order-icon-down" v-else></view>
 					</view>
 				</view>
 				<!-- 隐藏菜单 -->
@@ -675,8 +675,9 @@
 	}
 	.banner {
 		position: absolute;
+		overflow: hidden;
 		width: 100%;
-		height: 100%;
+		height: 100vh;
 		z-index: 1;
 		background-color: #F2F2F2;
 		top: 172rpx;
@@ -685,18 +686,17 @@
 			background: #F2F2F2;
 			padding: 19rpx 0 19rpx 0;
 			.swiper_item_scroll {
+				overflow: hidden;
+				height: 100vh;
+				background-color: #F2F2F2;
 				.isMore{
 					width: 100%;
 					display: block;
     				text-align: center;
 					color:#999999;
 					font-size: 30rpx;
-					padding-bottom: 256rpx;
+					padding-bottom: 35rpx;
 				}
-				overflow: auto;
-				height: 100vh;
-				background-color: #F2F2F2;
-				// z-index:-1;
 				.order-card-first {
 					padding: 64rpx 0 16rpx 0;
 				}
