@@ -104,7 +104,7 @@
 		},
 		data() {
 			return {
-				popup_level: 0,//弹窗等级: 卡券活动 > 全局弹窗 > 积分
+				popup_level: 0,//弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分
 				dialog_window: 0,//全局弹窗返回值
 				curLock: true,//禁止连续下单
 				item_coupon_inner: {
@@ -132,20 +132,7 @@
 			
 		},
 		onReady() {
-			this.$nextTick(()=> {
-				if (this.sinoepc_init.is_show_coupon_dialog == 1) {//卡券活动
-					this.popup_level = 1;
-					return;
-				}
-				if (this.dialog_window == 2) {//全局弹窗
-					this.popup_level = 2;
-					return;
-				}
-				if (this.sinoepc_init.credit > 0) {//积分
-					this.popup_level = 3;
-					return;
-				}
-			})
+			
 		},
 		onUnload() {
 			this.loadPagePropsClear();
@@ -192,8 +179,8 @@
 				uni.$on("pay_sinopec", (e)=> {
 					this.downOrder(e.item);
 				});//下单支付
-				uni.$on("loadPopupLevel", (e)=> {
-					this.loadPopupLevel(e);
+				uni.$on("loadDialogWindow", (e)=> {
+					this.loadDialogWindow(e);
 				});//弹窗优先级
 			},
 			
@@ -206,14 +193,50 @@
 				uni.$off("getPhoneNumber");
 				uni.$off("getCoupon");
 				uni.$off("pay_sinopec");
-				uni.$off("loadPopupLevel");
+				uni.$off("loadDialogWindow");
 			},
 			
 			/**
-			 * 弹窗优先级
+			 * 全局弹窗回调返回等级参数
 			 */
-			loadPopupLevel(e) {
+			loadDialogWindow(e) {
 				this.dialog_window = e.dialog_window;
+			},
+			
+			/**
+			 * 中石化弹窗展示优先级
+			 */
+			loadPopupLevel() {
+				this.$nextTick(()=> {
+					if (this.sinoepc_init.is_show_coupon_dialog == 1) {//卡券活动
+						this.popup_level = 1;
+						app.log({
+							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
+							popup_level: this.popup_level
+						})
+						return;
+					}
+					if (this.dialog_window == 2) {//全局弹窗
+						this.popup_level = 2;
+						app.log({
+							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
+							popup_level: this.popup_level
+						})
+						return;
+					}
+					if (this.sinoepc_init.credit > 0) {//积分
+						this.popup_level = 3;
+						app.log({
+							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
+							popup_level: this.popup_level
+						})
+						return;
+					}
+					app.log({
+						tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
+						popup_level: this.popup_level
+					})
+				})
 			},
 			
 			/**
@@ -233,6 +256,9 @@
 				}
 				this.$store.dispatch("sinoepc/ac_sinoepc_list", this.$u.deepClone(res.data.list));
 				this.$store.dispatch("sinoepc/ac_sinoepc_init", res.data);
+				setTimeout(()=> {
+					this.loadPopupLevel();
+				},500)
 			},
 			
 			/**
@@ -292,10 +318,10 @@
 					coupon_id: id
 				})
 				if (res.code == 0) {
+					let sinoepc_init = this.sinoepc_init;
+					sinoepc_init.new_coupon_list = res.data;
+					this.$store.dispatch("sinoepc/ac_sinoepc_init", sinoepc_init);
 					this.getCouponList();
-					uni.$emit("changeCoupon", {
-						id: id
-					})
 				}
 			},
 			
