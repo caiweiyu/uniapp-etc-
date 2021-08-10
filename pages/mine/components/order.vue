@@ -9,14 +9,15 @@
 					<button-getPhoneNumber type="local" :item="menu" />
 				</view>
 			</view>
-			<view class="my-order-show">
-				<view class="box1" v-for="(item,index) in list" :key="index" @click="$debounce(navGetto,index+1,item.i_title)">
+			<view class="my-order-show">	
+					<view class="box1" v-for="(item,index) in menu_list" :key="index" @click="$debounce(navGetto,index+1,item.orderName)">
+						<u-badge size="mini" type="error" :bgColor="'#FF5C2A'" :offset="[-1,-1]" v-if="item.isDisplayValue" :count="item.displayValue"></u-badge>
 						<view class="unpaid-logo">
-							<image class="unpaid-logo-img" :src="item.i_url" mode="" />
+							<image class="unpaid-logo-img" :src="item.stateIcon" mode="" />
 						</view>
-						<text class="box2">{{item.i_title}}</text>
+						<text class="box2">{{item.orderName}}</text>
 						<button-getPhoneNumber type="local" :item="item" />
-				</view>
+					</view>
 				<!-- <view class="line-logo">
 				</view> -->
 				<!-- <view class="" @click="navGetto(5)">
@@ -46,6 +47,9 @@
 	import {
 		mapState
 	} from "vuex";
+	import {
+		getOrderInfo
+	} from "@/interfaces/order";
 	import {
 		eventMonitor
 	} from "@/common/utils"
@@ -96,6 +100,13 @@
 						subs_pop: "0",
 						subs_template_id: ""}
 				  ],
+				  jump_url_arr:[
+					  '/packageA/pages/order/home/main?index=1',
+					  '/packageA/pages/order/home/main?index=2',
+					  '/packageA/pages/order/home/main?index=3',
+					  '/packageA/pages/order/home/main?index=4'
+				  ],
+				  menu_list:[]
 
 			}
 		},
@@ -121,11 +132,24 @@
 					url: `/packageA/pages/order/home/main?index=${index}`,
 				});
 			},
-			onChange(event) {
-				console.log(event)
+			async getOrderInfolist(){
+				let res = await getOrderInfo({});
+				let {code,msg,data} = res;
+				if(code == 0){
+					for(let i=0;i<data.orderInfos.length;i++){
+						data.orderInfos[i].jump_url = this.jump_url_arr[i]
+						data.orderInfos[i].jump_type = "1";
+						data.orderInfos[i].appid = "";
+					}
+					this.menu_list = data.orderInfos;
+				}
 			},
+			init(){
+				this.getOrderInfolist()
+			}
 		},
 		mounted() {
+			this.init()
 		},
 	}
 </script>
