@@ -143,7 +143,8 @@
 						this.sinoepc_init.coupon.coupon_list[i].xcx_select = false;
 					}
 					uni.$emit("selectETCCoupon", {
-						coupon_text: `未使用`
+						coupon_text: `未使用`,
+						coupon_id: ""
 					})
 				}
 			},

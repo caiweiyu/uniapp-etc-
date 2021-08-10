@@ -132,7 +132,7 @@
 			}
 			uni.$on("selectETCCoupon", (e)=> {
 				this.coupon_text = e.coupon_text;
-				this.coupon_id = e.coupon_id;
+				this.coupon_id = e.coupon_id || "";
 				this.calculationCoupon(e);
 			})
 		},
