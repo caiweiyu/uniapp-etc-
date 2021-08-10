@@ -73,6 +73,7 @@
 			
 		},
 		onShow() {
+			this.$refs.order.init();
 			this.$token(() => {
 				this.$refs.index.init();
 				this.$refs.order.init();

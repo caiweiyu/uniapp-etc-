@@ -148,9 +148,7 @@
 				this.getOrderInfolist()
 			}
 		},
-		mounted() {
-			this.init()
-		},
+		mounted() {},
 	}
 </script>
 <style lang="scss" scoped>
