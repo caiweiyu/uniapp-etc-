@@ -55,7 +55,7 @@
 		</view>
 		
 		<!-- 全局弹窗 -->
-		<dialog-window ref="dialog" flag="10"></dialog-window>
+		<dialog-window ref="dialog" flag="10" v-show="popup_level == 2"></dialog-window>
 		
 	</view>
 </template>
@@ -117,10 +117,12 @@
 			}
 		},
 		onLoad(options) {
-			this.loadInit();
-			this.loadPageProps();
+			
 		},
 		onShow() {
+			this.loadInit();
+			this.loadPageProps();
+			
 			this.$token(() => {
 				this.loadInit();
 				this.loadPageProps();
@@ -210,32 +212,16 @@
 				this.$nextTick(()=> {
 					if (this.sinoepc_init.is_show_coupon_dialog == 1) {//卡券活动
 						this.popup_level = 1;
-						app.log({
-							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
-							popup_level: this.popup_level
-						})
 						return;
 					}
 					if (this.dialog_window == 2) {//全局弹窗
 						this.popup_level = 2;
-						app.log({
-							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
-							popup_level: this.popup_level
-						})
 						return;
 					}
 					if (this.sinoepc_init.credit > 0) {//积分
 						this.popup_level = 3;
-						app.log({
-							tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
-							popup_level: this.popup_level
-						})
 						return;
 					}
-					app.log({
-						tip: "弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分",
-						popup_level: this.popup_level
-					})
 				})
 			},
 			
