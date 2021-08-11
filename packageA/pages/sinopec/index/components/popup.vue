@@ -160,6 +160,7 @@
 				}
 				this.sinoepc_init.coupon.coupon_list[index].xcx_select = true;
 				this.curCoupon = false;
+				this.bindClose_3();
 				uni.$emit("selectETCCoupon", {
 					coupon_text: `-￥${this.sinoepc_init.coupon.coupon_list[index].discount_quota}`,
 					coupon_id: this.sinoepc_init.coupon.coupon_list[index].coupon_id,
@@ -211,12 +212,12 @@
 							}
 						}
 						.min:nth-child(2) {
-							padding: 32rpx 20rpx 0 200rpx;
+							padding: 34rpx 20rpx 0 200rpx;
 							font-size: 30rpx;
 							font-weight: 700;
 						}
 						.min:nth-child(3) {
-							padding: 8rpx 20rpx 0 200rpx;
+							padding: 4rpx 20rpx 0 200rpx;
 							font-size: 22rpx;
 							color: #999999;
 						}

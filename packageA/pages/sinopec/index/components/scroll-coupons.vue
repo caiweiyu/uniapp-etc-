@@ -50,12 +50,12 @@
 			 */
 			getCoupon(item) {
 				if (item.status != 1) {
-					uni.showToast({
-						title: "请不要重复领取",
-						icon: "none",
-						mask: true,
-						duration: 1500
-					})
+					// uni.showToast({
+					// 	title: "请不要重复领取",
+					// 	icon: "none",
+					// 	mask: true,
+					// 	duration: 1500
+					// })
 				} else {
 					uni.$emit("getCoupon", {
 						id: item.id
@@ -97,8 +97,8 @@
 					.minbox:nth-child(1) {
 						display: inline-block;
 						vertical-align: top;
-						padding: 0 40rpx 0 10rpx;
-						min-width: 140rpx;
+						padding: 0 30rpx 0 10rpx;
+						// min-width: 140rpx;
 						line-height: 150rpx;
 						text-align: center;
 						font-weight: 700;
@@ -112,13 +112,17 @@
 					.minbox:nth-child(2) {
 						display: inline-block;
 						vertical-align: top;
+						height: 100%;
+						position: relative;
 						.min:nth-child(1) {
 							padding: 36rpx 0 0 0;
 							font-size: 34rpx;
 							font-weight: 700;
 						}
 						.min:nth-child(2) {
-							padding: 4rpx 0 0 0;
+							position: absolute;
+							left: 0;
+							bottom: 36rpx;
 							font-size: 26rpx;
 							color: #666666;
 						}
@@ -132,6 +136,7 @@
 						color: #FF401E;
 						font-size: 32rpx;
 						font-weight: 700;
+						line-height: 36rpx;
 					}
 					.text-color {
 						color: #CCCCCC !important;
