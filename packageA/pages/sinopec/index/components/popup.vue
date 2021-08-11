@@ -117,6 +117,9 @@
 					this.curCoupon = true;
 				};//未有优惠卡券
 			})
+			if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
+				this.curCoupon = true;
+			};//未有优惠卡券
 		},
 		methods: {
 			/**
@@ -160,6 +163,7 @@
 				}
 				this.sinoepc_init.coupon.coupon_list[index].xcx_select = true;
 				this.curCoupon = false;
+				this.bindClose_3();
 				uni.$emit("selectETCCoupon", {
 					coupon_text: `-￥${this.sinoepc_init.coupon.coupon_list[index].discount_quota}`,
 					coupon_id: this.sinoepc_init.coupon.coupon_list[index].coupon_id,

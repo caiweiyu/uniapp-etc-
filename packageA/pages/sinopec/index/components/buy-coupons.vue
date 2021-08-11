@@ -631,8 +631,8 @@
 					margin: 0 0 0 10rpx;
 					width: 15rpx;
 					height: 15rpx;
-					border-top: 1rpx solid #999999;
-					border-right: 1rpx solid #999999;
+					border-top: 2rpx solid #999999;
+					border-right: 2rpx solid #999999;
 					transform: rotate(45deg);
 				}
 			}
