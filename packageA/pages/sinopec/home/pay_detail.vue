@@ -155,7 +155,13 @@
 
 		},
 		onShow() {
-	
+			this.$store.dispatch("home/ac_share_info",10);//分享配置
+			this.$token(()=>{
+				let {
+					order_id
+				} = this.$root.$mp.query;
+				this.getaxios_order_detail(order_id)
+			})	
 		},
 		methods: {
 			/**

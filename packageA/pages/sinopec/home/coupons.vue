@@ -99,9 +99,27 @@ export default {
         })
      },
     },
+    onShow(){
+		this.$store.dispatch("home/ac_share_info",10);//分享配置
+        this.$token(()=>{
+            this.getAxios_coupon_list(this.page,this.page_size)
+        })
+    },
     mounted(){
         this.getAxios_coupon_list(this.page,this.page_size)
-    }
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
+    },
 }
 </script>
 

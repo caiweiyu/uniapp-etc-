@@ -38,6 +38,7 @@
 import * as API from "@/interfaces/sinoepc";
 import selectArea from "./components/selectArea";
 import {mapState} from "vuex"
+const app = getApp()
 export default {
     data(){
         return {
@@ -141,9 +142,28 @@ export default {
             })
         },
     },
+    onShow(){
+        this.$token(()=>{
+            this.lng = this.longitude,this.lat = this.latitude;
+            this.get_axios_station(this.page,this.page_size)    
+        })
+		this.$store.dispatch("home/ac_share_info",10);//分享配置
+    },
     mounted() {
         this.lng = this.longitude,this.lat = this.latitude;
         this.get_axios_station(this.page,this.page_size)    
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
     },
 }
 </script>
