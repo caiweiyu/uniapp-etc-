@@ -117,11 +117,10 @@
 			}
 		},
 		onLoad(options) {
-			
+			this.loadPageProps();
 		},
 		onShow() {
 			this.loadInit();
-			this.loadPageProps();
 			
 			this.$token(() => {
 				this.loadInit();
