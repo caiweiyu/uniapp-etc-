@@ -87,10 +87,12 @@
 			margin: 24rpx 0 0 0;
 			width: 100%;
 			height: 124rpx;
+			background-color: #FFFFFF;
 			border-radius: 20rpx;
 			.swiper-item {
 				width: 100%;
 				height: 100%;
+				border-radius: 20rpx;
 				.img {
 					display: block;
 					width: 100%;

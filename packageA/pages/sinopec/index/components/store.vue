@@ -41,7 +41,7 @@
 			 * banner跳转
 			 */
 			bindNavBanner() {
-				let item = sinoepc_init.yijie;
+				let item = this.sinoepc_init.yijie;
 				if (typeof(item.subs_template_id) == "string") {
 					// 消息订阅
 					let arr = [];

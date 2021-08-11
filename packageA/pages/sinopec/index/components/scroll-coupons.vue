@@ -6,8 +6,8 @@
 			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_38.png"></image>
 			<scroll-view scroll-x class="scroll">
 				<view :class="['box', item.status != 1 ? 'box-active' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index" @click="$debounce(getCoupon, item)">
-					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
-						￥<text class="text">{{item.get_money}}</text>
+					<view :class="['minbox', item.status != 1 ? 'text-color' : '', item.get_money.length >= 6 ? 'minbox-font' : '']">
+						<text :class="['text', item.get_money.length >= 6 ? 'text-font' : '']">￥</text>{{item.get_money}}
 					</view>
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
 						<view class="min">{{item.title}}</view>
@@ -101,12 +101,12 @@
 						min-width: 140rpx;
 						line-height: 150rpx;
 						text-align: center;
-						font-size: 34rpx;
 						font-weight: 700;
 						color: #FF401E;
 						font-family: "etccb-font";
+						font-size: 62rpx;
 						.text {
-							font-size: 62rpx;
+							font-size: 34rpx;
 						}
 					}
 					.minbox:nth-child(2) {
@@ -135,6 +135,12 @@
 					}
 					.text-color {
 						color: #CCCCCC !important;
+					}
+					.minbox-font {
+						font-size: 42rpx !important;
+						.text-font {
+							font-size: 24rpx !important;
+						}
 					}
 				}
 				.box-active {
