@@ -474,7 +474,7 @@
 			.mine-coupon {
 				position: fixed;
 				right: 12rpx;
-				bottom: 100rpx;
+				bottom: 200rpx;
 				width: 120rpx;
 				height: 122rpx;
 			}
