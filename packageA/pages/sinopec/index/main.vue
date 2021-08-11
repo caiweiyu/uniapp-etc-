@@ -117,18 +117,15 @@
 			}
 		},
 		onLoad(options) {
-			
+			this.loadPageProps();
 		},
 		onShow() {
 			this.loadInit();
-			this.loadPageProps();
 			
 			this.$token(() => {
 				this.loadInit();
-				this.loadPageProps();
 			});//检测page是否授权，token是否过期
 			this.$store.dispatch("home/ac_share_info",10);//分享配置
-			this.$refs.dialog.loadPopup();//全局弹窗配置
 			
 			uni.$emit("reflashBuyConpons", {});
 		},
@@ -157,6 +154,7 @@
 			 */
 			async loadInit() {
 				try {
+					await this.$refs.dialog.loadPopup();//全局弹窗配置
 					await Promise.all([
 						this.loadIndex(),
 						this.loadOilStation()
@@ -371,13 +369,13 @@
 			        let {code, data} = res;
 					if (data.prepaid_info.hasOwnProperty("trade_status") == true && Number(data.prepaid_info.trade_status) == 3) {
 						uni.navigateTo({
-							url: `/packageA/pages/sinopec/home/pay_success?point=${item.coin_num}&price=${(item.recharge_price - pay_amount).toFixed(2)}`
+							url: `/packageA/pages/sinopec/home/pay_success?price=${(item.recharge_price - pay_amount).toFixed(2)}&order_id="${data.orderid}"`
 						})
 						this.curLock = true;
 						return;
 					}
 			        if (code == 0) {
-			            this.toPay(data)
+			            this.toPay(data, pay_amount)
 			        } else {
 						this.curLock = true;
 					}
@@ -387,7 +385,7 @@
 			/**
 			 * 调起微信支付
 			 */
-			toPay(data) {
+			toPay(data, pay_amount) {
 				let {
 				    timeStamp,
 				    signType,
@@ -407,7 +405,7 @@
 				        paySign,
 				        success: (res) => {
 				            uni.navigateTo({
-								url: `/packageA/pages/sinopec/home/pay_success?point=${data.credit}&price=${data.etc_discount}`
+								url: `/packageA/pages/sinopec/home/pay_success?price=${(item.recharge_price - pay_amount).toFixed(2)}&order_id="${data.orderid}"`
 				            })
 				        },
 				        fail: (res) => {

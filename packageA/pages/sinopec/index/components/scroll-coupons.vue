@@ -50,12 +50,12 @@
 			 */
 			getCoupon(item) {
 				if (item.status != 1) {
-					uni.showToast({
-						title: "请不要重复领取",
-						icon: "none",
-						mask: true,
-						duration: 1500
-					})
+					// uni.showToast({
+					// 	title: "请不要重复领取",
+					// 	icon: "none",
+					// 	mask: true,
+					// 	duration: 1500
+					// })
 				} else {
 					uni.$emit("getCoupon", {
 						id: item.id
