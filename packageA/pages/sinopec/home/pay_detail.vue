@@ -155,7 +155,13 @@
 
 		},
 		onShow() {
-	
+			this.$store.dispatch("home/ac_share_info",10);//分享配置
+			this.$token(()=>{
+				let {
+					order_id
+				} = this.$root.$mp.query;
+				this.getaxios_order_detail(order_id)
+			})	
 		},
 		methods: {
 			/**
@@ -183,8 +189,15 @@
 					appid:"wx32fe2eb8b2fa221f",
 					jump_url:""
 				}
-				console.log(item)
-				this.callback(item)
+				// 消息订阅
+				let arr = ['R7O-YtXiergkR4PciV4usdYfal7RDI92_svZWBVFh04',
+							'P0odhvpFTLEgqdCO68vWvJAEI-8vqJsPMCk9v3wUVjc',
+							'Rx38boJIko8vaMnzFygTSQHaJrUhu1NjLFGGlp2FUMM'];
+				miniapp.subscribe(arr, (res)=>{
+					this.callback(item);
+				}, (err)=> {
+					this.callback(item);
+				})
 			},
 			callback(item) {
 				// 跳转page || miniProgram

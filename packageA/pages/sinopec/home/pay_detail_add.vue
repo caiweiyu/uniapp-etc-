@@ -117,7 +117,10 @@
 
 		},
 		onShow() {
-	
+        this.$store.dispatch("home/ac_share_info",10);//分享配置
+        this.$token(()=>{
+          this.init()
+        })
 		},
 		methods: {
 			/**
@@ -256,19 +259,22 @@
 			            this.onTradePay(data)
 			        }
 			    })
-			}
+			},
+      init(){
+          let {
+				  order_id
+          } = this.$root.$mp.query;
+          new Promise((resolve,reject)=>{
+            resolve(this.getaxios_order_detail(order_id))
+          }).then(res=>{
+            if(res){
+              this.timer = setInterval(this.timeCount.bind(this), 1000);
+            }
+          }) 
+      }
 		},
     mounted() {
-        let {
-				  order_id
-			  } = this.$root.$mp.query;
-        new Promise((resolve,reject)=>{
-          resolve(this.getaxios_order_detail(order_id))
-        }).then(res=>{
-          if(res){
-            this.timer = setInterval(this.timeCount.bind(this), 1000);
-          }
-        })    
+         this.init()
     },
 		/**
 		 * 分享好友/群

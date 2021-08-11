@@ -5,6 +5,7 @@
 </template>
 
 <script>
+const app = getApp()
 export default {
     data(){
         return {
@@ -25,12 +26,27 @@ export default {
         }
       },
     },
+    onShow(){
+			this.$store.dispatch("home/ac_share_info",10);//分享配置
+    },
     mounted() {
      	let {
 			video_src
 		} = this.$root.$mp.query;
 		this.video_src = video_src
     },
+    	/**
+		 * 分享好友/群
+		 */
+		onShareAppMessage(res) {
+			return app.shareAppMessage();
+		},
+		/**
+		 * 分享朋友圈
+		 */
+		onShareTimeline(res) {
+			return app.shareTimeline();
+		},
 }
 </script>
 

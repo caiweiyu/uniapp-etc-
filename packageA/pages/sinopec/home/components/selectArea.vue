@@ -30,6 +30,7 @@
 </template>
 
 <script>
+const app = getApp()
 import * as API from "@/interfaces/sinoepc";
 import {mapState} from "vuex"
 export default {
@@ -94,8 +95,26 @@ export default {
             this.$emit('getDistrict',{city:this.city_code,district:this.district_code})
         }
     },
+    onShow(){
+		this.$store.dispatch("home/ac_share_info",10);//分享配置
+        this.$token(()=>{
+            this.getAxios_station_area()
+        })
+    },
     mounted() {
         this.getAxios_station_area()
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
     },
 }
 </script>

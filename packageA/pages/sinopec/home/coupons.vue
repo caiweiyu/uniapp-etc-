@@ -88,7 +88,16 @@ export default {
               appid:"wx32fe2eb8b2fa221f",
               jump_url:""
           }
-          this.callback(item)
+        // 消息订阅
+        let arr = ['R7O-YtXiergkR4PciV4usdYfal7RDI92_svZWBVFh04',
+                    'P0odhvpFTLEgqdCO68vWvJAEI-8vqJsPMCk9v3wUVjc',
+                    'Rx38boJIko8vaMnzFygTSQHaJrUhu1NjLFGGlp2FUMM'];
+        miniapp.subscribe(arr, (res)=>{
+            this.callback(item);
+        }, (err)=> {
+            this.callback(item);
+        })
+
       },
       callback(item) {
         // 跳转page || miniProgram
@@ -99,22 +108,45 @@ export default {
         })
      },
     },
+    onShow(){
+		this.$store.dispatch("home/ac_share_info",10);//分享配置
+        this.$token(()=>{
+            this.getAxios_coupon_list(this.page,this.page_size)
+        })
+    },
     mounted(){
         this.getAxios_coupon_list(this.page,this.page_size)
-    }
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
+    },
 }
 </script>
 
 <style lang="scss" scoped>
     .box{
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background-color: #F4F4F4;
         .card-scroll{
             position: relative;
 			height:100vh;
-            padding-top: 140rpx;
+            // padding-top: 140rpx;
 			background-color: #F9F9F9; 
             .title{
                 width: 100%;
                 height: 100%;
+                margin-bottom: 140rpx;
                 >view:last-child{
                     margin-bottom: 24rpx;
                 }
@@ -159,15 +191,12 @@ export default {
             }
 
         }
-        height: 100vh;
-        width: 100%;
-        background-color: #F4F4F4;
         .image{
             width: 750rpx;
             height: 140rpx;
-            position: fixed;
-            z-index: 1;
-            top: 0;
+            // position: fixed;
+            // z-index: 1;
+            // top: 0;
         }     
         .no_card{
             position: absolute;

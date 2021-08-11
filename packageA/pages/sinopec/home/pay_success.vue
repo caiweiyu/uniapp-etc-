@@ -70,6 +70,9 @@ export default {
             })
         }
     },
+	onShow(){
+		this.$store.dispatch("home/ac_share_info",10);//分享配置
+    },
     mounted() {
      	let {
 			point,
@@ -78,6 +81,18 @@ export default {
 		this.order.point = point;
 		this.order.price = price;
     },
+	/**
+	 * 分享好友/群
+	 */
+	onShareAppMessage(res) {
+		return app.shareAppMessage();
+	},
+	/**
+	 * 分享朋友圈
+	 */
+	onShareTimeline(res) {
+		return app.shareTimeline();
+	},
 }
 </script>
 

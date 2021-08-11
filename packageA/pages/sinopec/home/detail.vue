@@ -107,7 +107,7 @@ export default {
       }
     },
     onShow(){
-
+      this.$store.dispatch("home/ac_share_info",10);//分享配置
     },
     mounted() {
       let {
@@ -115,6 +115,18 @@ export default {
 			} = this.$root.$mp.query;
       this.getAxiosUserHelp();
     },
+    /**
+		 * 分享好友/群
+		*/
+		onShareAppMessage(res) {
+			  return app.shareAppMessage();
+		},
+		/**
+		 * 分享朋友圈
+		 */
+		onShareTimeline(res) {
+			  return app.shareTimeline();
+		},
     components:{
       selectArea
     }
