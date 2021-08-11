@@ -1,7 +1,7 @@
 <template>
   <view class="box">
         <!--返回-->
-        <view class="container">
+        <view class="container" :style="{marginTop:(statusBarHeight)+'rpx'}">
 			<view class="nav container-item">
 				<image class="imgs" src="https://image.etcchebao.com/etc-min/etc-f/icon_3.png" />
 				<view class="boxs">
@@ -19,11 +19,11 @@
 		<text>支付成功</text>
         <view class="box_text">
             恭喜你！中石化加油券充值成功！
-		  此订单将扣除<text class="text">{{order.point}}</text>积分，为您节省<text class="text">{{order.price}}</text>元
+		  此订单为您节省<text class="text">{{order.price}}</text>元
         </view>
 		<view class="box_bottom">
 			<view @click="toHome">返回首页</view>
-			<view @click="toOrder">查看订单</view>
+			<view @click="toOrder(order.order_id)">查看订单</view>
 		</view>
   </view>
 </template>
@@ -37,9 +37,10 @@ export default {
     data(){
       return {
         order:{
-			point:0,
-			price:0
+			price:0,
+			order_id:""
 		},
+		statusBarHeight: uni.getSystemInfoSync().statusBarHeight * 2,
         status:true
       }
     },
@@ -56,11 +57,11 @@ export default {
                 url: `/packageA/pages/sinopec/index/main`
             })
         },
-        toOrder() {
+        toOrder(order_id) {
             this.status = false
             uni.navigateTo({
-                url: `/packageA/pages/order/home/main`
-            })
+				url: `/packageA/pages/sinopec/home/pay_detail?order_id=${order_id}`
+			});
         },
     },
     onUnload(){
@@ -75,11 +76,11 @@ export default {
     },
     mounted() {
      	let {
-			point,
-			price
+			price,
+			order_id
 		} = this.$root.$mp.query;
-		this.order.point = point;
 		this.order.price = price;
+		this.order.order_id = order_id;
     },
 	/**
 	 * 分享好友/群
@@ -102,9 +103,9 @@ export default {
         .container{
             display: flex;
             justify-content: space-between;
+			margin:0 25rpx;
             // position: absolute;
             // top: 86rpx;
-            margin-top: 100rpx;
             .container-item{
 				font-size: 36rpx;
 				color: #0D0D0D;

@@ -48,7 +48,7 @@
 						 :refresher-triggered="triggered" :refresher-threshold="50"
 						 refresher-background="#F0F0F0" @refresherrefresh="onRefresh"
 						 @refresherrestore="onRestore" @refresherabort="onAbort"
-						 :style="card_list.length <= 3 ? 'position: fixed;' : ''"
+						 :style="{top:(statusBarHeight+199)+'rpx'}"
 						 :scroll-with-animation="true"
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list" :key="index">
@@ -124,7 +124,7 @@
 								<view class="order">
 									<!-- <view class="order_time">
 										{{item.order_time}}
-									</view> -->
+									</view> --> 
 									<view class="order-box1"></view>
 									<view class="order-box2">
 										<view class="order_pay"
@@ -150,7 +150,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="isMore" v-if="isMore">
+						<view class="isMore" v-if="isMore" :style="{paddingBottom:(statusBarHeight+199)+'rpx'}">
 							<u-loadmore :status="status" />
 						</view>
 					</scroll-view>
@@ -225,7 +225,8 @@
 				loading: false,//加载中...
 				status:'nomore',
 				triggered:false,
-				scrollTops:-1
+				scrollTops:-1,
+				statusBarHeight: uni.getSystemInfoSync().statusBarHeight * 2
 			}
 		},
 		methods: {
@@ -656,14 +657,14 @@
 			background: #F2F2F2;
 			.swiper_item_scroll {
 				position: fixed;
-				top: 236rpx;
+				// top: 236rpx;
 				height: 100%;
 				background-color: #F2F2F2;
 				.order-card-first {
 					padding: 16rpx 0 16rpx 0;
 				}
 				.order-card {
-					padding: 0 0 16rpx 0;
+					padding: 0 0 16rpx 0 !important;
 				}
 				.isMore{
 					width: 100%;
@@ -671,7 +672,6 @@
     				text-align: center;
 					color:#999999;
 					font-size: 30rpx;
-					padding-bottom: 236rpx;
 				}
 				.order-card-header {
 						width: 690rpx;
