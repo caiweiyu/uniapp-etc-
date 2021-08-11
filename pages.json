@@ -337,6 +337,54 @@
 			]
 		},
 		{
+			//中石化加油
+			"root": "packageA/pages/sinopec/",
+			"pages": [{
+				"path": "index/main",
+				"style": {
+					"navigationBarTitleText": "中石化加油专区",
+					"navigationBarBackgroundColor": "#377DDD",
+					"navigationBarTextStyle": "white"
+				}
+			}, {
+				"path": "home/detail",
+				"style": {
+					"navigationBarTitleText": "使用须知"
+				}
+			},{
+				"path": "home/video",
+				"style": {
+					"navigationBarTitleText": "使用须知"
+				}
+			},{
+				"path": "home/pay_detail_add",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				}
+			},{
+				"path": "home/pay_detail",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				}
+			},{
+				"path": "home/pay_success",
+				"style": {
+					"navigationBarTitleText": "支付结果",
+					"navigationStyle": "custom"
+				}
+			},{
+				"path": "home/sinoepc_list",
+				"style": {
+					"navigationBarTitleText": "中石化油站列表"
+				}
+			},{
+				"path": "home/coupons",
+				"style": {
+					"navigationBarTitleText": "我的电子券"
+				}
+			}]
+		},
+		{
 			//订单、卡券模块
 			"root": "packageA/pages/order/",
 			"pages": [{

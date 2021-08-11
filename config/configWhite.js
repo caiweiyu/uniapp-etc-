@@ -18,5 +18,6 @@ let white = [
 	// "pages/winning/main",
 	// "pages/winning_info/main",
 	// "pages/lottery/main",
+	"packageA/pages/sinopec/index/main"
 ]
 export default white

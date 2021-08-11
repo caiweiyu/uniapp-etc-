@@ -17,7 +17,7 @@ const home = {
 		vehicle_type: "",//车辆类型
 		fm_index: 0,//资讯tab导航index
 
-		ytk_bill: "111",//粤通卡账单
+		ytk_bill: "",//粤通卡账单
 		info_item:{}
 	},
 	mutations: {
