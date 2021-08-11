@@ -42,6 +42,7 @@
 					<view class="last" @click="bindHistoryClear">
 						<text>清空历史记录</text>
 						<view class="line"></view>
+						<view class="shadow"></view>
 					</view>
 				</view>
 				<view class="history-bg" v-show="curHistory" @touchend="bindBlurFalse"></view>
@@ -50,21 +51,23 @@
 		
 		<!-- 充值选项 -->
 		<view class="select">
-			<view :class="['box', !token || phone_number.length < 11 ? 'box-bg-3' : '', item.icon ? 'box-bg-2' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.list" :key="index" @click="$debounce(bindPay,item)">
-				<view class="minbox">
-					<view :class="['min-1', !token || phone_number.length < 11 ? 'text-color' : '']">
-						<text class="text">{{item.recharge_price}}</text>元油券
+			<view :class="['box']" v-for="(item,index) in sinoepc_init.list" :key="index" @click="$debounce(bindPay,item)">
+				<view :class="['midbox', !token || phone_number.length < 11 ? 'box-bg-3' : '']" hover-class="box-bg-2">
+					<view class="minbox">
+						<view :class="['min-1', !token || phone_number.length < 11 ? 'text-color' : '']">
+							<text class="text">{{item.recharge_price}}</text>元油券
+						</view>
+						<view :class="['min-2', !token || phone_number.length < 11 ? 'text-color' : '']">
+							{{item.price}}元+{{item.coin_num}}积分
+						</view>
 					</view>
-					<view :class="['min-2', !token || phone_number.length < 11 ? 'text-color' : '']">
-						{{item.price}}元+{{item.coin_num}}积分
+					<view :class="['minbox', !token || phone_number.length < 11 ? 'text-color' : '']">立即兑换</view>
+					<view class="minbox">
+						<image :src="item.icon" mode="heightFix"></image>
 					</view>
-				</view>
-				<view :class="['minbox', !token || phone_number.length < 11 ? 'text-color' : '']">立即兑换</view>
-				<view class="minbox">
-					<image :src="item.icon" mode="heightFix"></image>
-				</view>
-				<view class="minbox" v-if="item.xcx_mj > 0">
-					<text>抵扣{{item.xcx_mj}}元</text>
+					<view class="minbox" v-if="item.xcx_mj > 0">
+						<text>抵扣{{item.xcx_mj}}元</text>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -215,9 +218,10 @@
 			 */
 			bindConfirm(e) {
 				let reg = /^1[3456789]\d{9}$/;
-				if (reg.test(this.phone_number)) {
+				let num = (this.phone_number).replace(/\s/g,"");
+				if (reg.test(num) && num.length == 11) {
 					uni.$emit("savePhoneNumber", {
-						phone: this.phone_number
+						phone: num
 					})
 					this.curHistory = false;
 				} else {
@@ -237,6 +241,7 @@
 			 * 聚焦
 			 */
 			bindFocus(e) {
+				this.phone_number = "";
 				// uni.$emit("getPhoneNumber", {})
 				// this.curHistory = true;
 			},
@@ -245,6 +250,13 @@
 			 * 失焦
 			 */
 			bindBlur(e) {
+				let reg = /^[0-9]*$/;
+				let num = (this.phone_number).replace(/\s/g,"");
+				if (reg.test(num) && num.length == 11) {
+					uni.$emit("savePhoneNumber", {
+						phone: num
+					})
+				}
 				// this.curHistory = false;
 			},
 			
@@ -420,8 +432,12 @@
 				background-color: #FFFFFF;
 				color: #222222;
 				.scroll {
+					position: relative;
+					z-index: 2;
 					width: 100%;
-					height: 330rpx;
+					min-height: 110rpx;
+					max-height: 330rpx;
+					background-color: #FFFFFF;
 					.num {
 						height: 110rpx;
 						border-bottom: 1rpx solid #EBEBEB;
@@ -441,11 +457,13 @@
 				}
 				.last {
 					position: relative;
+					z-index: 1;
 					text-align: center;
 					line-height: 82rpx;
 					height: 82rpx;
 					font-size: 24rpx;
 					color: #C0C0C0;
+					background-color: #FFFFFF;
 					.line {
 						position: absolute;
 						left: 50%;
@@ -454,6 +472,16 @@
 						width: calc(100% + 40rpx);
 						height: 2rpx;
 						border-bottom: 1rpx solid #EBEBEB;
+					}
+					.shadow {
+						position: absolute;
+						z-index: -1;
+						left: 50%;
+						bottom: 0;
+						transform: translate(-50%,0);
+						width: calc(100% + 40rpx);
+						height: 82rpx;
+						box-shadow: 0 15rpx 15rpx 10rpx rgba($color: #EBEBEB, $alpha: 0.4);
 					}
 				}
 			}
@@ -473,75 +501,90 @@
 			flex-wrap: wrap;
 			min-height: 422rpx;
 			.box {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_42.png") no-repeat;
-				background-size: 100% 100%;
-				margin: 10rpx 0 0 9rpx;
-				width: 214rpx;
+				margin: 10rpx 0 0 0;
+				width: 33.33333%;
 				height: 192rpx;
 				position: relative;
-				.minbox:nth-child(1) {
-					width: 100%;
-					height: 128rpx;
-					text-align: center;
-					.min-1 {
-						padding: 24rpx 0 0 0;
-						color: #229CF4;
-						font-weight: 700;
-						font-size: 28rpx;
-						.text {
-							font-size: 40rpx;
-							font-family: "etccb-font";
+				.midbox {
+					position: absolute;
+					background: url("https://image.etcchebao.com/etc-min/etc-f/icon_42.png") no-repeat;
+					background-size: 100% 100%;
+					width: 214rpx;
+					height: 100%;
+					.minbox:nth-child(1) {
+						width: 100%;
+						height: 128rpx;
+						text-align: center;
+						.min-1 {
+							padding: 24rpx 0 0 0;
+							color: #229CF4;
+							font-weight: 700;
+							font-size: 28rpx;
+							.text {
+								font-size: 40rpx;
+								font-family: "etccb-font";
+							}
+						}
+						.min-2 {
+							padding: 4rpx 0 0 0;
+							font-size: 24rpx;
 						}
 					}
-					.min-2 {
-						padding: 4rpx 0 0 0;
-						font-size: 24rpx;
+					.minbox:nth-child(2) {
+						position: absolute;
+						left: 0;
+						bottom: 0;
+						width: 100%;
+						height: 62rpx;
+						line-height: 62rpx;
+						text-align: center;
+						font-size: 26rpx;
+						color: #229CF4;
 					}
-				}
-				.minbox:nth-child(2) {
-					position: absolute;
-					left: 0;
-					bottom: 0;
-					width: 100%;
-					height: 62rpx;
-					line-height: 62rpx;
-					text-align: center;
-					font-size: 26rpx;
-					color: #229CF4;
-				}
-				.minbox:nth-child(3) {
-					position: absolute;
-					z-index: 1;
-					right: 0;
-					top: 0;
-					height: 30rpx;
-					.img {
-						display: block;
+					.minbox:nth-child(3) {
+						position: absolute;
+						z-index: 1;
+						right: 0;
+						top: 0;
 						height: 30rpx;
+						.img {
+							display: block;
+							height: 30rpx;
+						}
+					}
+					.minbox:nth-child(4) {
+						position: absolute;
+						z-index: 2;
+						right: 0;
+						top: 0;
+						height: 30rpx;
+						line-height: 30rpx;
+						background-color: #FC4926;
+						border-radius: 0 10rpx 0 10rpx;
+						color: #FFFFFF;
+						font-size: 20rpx;
+						font-weight: 700;
+						padding: 0 12rpx;
 					}
 				}
-				.minbox:nth-child(4) {
-					position: absolute;
-					z-index: 2;
-					right: 0;
-					top: 0;
-					height: 30rpx;
-					line-height: 30rpx;
-					background-color: #FC4926;
-					border-radius: 0 10rpx 0 10rpx;
-					color: #FFFFFF;
-					font-size: 20rpx;
-					font-weight: 700;
-					padding: 0 12rpx;
-				}
-			}
-			.box:nth-child(3n+1) {
-				margin-left: 0;
 			}
 			.box:nth-child(1),
 			.box:nth-child(2),
 			.box:nth-child(3) {
 				margin-top: 0;
+			}
+			.box:nth-child(3n+1) .midbox {
+				left: 0;
+				top: 0;
+			}
+			.box:nth-child(3n+2) .midbox {
+				left: 50%;
+				top: 0;
+				transform: translate(-50%,0);
+			}
+			.box:nth-child(3n+3) .midbox {
+				right: 0;
+				top: 0;
 			}
 			.box-bg-2 {
 				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_41.png") no-repeat !important;

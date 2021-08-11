@@ -407,7 +407,7 @@
 				        paySign,
 				        success: (res) => {
 				            uni.navigateTo({
-								url: `/packageA/pages/sinopec/home/pay_success?point=${res.data.credit}&price=${res.data.etc_discount}`
+								url: `/packageA/pages/sinopec/home/pay_success?point=${data.credit}&price=${data.etc_discount}`
 				            })
 				        },
 				        fail: (res) => {
