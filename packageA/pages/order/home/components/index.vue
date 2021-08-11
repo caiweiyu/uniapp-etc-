@@ -54,7 +54,7 @@
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list"
 							:key="index">
-							<view class="order-card-header" v-if="['40','11','10','140'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id)">
+							<view class="order-card-header" v-if="['40','11','10','140'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
 								<view class="header">
 									<view class="header_box_l">
 										<image class="header_box_l_img" :src="item.icon"></image>
@@ -343,7 +343,7 @@
 				})
 			},
 			//跳h5页
-			gotoWebView(){
+			gotoWebView(url){
 				let h5_url = url.replace('https','http')
 					h5_url = h5_url.replace('http','https')
 					uni.navigateTo({
@@ -351,7 +351,7 @@
 					});
 			},
 			//跳转详情h5订单
-			toService(order_status_id, order_type, order_id) {
+			toService(order_status_id, order_type, order_id,jump_url) {
 				switch(Number(order_type)){
 					case 11:
 						this.gotoLocation();
@@ -370,7 +370,7 @@
 						}
 					break;
 					default:
-						this.gotoWebView();
+						this.gotoWebView(jump_url);
 
 				}
 			},
