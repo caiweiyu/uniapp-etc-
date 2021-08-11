@@ -401,6 +401,7 @@
 					height: 100rpx;
 					font-size: 50rpx;
 					font-family: "etccb-font" !important;
+					// caret-color: red;
 					// color: rgba($color: #000000, $alpha: 0);
 				}
 			}
