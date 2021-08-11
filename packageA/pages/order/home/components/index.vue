@@ -41,19 +41,17 @@
 		<!-- 订单banner -->
 		<view class="banner">
 			<view class="order-all" v-if="loading">
-					<scroll-view v-if="card_list.length > 0" :scroll-y="true"
+					<scroll-view v-if="card_list.length > 0" 
+						 :scroll-y="true"
 						 :refresher-enabled="true"
 						 @scrolltolower="changeRfswaterFall" class="swiper_item_scroll"
-						 :refresher-triggered="triggered" :refresher-threshold="80"
+						 :refresher-triggered="triggered" :refresher-threshold="50"
 						 refresher-background="#F0F0F0" @refresherrefresh="onRefresh"
 						 @refresherrestore="onRestore" @refresherabort="onAbort"
 						 :style="card_list.length <= 3 ? 'position: fixed;' : ''"
 						 :scroll-with-animation="true"
-						 :scroll-top="scrollTops"
-						 @scroll="scrollChange"
 						 >
-						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list"
-							:key="index">
+						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list" :key="index">
 							<view class="order-card-header" v-if="['40','11','10','140'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
 								<view class="header">
 									<view class="header_box_l">
@@ -256,18 +254,12 @@
 			},
 			//获取订单下标
 			getIndex(data) {
-				this.scrollTops = 0;
-				console.log(data)
 				this.order_status = data.order_status;
 				this.isMore=false;
 				this.page =1;
 				this.is_show =false;
 				this.card_list = [];
 				this.getOrderListtarget(this.page, this.page_size, this.order_status, this.sub_order_type)
-			},
-			//监听滚动
-			scrollChange(e){
-				console.log(e.detail.scrollTop)
 			},
 			//获取导航栏数据
 			getOrderStatusList(order_status, sub_order_type) {
@@ -468,19 +460,16 @@
 <style lang="scss" scoped>
 	.order-content {
 		margin-top: 43rpx;
-
 		.order-content-text {
 			color: #999999;
 			font-size: 30rpx;
 			margin: 43rpx 0 0 28rpx;
 			display: block;
 		}
-
 		.order-content-center {
 			display: flex;
 			flex-wrap: wrap;
 			margin: 16rpx 0 0 0;
-
 			.order-content-button {
 				width: 216rpx;
 				height: 70rpx;
@@ -497,28 +486,22 @@
 				margin: 20rpx 0 0 21rpx;
 				display: inline-block;
 			}
-
 			.active {
 				color: #FF5C2A !important;
 			}
 		}
-
 	}
-
 	#item_list view {
 		text-align: right;
 		overflow: auto;
 		white-space: nowrap;
 	}
-
 	.hide {
 		display: none;
 	}
-
 	.show {
 		display: block;
 	}
-
 	// .open{
 	// 	transform: translateY(100%) !important;
 	// 	transition: all 0.3s ease;
@@ -531,7 +514,6 @@
 		height: 100%;
 		overflow-y: hidden;
 	}
-
 	.box {
 		@media screen and (min-height: 812px) {
 			.order-list {
@@ -547,7 +529,6 @@
 			background-color: #ffffff;
 			top: 0;
 			left: 0;
-
 			// 动画效果
 			.box_content {
 				width: 100%;
@@ -558,7 +539,6 @@
 				background-color: rgba($color: #000000, $alpha: 0.7);
 				height: 100%;
 			}
-
 			.item_list {
 				background-color: white;
 				position: absolute;
@@ -568,13 +548,11 @@
 				overflow: auto;
 				padding-bottom: 20rpx;
 				border-radius: 0 0 20rpx 20rpx;
-
 				.scroll {
 					width: 100%;
 					height: 100%;
 				}
 			}
-
 			.item_list_bottom {
 				position: absolute;
 				bottom: 0;
@@ -582,7 +560,6 @@
 				z-index: 1;
 				height: 38%;
 			}
-
 			@media screen and (min-height: 812px) {
 				.order-header {
 					margin-top: 105rpx !important;
@@ -596,7 +573,6 @@
 				margin-bottom: 47rpx;
 				text-align: center;
 				position: relative;
-
 				.order-back {
 					width: 48rpx;
 					height: 48rpx;
@@ -604,7 +580,6 @@
 					background-size: 100%;
 					margin-left: 20rpx;
 				}
-
 				.order-text {
 					left: 50%;
 					transform: translateX(-50%);
@@ -617,7 +592,6 @@
 					font-size: 36rpx;
 					font-weight: bold;
 					color: #222222;
-
 					.order-icon-up {
 						width: 40rpx;
 						height: 40rpx;
@@ -674,38 +648,33 @@
 		}
 	}
 	.banner {
-		position: absolute;
 		overflow: hidden;
 		width: 100%;
 		height: 100vh;
 		z-index: 1;
-		background-color: #F2F2F2;
-		top: 172rpx;
-		left: 0;
 		.order-all {
 			background: #F2F2F2;
-			padding: 19rpx 0 19rpx 0;
 			.swiper_item_scroll {
-				overflow: hidden;
-				height: 100vh;
+				position: fixed;
+				top: 236rpx;
+				height: 100%;
 				background-color: #F2F2F2;
+				.order-card-first {
+					padding: 16rpx 0 16rpx 0;
+				}
+				.order-card {
+					padding: 0 0 16rpx 0;
+				}
 				.isMore{
 					width: 100%;
 					display: block;
     				text-align: center;
 					color:#999999;
 					font-size: 30rpx;
-					padding-bottom: 35rpx;
-				}
-				.order-card-first {
-					padding: 64rpx 0 16rpx 0;
-				}
-				.order-card {
-					padding: 0 0 16rpx 0;
+					padding-bottom: 236rpx;
 				}
 				.order-card-header {
 						width: 690rpx;
-						// height: 396rpx;
 						border-radius: 14rpx;
 						margin: 0 auto;
 						text-align: center;
@@ -714,7 +683,6 @@
 						.header {
 							display: flex;
 							justify-content: space-between;
-
 							.header_box_l {
 								color: #222222;
 								font-size: 30rpx;
