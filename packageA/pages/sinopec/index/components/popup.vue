@@ -9,7 +9,9 @@
 					<view class="box">
 						<scroll-view scroll-y class="scroll">
 							<view class="minbox" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index">
-								<view class="min">{{item.get_money}}</view>
+								<view :class="['min', item.get_money.length >= 6 ? 'min-font' : '']">
+									<text :class="['text', item.get_money.length >= 6 ? 'text-font' : '']">￥</text>{{item.get_money}}
+								</view>
 								<view class="min u-line-1">{{item.title}}</view>
 								<view class="min u-line-1">{{item.expire_time}}</view>
 							</view>
@@ -204,14 +206,9 @@
 							transform: translate(0,-50%);
 							width: 180rpx;
 							text-align: center;
-						}
-						.min:nth-child(1)::before {
-							content: "￥";
-							display: inline-block;
-							vertical-align: middle;
-							font-size: 28rpx;
-							color: #FF401E;
-							margin: 6rpx 0 0 0;
+							.text {
+								font-size: 28rpx;
+							}
 						}
 						.min:nth-child(2) {
 							padding: 32rpx 20rpx 0 200rpx;
@@ -222,6 +219,12 @@
 							padding: 8rpx 20rpx 0 200rpx;
 							font-size: 22rpx;
 							color: #999999;
+						}
+						.min-font {
+							font-size: 36rpx !important;
+							.text-font {
+								font-size: 20rpx !important;
+							}
 						}
 					}
 					.minbox:first-child {

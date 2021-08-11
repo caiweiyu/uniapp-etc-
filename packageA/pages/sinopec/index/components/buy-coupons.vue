@@ -121,7 +121,7 @@
 			return {
 				phone_number: "",//手机号码
 				isfocus: false,//input 焦点
-				curHistory: false,//历史手机号码输入
+				curHistory: false,//历史手机号码输入是否show
 				coupon_text: "未使用",//优惠券选择文案
 				coupon_id: "",//优惠券id
 			}
@@ -134,10 +134,17 @@
 				this.coupon_text = e.coupon_text;
 				this.coupon_id = e.coupon_id || "";
 				this.calculationCoupon(e);
-			})
+			})//监听用户选优惠券
+			uni.$on("reflashBuyConpons", ()=> {
+				this.isfocus = false;
+				this.curHistory = false;
+				this.coupon_text = "未使用";
+				this.coupon_id = "";
+			});//监听页面onshow重置数据
 		},
 		destroyed() {
 			uni.$off("selectETCCoupon");
+			uni.$off("reflashBuyConpons");
 		},
 		methods: {
 			/**
@@ -463,6 +470,7 @@
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
+			min-height: 422rpx;
 			.box {
 				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_42.png") no-repeat;
 				background-size: 100% 100%;
