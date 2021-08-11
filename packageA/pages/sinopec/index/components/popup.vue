@@ -174,20 +174,20 @@
 	.content {
 		.coupons {
 			.box:nth-child(1) {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_47.png") no-repeat;
+				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_47_1.png") no-repeat;
 				background-size: 100% 100%;
 				width: 750rpx;
 				height: 347rpx;
 			}
 			.box:nth-child(2) {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_48.png") no-repeat;
+				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_48_1.png") no-repeat;
 				background-size: 100% 100%;
 				width: 750rpx;
 				height: 471rpx;
 				padding: 8rpx 0 0 0;
 				.scroll {
-					margin: 0 0 0 98rpx;
-					width: 573rpx;
+					margin: 0 0 0 86rpx;
+					width: 578rpx;
 					height: 100%;
 					.minbox {
 						margin: 12rpx auto 0 auto;
@@ -233,7 +233,7 @@
 				}
 			}
 			.box:nth-child(3) {
-				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_49.png") no-repeat;
+				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_49_1.png") no-repeat;
 				background-size: 100% 100%;
 				width: 750rpx;
 				height: 156rpx;

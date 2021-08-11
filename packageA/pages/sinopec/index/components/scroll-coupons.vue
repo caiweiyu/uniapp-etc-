@@ -3,7 +3,7 @@
 		
 		<!-- 卡券列表 -->
 		<view class="scroll-coupon" v-if="sinoepc_init.new_coupon_list.length > 0">
-			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_38.png"></image>
+			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_38_1.png"></image>
 			<scroll-view scroll-x class="scroll">
 				<view :class="['box', item.status != 1 ? 'box-active' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index" @click="$debounce(getCoupon, item)">
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '', item.get_money.length >= 6 ? 'minbox-font' : '']">

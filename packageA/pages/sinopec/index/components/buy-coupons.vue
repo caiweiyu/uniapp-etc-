@@ -30,6 +30,7 @@
 		<view class="tip">
 			<view class="box">i</view>
 			<view class="box">手机号为电子邮件券账号，充值成功则不能退款</view>
+			<!-- 手机号历史记录 -->
 			<block v-if="phone_history.length > 0">
 				<view class="history" v-show="curHistory">
 					<scroll-view scroll-y class="scroll">

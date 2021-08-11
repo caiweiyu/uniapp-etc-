@@ -139,10 +139,14 @@
 			
 		},
 		onUnload() {
-			this.loadPagePropsClear();
+			
 		},
 		destroyed() {
+			// 页面销毁清空监听
 			this.loadPagePropsClear();
+			// 页面销毁重置数据
+			this.$store.dispatch("sinoepc/ac_sinoepc_list", {});
+			this.$store.dispatch("sinoepc/ac_sinoepc_init", {});
 		},
 		mounted() {
 			
