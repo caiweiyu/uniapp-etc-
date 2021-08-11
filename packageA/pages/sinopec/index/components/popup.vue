@@ -117,9 +117,6 @@
 					this.curCoupon = true;
 				};//未有优惠卡券
 			})
-			if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
-				this.curCoupon = true;
-			};//未有优惠卡券
 		},
 		methods: {
 			/**

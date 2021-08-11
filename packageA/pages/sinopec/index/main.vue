@@ -331,7 +331,6 @@
 			 * 下单
 			 */
 			async downOrder(item) {
-				console.log("pay_sinopec", this.curLock)
 				if (!this.curLock) return;
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
