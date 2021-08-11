@@ -242,9 +242,7 @@
 				}
 				this.$store.dispatch("sinoepc/ac_sinoepc_list", this.$u.deepClone(res.data.list));
 				this.$store.dispatch("sinoepc/ac_sinoepc_init", res.data);
-				setTimeout(()=> {
-					this.loadPopupLevel();
-				},500)
+				this.loadPopupLevel();
 			},
 			
 			/**
@@ -433,7 +431,19 @@
 					url: "/packageA/pages/sinopec/home/coupons"
 				})
 			}
-		}
+		},
+		/**
+		 * 分享好友/群
+		 */
+		onShareAppMessage(res) {
+			return app.shareAppMessage();
+		},
+		/**
+		 * 分享朋友圈
+		 */
+		onShareTimeline(res) {
+			return app.shareTimeline();
+		},
 	}
 </script>
 
