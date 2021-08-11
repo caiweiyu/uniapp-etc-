@@ -126,7 +126,6 @@
 				this.loadInit();
 			});//检测page是否授权，token是否过期
 			this.$store.dispatch("home/ac_share_info",10);//分享配置
-			this.$refs.dialog.loadPopup();//全局弹窗配置
 			
 			uni.$emit("reflashBuyConpons", {});
 		},
@@ -155,6 +154,7 @@
 			 */
 			async loadInit() {
 				try {
+					await this.$refs.dialog.loadPopup();//全局弹窗配置
 					await Promise.all([
 						this.loadIndex(),
 						this.loadOilStation()
