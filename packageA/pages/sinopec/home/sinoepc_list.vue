@@ -218,6 +218,10 @@ export default {
                         margin: 14rpx 0 0 8rpx;
                         font-size: 28rpx;
                         color: #999999;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        width: 560rpx;
                         .image{
                             width: 24rpx;
                             height: 27rpx;

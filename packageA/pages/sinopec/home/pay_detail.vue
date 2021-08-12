@@ -245,7 +245,7 @@
 				color: #666;
 			}
 			.box:nth-child(2) {
-				margin: 15rpx 0 0 40rpx;
+				margin: 0rpx 0rpx 0rpx 40rpx;
 				font-size: 60rpx;
 				color: #222222;
 			}
@@ -268,7 +268,7 @@
 				flex-direction: row;
 				flex-wrap: wrap;
 				justify-content: space-between;
-				margin: 40rpx 0 0 0;
+				margin: 31rpx 0 0 0;
 				.minbox {
 					color: #999999;
 				}
@@ -312,6 +312,10 @@
                 background-color: #ffffff;
                 justify-content: space-between;
                 border-radius: 12rpx;
+				position: fixed;
+				bottom: 45rpx;
+				left: 50%;
+				transform: translateX(-50%);
                 &_left{
                     color: #229CF4;
                     font-size:28rpx;
