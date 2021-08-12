@@ -41,14 +41,12 @@
 	export default {
 		computed: {
 			...mapState({
-				// sinoepc_init: (state) => state.sinoepc.sinoepc_init
+				sinoepc_init: (state) => state.sinoepc.sinoepc_init
 			})
 		},
 		data() {
 			return {
-				sinoepc_init: {
-					new_coupon_list: [0]
-				}
+				
 			}
 		},
 		mounted() {
