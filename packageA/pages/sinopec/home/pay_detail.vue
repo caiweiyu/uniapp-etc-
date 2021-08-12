@@ -313,7 +313,7 @@
                 justify-content: space-between;
                 border-radius: 12rpx;
 				position: fixed;
-				bottom: 45rpx;
+				bottom: 18rpx;
 				left: 50%;
 				transform: translateX(-50%);
                 &_left{
