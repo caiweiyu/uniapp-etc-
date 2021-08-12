@@ -5,7 +5,15 @@
 		<view class="scroll-coupon" v-if="sinoepc_init.new_coupon_list.length > 0">
 			<image src="https://image.etcchebao.com/etc-min/etc-f/icon_38_1.png"></image>
 			<scroll-view scroll-x class="scroll">
-				<view :class="['box', item.status != 1 ? 'box-active' : '']" hover-class="hover" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index" @click="$debounce(getCoupon, item)">
+				<view :class="['box', 
+								sinoepc_init.new_coupon_list.length <= 1 ? 'box-once' : '', 
+								item.status != 1 ? 'box-active' : '',
+								sinoepc_init.new_coupon_list.length <= 1 && item.status != 1 ? 'box-once-active' : '']" 
+					  hover-class="hover" 
+					  v-for="(item,index) in sinoepc_init.new_coupon_list" 
+					  :key="index" 
+					  @click="$debounce(getCoupon, item)"
+				>
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '', item.get_money.length >= 6 ? 'minbox-font' : '']">
 						<text :class="['text', item.get_money.length >= 6 ? 'text-font' : '']">￥</text>{{item.get_money}}
 					</view>
@@ -13,7 +21,7 @@
 						<view class="min">{{item.title}}</view>
 						<view :class="['min', item.status != 1 ? 'text-color' : '']">{{item.expire_time}}</view>
 					</view>
-					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
+					<view :class="['minbox', sinoepc_init.new_coupon_list.length <= 1 ? 'box-once-minbox' : '', item.status != 1 ? 'text-color' : '']">
 						<text :decode="true" v-if="item.status != 1">已经\n领取</text>
 						<text :decode="true" v-else>立即\n领取</text>
 					</view>
@@ -33,12 +41,14 @@
 	export default {
 		computed: {
 			...mapState({
-				sinoepc_init: (state) => state.sinoepc.sinoepc_init
+				// sinoepc_init: (state) => state.sinoepc.sinoepc_init
 			})
 		},
 		data() {
 			return {
-				
+				sinoepc_init: {
+					new_coupon_list: [0]
+				}
 			}
 		},
 		mounted() {
@@ -151,6 +161,19 @@
 				.box-active {
 					background: url("https://image.etcchebao.com/etc-min/etc-f/icon_40.png") no-repeat;
 					background-size: 100% 100%;
+				}
+				.box-once {
+					background: url("https://image.etcchebao.com/etc-min/etc-f/icon_54.png") no-repeat;
+					background-size: 100% 100%;
+					width: 660rpx;
+				}
+				.box-once-active {
+					background: url("https://image.etcchebao.com/etc-min/etc-f/icon_55.png") no-repeat;
+					background-size: 100% 100%;
+					width: 660rpx;
+				}
+				.box-once-minbox {
+					right: 52rpx !important;
 				}
 				.box:last-child {
 					margin-right: 20rpx;
