@@ -108,6 +108,7 @@
 					font-weight: 700;
 				}
 				.more {
+					padding: 7rpx 0 0 0;
 					font-size: 28rpx;
 					color: #999999;
 				}
@@ -118,8 +119,8 @@
 					width: 12rpx;
 					height: 12rpx;
 					margin: -4rpx 0 0 10rpx;
-					border-top: 1rpx solid #999999;
-					border-right: 1rpx solid #999999;
+					border-top: 2rpx solid #999999;
+					border-right: 2rpx solid #999999;
 					transform: rotate(45deg);
 				}
 			}

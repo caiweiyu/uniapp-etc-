@@ -14,9 +14,9 @@
                 @change="changeCurrent"
                 :current="current"
                 class="swiper">
-          <!-- <swiper-item class="swiper_item" v-if="list.image_help != ''">
+          <swiper-item class="swiper_item" v-if="list.image_help != ''">
               <image :src="list.image_help" mode="" />
-          </swiper-item> -->
+          </swiper-item>
           <swiper-item class="swiper_item" v-if="dots2.length > 0">
               <scroll-view :scroll-y="true" style="width:100%;height:100%;">
                   <view class="box2_container" :style="index==0?'':'margin-top: 21rpx'" v-for="(item,index) in dots2" :key="index">
@@ -138,7 +138,7 @@ export default {
     width: 100%;
     height: 100vh;
     background-color: #F4F4F4;
-    padding: 5rpx 0rpx;
+    padding: 1rpx 0rpx;
     position: relative;
     .box1,.box2{
       width: 702rpx;
@@ -147,6 +147,7 @@ export default {
       display: block;
       background-color: #ffffff;
       border-radius: 14rpx;
+      position: relative;
       &_container{
         display: flex;
         .icon2{
@@ -194,16 +195,16 @@ export default {
         margin: auto;
       }
       .box4{
-        position: fixed;
-        right: -1rpx;
+        position: absolute;
+        right: -33rpx;
         top: 50%;
         transform: translateY(-50%);
-        width: 79rpx;
+        width: 100rpx;
         height: 221rpx;
         z-index: 9999;
         image{
-          width: 79rpx;
-          height: 221rpx;
+          width: 100rpx;
+          height: 222rpx;
         }
       }
     }

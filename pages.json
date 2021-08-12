@@ -344,7 +344,10 @@
 				"style": {
 					"navigationBarTitleText": "中石化加油专区",
 					"navigationBarBackgroundColor": "#377DDD",
-					"navigationBarTextStyle": "white"
+					"navigationBarTextStyle": "white",
+					"backgroundColor": "#377DDD",
+					"backgroundColorTop": "#377DDD",
+					"backgroundColorBottom": "#F2F2F2"
 				}
 			}, {
 				"path": "home/detail",

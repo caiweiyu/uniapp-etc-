@@ -76,7 +76,10 @@
 		<view class="coupon" @click="bindCouponPopup">
 			<view class="box-1">
 				<view class="minbox">优惠券抵扣</view>
-				<view class="minbox">{{sinoepc_init.coupon.total || 0}}张可用</view>
+				<view class="minbox">
+					<text v-if="coupon_text == '未使用'">{{sinoepc_init.coupon.total || 0}}张可用</text>
+					<text v-else>选中1张券</text>
+				</view>
 			</view>
 			<view :class="['box-2', coupon_text == '未使用' ? '' : 'box-2-color']">
 				<view class="minbox">
@@ -401,6 +404,7 @@
 					height: 100rpx;
 					font-size: 50rpx;
 					font-family: "etccb-font" !important;
+					// caret-color: red;
 					// color: rgba($color: #000000, $alpha: 0);
 				}
 			}
@@ -539,6 +543,7 @@
 						line-height: 62rpx;
 						text-align: center;
 						font-size: 26rpx;
+						font-weight: 700;
 						color: #229CF4;
 					}
 					.minbox:nth-child(3) {

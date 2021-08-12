@@ -117,9 +117,6 @@
 					this.curCoupon = true;
 				};//未有优惠卡券
 			})
-			if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
-				this.curCoupon = true;
-			};//未有优惠卡券
 		},
 		methods: {
 			/**
@@ -215,12 +212,12 @@
 							}
 						}
 						.min:nth-child(2) {
-							padding: 32rpx 20rpx 0 200rpx;
+							padding: 34rpx 20rpx 0 200rpx;
 							font-size: 30rpx;
 							font-weight: 700;
 						}
 						.min:nth-child(3) {
-							padding: 8rpx 20rpx 0 200rpx;
+							padding: 4rpx 20rpx 0 200rpx;
 							font-size: 22rpx;
 							color: #999999;
 						}

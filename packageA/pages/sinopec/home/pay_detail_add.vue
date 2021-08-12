@@ -221,7 +221,7 @@
 			            paySign,
 			            success: (res) => {
 			                uni.redirectTo({
-			                    url: `/packageA/pages/sinopec/home/pay_success?point=${this.detail.credit}&price=${this.detail.etc_discount}`
+			                    url: `/packageA/pages/sinopec/home/pay_success?price=${this.detail.etc_discount}&order_id=${this.detail.order_id}`
 			                });
 			            },
 			            fail: (res) => {
