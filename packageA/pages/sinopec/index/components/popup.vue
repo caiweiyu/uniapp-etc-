@@ -17,7 +17,7 @@
 							</view>
 						</scroll-view>
 					</view>
-					<view class="box" @click="bindClose_1"></view>
+					<view class="box" @click="bindGetAllCoupon"></view>
 					<view class="box" @click="bindClose_1"></view>
 				</view>
 			</u-popup>
@@ -107,7 +107,7 @@
 				show_coupons: true,
 				show_integral: true,
 				show_coupons_mine: false,
-				curCoupon: false
+				curCoupon: true
 			}
 		},
 		mounted() {
@@ -133,13 +133,32 @@
 			},
 			
 			/**
+			 * 全部收下
+			 */
+			bindGetAllCoupon() {
+				let id = '';
+				for (let i = 0; i < this.sinoepc_init.new_coupon_list.length; i++) {
+					if (i == 0) {
+						id += `${this.sinoepc_init.new_coupon_list[i].id}`
+					} else {
+						id += `,${this.sinoepc_init.new_coupon_list[i].id}`
+					}
+				}
+				uni.$emit("getAllCoupon", {
+					id: id
+				})
+				this.bindClose_1();
+			},
+			
+			/**
 			 * 是否使用卡券
 			 */
 			bindUseCoupon() {
 				if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
 					return;
 				};//未有优惠卡券
-				this.curCoupon = !this.curCoupon;
+				this.curCoupon = true;
+				this.bindClose_3();
 				if (this.curCoupon) {
 					for (let i = 0; i < this.sinoepc_init.coupon.coupon_list.length; i++) {
 						this.sinoepc_init.coupon.coupon_list[i].xcx_select = false;
