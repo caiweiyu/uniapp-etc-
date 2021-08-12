@@ -80,7 +80,7 @@
 									<view class="order-box2">
 										<view class="order_pay"
 											v-if="['10','140'].indexOf(item.order_type) > -1 && item.order_status_id == '6'">
-											待支付
+											支付
 										</view>
 										<view class="order_pay"
 											v-if="item.order_type == '40' && item.order_status_id == '0'">
@@ -388,13 +388,14 @@
 					data
 				} = res;
 				if (code == 0) {
-					if(data.list.order_list.length > 0){
-						for(let i=0;i<data.list.order_list.length;i++){
-							this.card_list.push(data.list.order_list[i])
-						}
-					}else{
-						this.card_list = [];
+					if(data.list.order_list.length == 0){
 						this.is_show = true
+					}else{
+						if(data.list.order_list.length > 0){
+							for(let i=0;i<data.list.order_list.length;i++){
+								this.card_list.push(data.list.order_list[i])
+							}
+						}
 					}
 					this.current_total = data.list.page_total;
 					this.page_total = data.list.total;
