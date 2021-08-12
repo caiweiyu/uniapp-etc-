@@ -149,6 +149,7 @@ export default {
       border-radius: 14rpx;
       position: relative;
       &_container{
+        align-items: center;
         display: flex;
         .icon2{
           display: inline-block;
