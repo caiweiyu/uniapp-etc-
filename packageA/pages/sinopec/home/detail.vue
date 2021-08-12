@@ -58,8 +58,8 @@ export default {
         autoplay:true,
         current:0,
         pic_src:[
-          'https://image.etcchebao.com/etc-min/sinopec/change.png',
-          'https://image.etcchebao.com/etc-min/sinopec/change2.png'
+          'https://image.etcchebao.com/etc-min/sinopec/change_v1.png',
+          'https://image.etcchebao.com/etc-min/sinopec/change2_v1.png'
         ]
       }
     },
@@ -149,6 +149,7 @@ export default {
       border-radius: 14rpx;
       position: relative;
       &_container{
+        align-items: center;
         display: flex;
         .icon2{
           display: inline-block;
@@ -199,11 +200,11 @@ export default {
         right: -33rpx;
         top: 50%;
         transform: translateY(-50%);
-        width: 100rpx;
-        height: 221rpx;
+        width: 90rpx;
+        height: 222rpx;
         z-index: 9999;
         image{
-          width: 100rpx;
+          width: 90rpx;
           height: 222rpx;
         }
       }
