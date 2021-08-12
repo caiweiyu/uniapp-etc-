@@ -188,6 +188,9 @@
 				uni.$on("loadDialogWindow", (e)=> {
 					this.loadDialogWindow(e);
 				});//弹窗优先级
+				uni.$on('getAllCoupon', (e)=> {
+					this.getCoupon(e.id);
+				});//活动卡券全部领取
 			},
 			
 			/**
@@ -200,6 +203,7 @@
 				uni.$off("getCoupon");
 				uni.$off("pay_sinopec");
 				uni.$off("loadDialogWindow");
+				uni.$off("getAllCoupon");
 			},
 			
 			/**
