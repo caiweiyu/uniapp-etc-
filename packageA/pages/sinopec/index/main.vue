@@ -374,7 +374,7 @@
 						return;
 					}
 			        if (code == 0) {
-			            this.toPay(data, pay_amount)
+			            this.toPay(data, pay_amount, item)
 			        } else {
 						this.curLock = true;
 					}
@@ -384,7 +384,7 @@
 			/**
 			 * 调起微信支付
 			 */
-			toPay(data, pay_amount) {
+			toPay(data, pay_amount, item) {
 				let {
 				    timeStamp,
 				    signType,
