@@ -14,7 +14,8 @@ export default {
     data(){
         return {
             isGoback:false,
-            info_detail:{}
+            info_detail:{},
+            isOpenSetting:false
         }
     },
     methods: {
@@ -24,7 +25,6 @@ export default {
                 wx.getLocation({//获取当前经纬度
                     type: 'wgs84', //返回可以用于wx.openLocation的经纬度，官方提示bug: iOS 6.3.30 type 参数不生效，只会返回 wgs84 类型的坐标信息  
                     success: (res)=> {
-                        this.isGoback=true;//处理返回的参数
                         wx.openLocation({//​使用微信内置地图查看位置。
                             latitude: Number(info_detail.latitude),//要去的纬度-地址
                             longitude: Number(info_detail.longitude),//要去的经度-地址
@@ -40,56 +40,63 @@ export default {
                         })
                     }
                 });
+                setTimeout(()=>{
+                    this.isGoback=true;//处理返回的参数
+                },500)
             }
+        },
+        /**
+         * 获取设置授权
+         */
+        getRootMap(){
+            uni.getSetting({
+                success:res=>{
+                if (!res.authSetting['scope.userLocation']) {
+                    wx.authorize({
+                        scope: 'scope.userLocation',
+                        success:(res)=> {
+                            this.getLocation()
+                        },
+                        fail:(err)=> {
+                            wx.showModal({
+                                title: '提示',
+                                content: '您未开启保定位权限，请点击确定去开启权限！',
+                                success:res=> {
+                                    if (res.confirm) { 
+                                        wx.openSetting();
+                                        this.isOpenSetting = true;
+                                    }else{
+                                        uni.navigateBack();
+                                        this.isGoback = false;
+                                    }
+                                },
+                                fail:err=> {
+                                    wx.showToast({
+                                        title: '未获取定位权限，请重新打开设置',
+                                        icon: 'none',
+                                        duration: 2000 
+                                    })
+                                }
+                            })
+                    }
+                    })
+                }else {
+                        this.getLocation()
+                    }
+                }
+            });
         }
     },
+    onLoad(options){
+        this.info_detail = options;
+        this.getRootMap()
+    },
     onShow(){
-        let {
-			latitude,
-			longitude,
-            address,
-            name
-		} = this.$root.$mp.query; 
-        this.info_detail.latitude=latitude;
-        this.info_detail.longitude=longitude;
-        this.info_detail.address=address;
-        this.info_detail.name=name;
-        console.log('this.$root.$mp.query',this.$root.$mp.query)
-        uni.getSetting({
-            success:res=>{
-              if (!res.authSetting['scope.userLocation']) {
-                wx.authorize({
-                    scope: 'scope.userLocation',
-                    success:(res)=> {
-                        this.getLocation()
-                    },
-                    fail:(err)=> {
-                        wx.showModal({
-                            title: '提示',
-                            content: '您未开启保定位权限，请点击确定去开启权限！',
-                            success:res=> {
-                                if (res.confirm) { 
-                                    wx.openSetting()
-                                }else{
-                                    uni.navigateBack();
-                                    this.isGoback = false;
-                                }
-                            },
-                            fail:err=> {
-                                wx.showToast({
-                                    title: '未获取定位权限，请重新打开设置',
-                                    icon: 'none',
-                                    duration: 2000 
-                                })
-                            }
-                        })
-                  }
-                })
-               }else {
-                    this.getLocation()
-                }
-            }
-        });
+        //开启的情况下
+        if(this.isOpenSetting){
+            this.getRootMap();
+            this.isOpenSetting = false;
+        }
         //处理返回白屏的情况
         if(this.isGoback){
             uni.navigateBack();
