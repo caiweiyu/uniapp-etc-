@@ -24,16 +24,18 @@
 		</block>
 		
 		<!-- 积分 -->
-		<block v-if="type == 2 && token && sinoepc_init.credit && sinoepc_init.credit > 0">
-			<u-popup v-model="show_integral" mode="center" height="auto" :mask-custom-style="{background: 'rgba(0, 0, 0, 0)'}">
+		<block v-if="type == 2 && token && sinoepc_init.credit == 0">
+			<u-popup v-model="show_integral" mode="center" height="auto" :zoom="false" :mask-custom-style="{background: 'rgba(0, 0, 0, 0)'}">
 				<view class="integral" @click="bindClose_2">
 					<view class="box"></view>
 					<view class="box">
 						<block v-if="sinoepc_init.credit">
-							<text class="text">{{sinoepc_init.credit}}</text>积分
+							<view class="text-1">{{sinoepc_init.credit}}</view>
+							<view class="text-2">积分</view>
 						</block>
 						<block v-else>
-							<text class="text">0</text>积分
+							<view class="text-1">0</view>
+							<view class="text-2">积分</view>
 						</block>
 					</view>
 					<view class="box">恭喜您获得加油积分兑换</view>
@@ -116,6 +118,9 @@
 				if (this.sinoepc_init.coupon.length == 0 || this.sinoepc_init.coupon.total <= 0) {
 					this.curCoupon = true;
 				};//未有优惠卡券
+				if (Number(e.popup_level) == 3) {
+					this.autoClose();
+				};//积分自动关闭
 			})
 		},
 		methods: {
@@ -130,6 +135,13 @@
 			},
 			bindClose_3() {
 				this.show_coupons_mine = false;
+			},
+			
+			/**
+			 * 积分自动关闭
+			 */
+			autoClose() {
+				this.bindClose_2();
 			},
 			
 			/**
@@ -228,20 +240,22 @@
 							text-align: center;
 							.text {
 								font-size: 28rpx;
+								font-weight: 700;
 							}
 						}
 						.min:nth-child(2) {
-							padding: 34rpx 20rpx 0 200rpx;
+							padding: 34rpx 20rpx 0 220rpx;
 							font-size: 30rpx;
 							font-weight: 700;
 						}
 						.min:nth-child(3) {
-							padding: 4rpx 20rpx 0 200rpx;
+							padding: 4rpx 20rpx 0 220rpx;
 							font-size: 22rpx;
 							color: #999999;
 						}
 						.min-font {
-							font-size: 36rpx !important;
+							// font-size: 36rpx !important;
+							font-size: 48rpx !important;
 							.text-font {
 								font-size: 20rpx !important;
 							}
@@ -268,10 +282,9 @@
 		}
 		.integral {
 			width: 360rpx;
-			height: 342rpx;
-			border-radius: 16rpx;
+			height: 360rpx;
+			border-radius: 24rpx;
 			background-color: rgba($color: #000000, $alpha: 0.7);
-			padding: 18rpx 0 0 0;
 			text-align: center;
 			.box:nth-child(1) {
 				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_52.png") no-repeat;
@@ -281,20 +294,34 @@
 				margin: 0 auto;
 			}
 			.box:nth-child(2) {
-				margin: -30rpx 0 0 0;
+				margin: -18rpx 0 0 0;
 				font-size: 34rpx;
 				font-weight: 700;
 				color: #FED145;
-				.text {
-					padding: 0 8rpx 0 0;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: center;
+				.text-1 {
+					padding: 0 6rpx 0 0;
 					font-size: 52rpx;
 					font-family: "etccb-font";
 				}
+				.text-2 {
+					padding: 8rpx 0 0 0;
+				}
 			}
 			.box:nth-child(3) {
+				margin: -4rpx 0 0 0;
 				color: #FFFFFF;
 				font-size: 28rpx;
 			}
+		}
+		.integral::before {
+			content: "";
+			display: block;
+			width: 100%;
+			height: 24rpx;
 		}
 		.coupons_mine {
 			background-color: #F9F9F9;

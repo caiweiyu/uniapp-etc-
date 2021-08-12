@@ -28,7 +28,9 @@
 		
 		<!-- 提示 -->
 		<view class="tip">
-			<view class="box">i</view>
+			<view class="box">
+				<text class="text">i</text>
+			</view>
 			<view class="box">手机号为电子邮件券账号，充值成功则不能退款</view>
 			<!-- 手机号历史记录 -->
 			<block v-if="phone_history.length > 0">
@@ -55,7 +57,8 @@
 				<view :class="['midbox', !token || phone_number.length < 11 ? 'box-bg-3' : '']" hover-class="box-bg-2">
 					<view class="minbox">
 						<view :class="['min-1', !token || phone_number.length < 11 ? 'text-color' : '']">
-							<text class="text">{{item.recharge_price}}</text>元油券
+							<view class="text-1">{{item.recharge_price}}</view>
+							<view class="text-2">元油券</view>
 						</view>
 						<view :class="['min-2', !token || phone_number.length < 11 ? 'text-color' : '']">
 							{{item.price}}元+{{item.coin_num}}积分
@@ -78,7 +81,7 @@
 				<view class="minbox">优惠券抵扣</view>
 				<view class="minbox">
 					<text v-if="coupon_text == '未使用'">{{sinoepc_init.coupon.total || 0}}张可用</text>
-					<text v-else>选中1张券</text>
+					<text v-else>选中1张</text>
 				</view>
 			</view>
 			<view :class="['box-2', coupon_text == '未使用' ? '' : 'box-2-color']">
@@ -412,7 +415,7 @@
 		.tip {
 			padding: 30rpx 0;
 			color: #FF5C2A;
-			font-size: 24rpx;
+			font-size: 26rpx;
 			display: flex;
 			align-items: center;
 			position: relative;
@@ -422,10 +425,20 @@
 				font-size: 20rpx;
 				width: 26rpx;
 				height: 26rpx;
-				line-height: 26rpx;
+				// line-height: 26rpx;
 				text-align: center;
 				border: 2rpx solid #FF5C2A;
 				border-radius: 100%;
+				position: relative;
+				.text {
+					position: absolute;
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					margin: -4rpx auto auto auto;
+					display: block;
+				}
 			}
 			.history {
 				position: absolute;
@@ -524,9 +537,16 @@
 							color: #229CF4;
 							font-weight: 700;
 							font-size: 28rpx;
-							.text {
+							display: flex;
+							flex-direction: row;
+							flex-wrap: wrap;
+							justify-content: center;
+							.text-1 {
 								font-size: 40rpx;
 								font-family: "etccb-font";
+							}
+							.text-2 {
+								padding: 4rpx 0 0 0;
 							}
 						}
 						.min-2 {

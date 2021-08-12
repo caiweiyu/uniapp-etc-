@@ -46,7 +46,28 @@
 		},
 		data() {
 			return {
-				
+				// sinoepc_init: {
+				// 	new_coupon_list: [
+				// 		{
+				// 			get_money: "10-200",
+				// 			title: "随机立减",
+				// 			expire_time: "2021-12-31",
+				// 			status: 1
+				// 		},
+				// 		{
+				// 			get_money: "1000-2000",
+				// 			title: "随机立减",
+				// 			expire_time: "2021-12-31",
+				// 			status: 1
+				// 		},
+				// 		{
+				// 			get_money: "5",
+				// 			title: "随机立减",
+				// 			expire_time: "2021-12-31",
+				// 			status: 1
+				// 		}
+				// 	]
+				// }
 			}
 		},
 		mounted() {
@@ -105,16 +126,18 @@
 					.minbox:nth-child(1) {
 						display: inline-block;
 						vertical-align: top;
-						padding: 0 30rpx 0 10rpx;
+						padding: 0 30rpx 0 24rpx;
 						// min-width: 140rpx;
 						line-height: 150rpx;
 						text-align: center;
-						font-weight: 700;
+						font-weight: lighter;
 						color: #FF401E;
 						font-family: "etccb-font";
 						font-size: 62rpx;
 						.text {
+							margin: 0 -6rpx 0 0;
 							font-size: 34rpx;
+							font-weight: 700;
 						}
 					}
 					.minbox:nth-child(2) {
@@ -123,7 +146,7 @@
 						height: 100%;
 						position: relative;
 						.min:nth-child(1) {
-							padding: 36rpx 0 0 0;
+							padding: 34rpx 0 0 0;
 							font-size: 34rpx;
 							font-weight: 700;
 						}
@@ -150,9 +173,9 @@
 						color: #CCCCCC !important;
 					}
 					.minbox-font {
-						font-size: 42rpx !important;
+						font-size: 50rpx !important;
 						.text-font {
-							font-size: 24rpx !important;
+							font-size: 28rpx !important;
 						}
 					}
 				}
