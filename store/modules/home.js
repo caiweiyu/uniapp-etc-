@@ -8,9 +8,9 @@ const home = {
 		nav_four: "",//4大金刚
 		nav_recormmend: "",//推荐服务
 		banner: "",//banner
-		etc: "",//粤通卡数据
-		carc: "",//车卡数据
-		memberc: "",//会员卡数据
+		etc: {},//粤通卡数据
+		carc: {},//车卡数据
+		memberc: {},//会员卡数据
 		weather: "",//天气
 		strict_shop: [],//严选商品
 
