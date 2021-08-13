@@ -163,14 +163,14 @@
 		<!-- ************************** -->
 		<!-- 请选择落地时间 -->
 		<!-- ************************** -->
-		<u-picker v-model="date_picker_show" mode="time" :default-time="defaultTime" title="请选择落地时间" :params="params" :start-year="startYear" :end-year="endYear" confirm-color="#f1cf92"
+		<u-picker v-model="date_picker_show" mode="time" :default-time="defaultTime" title="请选择落地时间" :params="params" :start-year="startYear" :end-year="endYear" confirm-color="#FF5C2A"
 			@confirm="onDatetimeConfirm" @cancel="date_picker_show = false" />
 
 		<!-- ************************** -->
 		<!-- 选择车辆颜色 -->
 		<!-- ************************** -->
 		<u-picker v-model="color_picker_show" mode="selector" :default-selector="defaultSelectorColor ? [defaultSelectorColor] : [0]" :range="color_columns" title="选择车辆颜色"
-			@confirm="onColorConfirm" @cancel="color_picker_show = false" range-key="text" confirm-color="#f1cf92" />
+			@confirm="onColorConfirm" @cancel="color_picker_show = false" range-key="text" confirm-color="#FF5C2A" />
 
 		<!-- ************************** -->
 		<!-- 驾驶证照片弹窗 -->
@@ -195,7 +195,7 @@
 			@cancel="plate_picker_show = false"
 			@columnchange="columnchange"
 			:default-selector='[0, 0]'
-			confirm-color="#f1cf92"
+			confirm-color="#FF5C2A"
 		/> -->
 
 	</div>
@@ -413,7 +413,7 @@
 				uni.showModal({
 					title: "删除车辆",
 					content: "删除后无法使用违章、限行提醒等平台服务，确定删除？",
-					confirmColor: "#d1a86a",
+					confirmColor: "#FF5C2A",
 					confirmText: "确认",
 					success: (res) => {
 						if (res.confirm) {
@@ -716,7 +716,7 @@
 	}
 
 	.van-picker__confirm {
-		color: #d1a86a;
+		color: #FF5C2A;
 	}
 
 	.driving_license {
@@ -819,7 +819,7 @@
 					}
 
 					.area {
-						color: #d1a86a;
+						color: #FF5C2A;
 						font-weight: 500;
 						margin-right: 24rpx;
 
@@ -829,7 +829,7 @@
 							height: 0;
 							border-width: 8rpx;
 							border-style: solid;
-							border-color: #d1a86a transparent transparent transparent;
+							border-color: #FF5C2A transparent transparent transparent;
 							margin-top: 10rpx;
 							vertical-align: middle;
 						}
@@ -893,7 +893,7 @@
 				}
 
 				&__value {
-					color: #d1a86a;
+					color: #FF5C2A;
 				}
 			}
 
@@ -1017,7 +1017,6 @@
 				color: #999999;
 				border: 1rpx solid #CCCCCC;
 				box-sizing: border-box;
-				// background-color: #f1cf92;
 				border-radius: 100rpx;
 			}
 
@@ -1027,7 +1026,8 @@
 				text-align: center;
 				line-height: 100rpx;
 				font-size: 36rpx;
-				background-color: #f1cf92;
+				background-color: #FF5C2A;
+				color: #FFFFFF;
 				border-radius: 100rpx;
 			}
 
@@ -1037,7 +1037,8 @@
 				text-align: center;
 				line-height: 100rpx;
 				font-size: 36rpx;
-				background-color: #f1cf92;
+				background-color: #FF5C2A;
+				color: #FFFFFF;
 				border-radius: 100rpx;
 			}
 		}

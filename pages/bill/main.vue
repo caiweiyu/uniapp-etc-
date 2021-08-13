@@ -50,7 +50,7 @@
 			</view>
 		</view>
 
-		<scroll-view scroll-y="true" class="bill-content" v-if="show_bill_content">
+		<view class="bill-content" v-if="show_bill_content">
 			<view class="header-box">
 				<view class="item-inner">
 					<view class="value">&yen; {{ passTotalMoney }}</view>
@@ -106,7 +106,7 @@
 				<view class="empty-text">暂无账单信息</view>
 			</view>
 			<!--列表空状态 end-->
-		</scroll-view>
+		</view>
 		<view v-else>
 			<image class="bottom-logo logo-fixed" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
 		</view>
@@ -479,7 +479,7 @@
 			border-radius: 20rpx 20rpx 0 0;
 			padding: 30rpx;
 			margin-top: 50rpx;
-			height: calc(100vh - 360rpx);
+			// height: calc(100vh - 360rpx);
 			box-sizing: border-box;
 
 			.header-box {
