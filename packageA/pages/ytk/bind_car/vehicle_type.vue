@@ -8,7 +8,7 @@
 -->
 <template>
 	<view class="content">
-		<u-index-list :scrollTop="scrollTop" :active-color="'#d1a86a'" :index-list="vehicleTitle">
+		<u-index-list :scrollTop="scrollTop" :active-color="'#FF5C2A'" :index-list="vehicleTitle">
 			<view v-for="(item,index) in vehicleList" :key="index">
 				<u-index-anchor :index="item.brand_type"></u-index-anchor>
 				<u-cell-item :title="itemmin.brand_name" :icon="itemmin.brand_icon" :icon-size="48" :arrow="false" v-for="(itemmin,indexmin) in item.brand_list" :key="indexmin" @click.stop="bindCell($event,index,indexmin)"></u-cell-item>

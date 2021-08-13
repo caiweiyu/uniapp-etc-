@@ -172,7 +172,7 @@
 			}
 
 			.confirm {
-				color: #d1a86a;
+				color: #FF5C2A;
 			}
 		}
 
