@@ -30,10 +30,10 @@
                                                 :controls="false"
                                                 :loop="true"
                                                 :show-center-play-btn="false"
-                                                @click.stop="videoPlayPuse"
+                                                @click="videoPlayPuse"
                                                 objectFit="contain">
                                             </video>
-                                            <image v-if="showStatus"  @click.stop="videoPlayPuse"  class='player-image' :src="puaseIcon"></image>
+                                            <image v-if="showStatus"  @click="videoPlayPuse"  class='player-image' :src="puaseIcon"></image>
                                         </view>
                                         <view class="box_title">
                                             <image :src="item.artist.avatar"></image>
@@ -42,21 +42,21 @@
                                         <view class="box_intro">
                                             <text>{{item.title}}</text>
                                         </view>
-                                        <!-- <view class="box_layout"> -->
-                                            <!-- <view class="box_layout_info">
+                                        <view class="box_layout">
+                                            <view class="box_layout_info">
                                                 <image src="https://image.etcchebao.com/etc-min/info/info.png"></image>
                                                 <text>{{item.contentFrom}}</text>
-                                            </view> -->
-                                            <!-- <view class="box_layout_share">
+                                            </view>
+                                            <view class="box_layout_share" style="opacity:0">
                                                 <image src="https://image.etcchebao.com/etc-min/info/share.png"></image>
                                                 <text>{{item.shareCount}}</text>
-                                            </view> -->
-                                            <!-- <view class="box_layout_like">
+                                            </view>
+                                            <view class="box_layout_like" @click.stop="clickLike">
                                                 <image v-if="item.isLike==0" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
                                                 <image v-if="item.isLike==1" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
                                                 <text>{{item.likeCount}}</text>
-                                            </view> -->
-                                        <!-- </view> -->
+                                            </view>
+                                        </view>
                                 </block>
                             </swiper-item>
                         </block>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { videoList } from "@/interfaces/info";
+import { videoList,focusLikeClick } from "@/interfaces/info";
 let list= [
     [], //旧
     []  //新
@@ -115,7 +115,6 @@ export default {
   components:{},
   methods: {
       getvideoList(data) {
-          console.log(data,'===============')
         videoList({
             videoId: data,  //videoId
             artistId: 0,
@@ -132,7 +131,7 @@ export default {
                     this.lists.push(data.list[i])
                 }
                 this.total_num +=data.list.length;
-                console.log('长度total_num',this.total_num)
+
                 this.getVideolistbox();
             }
       });
@@ -141,6 +140,10 @@ export default {
         this.share.ID = ID;
         this.share.imageUrl = imageurl;
         this.share.title = title;
+    },
+    //点赞
+    clickLike(){
+        focusLikeClick({})
     },
     //获取播放列
     getVideolistbox(){
@@ -168,7 +171,6 @@ export default {
             return;
         }else{
             if(this.current+1 == this.total_num){
-                console.log('请求下一页',this.total_num)
                 this.pageIndex++;
                 this.num++;
                 this.getvideoList(this.idValue)
@@ -267,7 +269,7 @@ export default {
                 height: 100%;
             }
            .player-video{
-               z-index:-1;
+               z-index:0;
            }
            .player-image{
                display: inline-block;
