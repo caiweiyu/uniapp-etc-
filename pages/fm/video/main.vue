@@ -43,18 +43,18 @@
                                             <text>{{item.title}}</text>
                                         </view>
                                         <view class="box_layout">
-                                            <view class="box_layout_info">
+                                            <view class="box_layout_info" @click="commentsList(item)">
                                                 <image src="https://image.etcchebao.com/etc-min/info/info.png"></image>
-                                                <text>{{item.contentFrom}}</text>
+                                                <text>{{item.comentCount}}</text>
                                             </view>
                                             <view class="box_layout_share" style="opacity:0">
                                                 <image src="https://image.etcchebao.com/etc-min/info/share.png"></image>
                                                 <text>{{item.shareCount}}</text>
                                             </view>
-                                            <view class="box_layout_like" @click.stop="clickLike">
-                                                <image v-if="item.isLike==0" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
-                                                <image v-if="item.isLike==1" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
-                                                <text>{{item.likeCount}}</text>
+                                            <view class="box_layout_like" @click.stop="clickLike(item)">
+                                                <image v-if="item.isStatus" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
+                                                <image v-if="!item.isStatus" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
+                                                <text>{{item.isFirst==true ? (item.isStatus==true ? item.likeCount : item.likeCount+1) : item.likeCount}}</text>
                                             </view>
                                         </view>
                                 </block>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { videoList,focusLikeClick } from "@/interfaces/info";
+import { videoList,changeVideoLike } from "@/interfaces/info";
 let list= [
     [], //旧
     []  //新
@@ -128,6 +128,12 @@ export default {
                 this.pageTotal = data.pager.pageTotal;
                 this.pageSize = data.pager.pageSize;
                 for(let i=0;i<data.list.length;i++){
+                    data.list[i].isFirst = false;
+                    if(data.list[i].isLike==1){
+                        data.list[i].isStatus = false;
+                    }else{
+                        data.list[i].isStatus = true;
+                    }
                     this.lists.push(data.list[i])
                 }
                 this.total_num +=data.list.length;
@@ -141,9 +147,40 @@ export default {
         this.share.imageUrl = imageurl;
         this.share.title = title;
     },
+    //点赞方法
+    clickLike(item){
+        if(item.isLike==1){
+            uni.showToast({
+                title: '你已点过赞',
+                duration: 1500,
+                icon:'none'
+            });
+            return;
+        };
+        if(item.isLike==0){
+            item.isFirst = true;
+            if(item.isStatus){
+                this.focusClickfn(item,1);
+                item.isStatus = false;
+            }else{
+                this.focusClickfn(item,0);
+                item.isStatus = true;
+            }  
+        }  
+    },
     //点赞
-    clickLike(){
-        focusLikeClick({})
+    async focusClickfn(item,param){
+        let res = await changeVideoLike({
+            videoId:item.id,
+            isLike:param
+        })
+        let {code,msg,data} = res
+        if(code == 0){}
+    },
+    commentsList(item){
+        // uni.navigateTo({
+        //      url: `/pages/fm/video/main_form?id=${item.id}`
+        // });
     },
     //获取播放列
     getVideolistbox(){
