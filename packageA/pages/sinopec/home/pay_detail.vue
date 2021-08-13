@@ -253,7 +253,7 @@
 			.box:nth-child(3) {
 				position: absolute;
 				right: 40rpx;
-				bottom: 42rpx;
+				bottom: 36rpx;
 				font-size: 30rpx;
 				color: #FF5C2A;
                 font-weight: bold;
@@ -311,7 +311,7 @@
 			transform: translateX(-50%);
             &_item{
                 display: flex;
-                margin: 32rpx auto;
+                margin: 28rpx auto;
                 width: 702rpx;
                 height: 120rpx;
                 background-color: #ffffff;

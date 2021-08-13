@@ -243,11 +243,11 @@ export default {
         // top: 50%;
         // transform: translateY(-50%);
         width: 90rpx;
-        height: 222rpx;
+        height: 251.7rpx;
         z-index: 9999;
         image{
           width: 90rpx;
-          height: 222rpx;
+          height: 251.7rpx;
         }
     }
     .box5{

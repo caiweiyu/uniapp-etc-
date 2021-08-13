@@ -221,8 +221,8 @@ export default {
                 display: inline-block;
                 width: 25.5rpx;
                 height: 18rpx;
-                border-left: 5rpx solid #FF5C2A;
-                border-bottom: 5rpx solid #FF5C2A;
+                border-left: 3rpx solid #FF5C2A;
+                border-bottom: 3rpx solid #FF5C2A;
                 transform: rotate(-50deg);
             }
             .box2_right_item_active{
