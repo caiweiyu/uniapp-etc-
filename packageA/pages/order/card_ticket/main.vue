@@ -234,7 +234,7 @@
 							// display: flex;
 							// flex-direction: column;
 							>view:first-child{
-								border:1rpx solid #D1A86A;
+								border:1rpx solid #FFEDE8;
 								display: inline-block;
 								// width: 86rpx;
 								padding:3rpx 7rpx;
@@ -244,7 +244,7 @@
 								font-size: 24rpx;
 								border-radius: 4rpx;
 								margin:34rpx 0 0 40rpx;
-								color: #D1A86A;
+								color: #FFEDE8;
 							}
 							>view:nth-child(2){
 								font-size: 32rpx;

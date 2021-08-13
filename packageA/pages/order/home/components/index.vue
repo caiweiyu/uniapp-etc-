@@ -484,12 +484,13 @@
 				color: #222222;
 				text-align: center;
 				font-size: 26rpx;
-				font-weight: bold;
+				// font-weight: bold;
 				margin: 20rpx 0 0 21rpx;
 				display: inline-block;
 			}
 			.active {
 				color: #FF5C2A !important;
+				font-weight: bold;
 			}
 		}
 	}
@@ -655,12 +656,12 @@
 		height: 100vh;
 		z-index: 1;
 		.order-all {
-			background: #F2F2F2;
+			background: #F6F6F6;
 			.swiper_item_scroll {
 				position: fixed;
 				// top: 236rpx;
 				height: 100%;
-				background-color: #F2F2F2;
+				background-color: #F6F6F6;
 				.order-card-first {
 					padding: 16rpx 0 16rpx 0;
 				}
@@ -800,7 +801,7 @@
 					}
 					text {
 						text-align: center;
-						color: #222222;
+						color: #999999;
 						font-size: 28rpx;
 						display: block;
 					}
