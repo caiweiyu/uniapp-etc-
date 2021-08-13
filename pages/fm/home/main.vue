@@ -42,7 +42,7 @@
 						</view>
 						<u-waterfall v-model="flowList[index]" v-if="flowList[index].length > 0" :ref="'uWaterfall'+`${index}`" >
 							<template v-slot:left="{leftList}">
-								<view :class="['demo-warter',index1==0 ? 'demo-water-right0' : 'demo-water-left']"  @click.stop="$debounce(toUrllink,item)" v-for="(item, index1) in leftList" :key="index1">
+								<view :class="['demo-warter',index1==0 ? 'demo-water-right0' : 'demo-water-left']"  @click.stop="toUrllink(item)" v-for="(item, index1) in leftList" :key="index1">
 									<block v-if="item.displayType == 2">
 										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index1"></u-lazy-load>
 									</block>
@@ -70,7 +70,7 @@
 								</view>
 							</template>
 							<template v-slot:right="{rightList}">
-								<view :class="['demo-warter',index2==0 ? 'demo-water-right1' : 'demo-water-right']"  @click.stop="$debounce(toUrllink,item)" v-for="(item, index2) in rightList" :key="index2">
+								<view :class="['demo-warter',index2==0 ? 'demo-water-right1' : 'demo-water-right']"  @click.stop="toUrllink(item)" v-for="(item, index2) in rightList" :key="index2">
 									<block v-if="item.displayType == 2">
 										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index2"></u-lazy-load>
 									</block>
