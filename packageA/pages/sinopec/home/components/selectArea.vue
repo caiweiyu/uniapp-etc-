@@ -224,6 +224,7 @@ export default {
                 border-left: 3rpx solid #FF5C2A;
                 border-bottom: 3rpx solid #FF5C2A;
                 transform: rotate(-50deg);
+                margin-bottom: 13rpx;
             }
             .box2_right_item_active{
                color:#FF5C2A;

@@ -242,12 +242,12 @@ export default {
         top: 512rpx;
         // top: 50%;
         // transform: translateY(-50%);
-        width: 90rpx;
-        height: 251.7rpx;
+        width: 79rpx;
+        height: 212rpx;
         z-index: 9999;
         image{
-          width: 90rpx;
-          height: 251.7rpx;
+          width: 79rpx;
+          height: 212rpx;
         }
     }
     .box5{
