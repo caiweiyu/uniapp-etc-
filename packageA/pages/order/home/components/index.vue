@@ -519,7 +519,7 @@
 	.box {
 		@media screen and (min-height: 812px) {
 			.order-list {
-				height: 210rpx !important;
+				// height: 210rpx !important;
 			}
 		}
 		.order-list {
@@ -564,7 +564,7 @@
 			}
 			@media screen and (min-height: 812px) {
 				.order-header {
-					margin-top: 105rpx !important;
+					// margin-top: 105rpx !important;
 				}
 			}
 			.order-header {
@@ -646,7 +646,7 @@
 
 	@media screen and (min-height: 812px) {
 		.banner {
-			top: 216rpx !important;
+			// top: 216rpx !important;
 		}
 	}
 	.banner {

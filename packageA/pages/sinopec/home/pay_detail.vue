@@ -383,8 +383,8 @@
             // background-color: #ffffff;
             // z-index: 9999;
             position: fixed;
-            right: 13rpx;
-            bottom: 371rpx;
+            right: 12rpx;
+            bottom: 192rpx;
             background:url('https://image.etcchebao.com/etc-min/sinopec/serve_tip.png') no-repeat;
             background-size: 100% 100%;
             border-radius: 50%;
