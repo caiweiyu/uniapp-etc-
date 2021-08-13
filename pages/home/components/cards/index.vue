@@ -61,18 +61,18 @@
 			...mapState({
 				etc: (state)=> state.home.etc,
 				carc: (state)=> state.home.carc,
-				vip: (state)=> state.home.vip
+				memberc: (state)=> state.home.memberc
 			}),
 			listWeight() {
 				let list = [];
-				if (this.etc.bground) {
+				if (this.etc && this.etc.hasOwnProperty("bground") == true) {
 					list.push({ weight: this.etc.weight || 0, name: 1 });
 				}
-				if (this.carc.bground) {
+				if (this.carc && this.carc.hasOwnProperty("bground") == true) {
 					list.push({ weight: this.carc.weight || 0, name: 2 });
 				}
-				// if (this.vip.bground) {
-				// 	list.push({ weight: this.vip.weight || 0, name: 3 });
+				// if (this.memberc && this.memberc.hasOwnProperty("bground") == true) {
+				// 	list.push({ weight: this.memberc.weight || 0, name: 3 });
 				// }
 				list.sort(this.comparMax('weight'));
 				return list;

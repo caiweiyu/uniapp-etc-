@@ -29,7 +29,7 @@
 			<!-- ************************** -->
 			<view class="empty-box" v-if="token && etc.status == 2">
 				<view class="title">粤通卡请绑卡</view>
-				<view class="desc" @click="$debounce(bindNav,carc.gtext)" v-text="etc.gtext.title ? etc.gtext.title : '--'"></view>
+				<view class="desc" @click="$debounce(bindNav,etc.gtext)" v-text="etc.gtext.title ? etc.gtext.title : '--'"></view>
 				<view class="btn">
 					<image class="img" :src="item.tag_url" mode="aspectFit" v-for="(item,index) in etc.gbutton" :key="index" @click="$debounce(bindNav,item)"></image>
 				</view>
