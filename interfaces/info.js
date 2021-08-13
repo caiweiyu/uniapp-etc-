@@ -119,22 +119,44 @@ export function articleClick(data) {
 }
 
 /**
- * 点击点赞
+ * 获取评论列表接口
  */
- export function focusLikeClick(data) {
+ export function formGetCommentList(data) {
 	return request({
-		url: `${G}/fm-new/fm/like`,
+		url: `${G}/fm-new/fm/getCommentList`,
 		method: "post",
 		data
 	});
 }
 
 /**
- * 提交评论
+ * 发表评论接口
  */
  export function formaddComment(data) {
 	return request({
 		url: `${G}/fm-new/fm/addComment`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 点赞评论接口
+ */
+ export function formcommentLike(data) {
+	return request({
+		url: `${G}/fm-new/fm/commentLike`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 视频点赞
+ */
+ export function changeVideoLike(data) {
+	return request({
+		url: `${G}/fm-new/fm/videoLike`,
 		method: "post",
 		data
 	});

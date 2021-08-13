@@ -59,11 +59,11 @@
 												{{item.publishTime  || item.createTime}}
 											</view>
 											<view class="demo-time">
-												<!-- <image
+												<image
 													src="https://image.etcchebao.com/etc-min/info/touch.png"
 													mode="" class="demo-time-image"></image>
 												<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
-												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
+												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 											</view>
 										</view>
 									</view>
@@ -87,11 +87,11 @@
 													{{item.publishTime  || item.createTime}}
 												</view>
 												<view class="demo-time">
-													<!-- <image
+													<image
 														src="https://image.etcchebao.com/etc-min/info/touch.png"
 														mode="" class="demo-time-image"></image>
 													<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
-													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
+													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 												</view>
 											</view>
 										</view>
