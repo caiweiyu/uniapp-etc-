@@ -441,7 +441,6 @@
 			}
 		},
 		mounted() {
-			console.log(this.statusBarHeight,'--statusBarHeight---',uni.getSystemInfoSync().statusBarHeight)
 			let {
 				index
 			} = this.$root.$mp.query;
