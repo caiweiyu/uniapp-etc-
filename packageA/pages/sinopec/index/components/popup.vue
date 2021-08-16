@@ -7,7 +7,7 @@
 				<view class="coupons">
 					<view class="box"></view>
 					<view class="box">
-						<scroll-view scroll-y class="scroll">
+						<scroll-view scroll-y :class="['scroll', sinoepc_init.new_coupon_list.length > 3 ? 'box-max' : '']">
 							<view class="minbox" v-for="(item,index) in sinoepc_init.new_coupon_list" :key="index">
 								<view :class="['min', item.get_money.length >= 6 ? 'min-font' : '']">
 									<text :class="['text', item.get_money.length >= 6 ? 'text-font' : '']">￥</text>{{item.get_money}}
@@ -215,7 +215,7 @@
 				background: url("https://image.etcchebao.com/etc-min/etc-f/icon_48_1.png") no-repeat;
 				background-size: 100% 100%;
 				width: 750rpx;
-				height: 471rpx;
+				min-height: 151rpx;
 				padding: 8rpx 0 0 0;
 				.scroll {
 					margin: 0 0 0 86rpx;
@@ -278,6 +278,9 @@
 				width: 66rpx;
 				height: 66rpx;
 				margin: 20rpx auto 0 auto;
+			}
+			.box-max {
+				height: 471rpx !important;
 			}
 		}
 		.integral {
