@@ -178,9 +178,9 @@ export default {
         if(code == 0){}
     },
     commentsList(item){
-        // uni.navigateTo({
-        //      url: `/pages/fm/video/main_form?id=${item.id}`
-        // });
+        uni.navigateTo({
+             url: `/pages/fm/video/main_form?id=${item.id}`
+        });
     },
     //获取播放列
     getVideolistbox(){
