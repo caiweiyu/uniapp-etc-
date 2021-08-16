@@ -291,10 +291,10 @@
 					orderId: orderId
 				});
 				let {code,data,msg} = res;
-				if(code == 0){	
+				if(code == 0){
 					this.$nextTick(()=>{
 						this.load_money = data.load_money
-					})	
+					})
 				}
 			},
 			initAll() {
@@ -393,6 +393,7 @@
 					} = res;
 					if (code == 0) {
 						if (data.info && data.info.length > 0) {
+							console.log('Device_list',data.info)
 							this.deviceList = data.info;
 							if (this.deviceList.length === 1) {
 								//this.setDev(this.deviceList[0])
@@ -585,9 +586,21 @@
 							console.log('initEncode', res)
 							if (res.code === "0") {
 								this.initEncodeCount = this.initEncodeCount + 1
-								if (this.initEncodeCount < 4) {
+								if (this.initEncodeCount < 9) {
 									console.log('initEncodeCount-1', this.initEncodeCount)
 									that.sendBlueOrders(this.cmdHelper.initEncode())
+
+									// let intType = this.initEncodeCount % 4
+									// switch (intType) {
+									// 	case 0:
+									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
+									// 	case 1:
+									// 		that.sendBlueOrders(this.cmdHelper.initEncode1())
+									// 	case 2:
+									// 		that.sendBlueOrders(this.cmdHelper.initEncode2())
+									// 	case 3:
+									// 		that.sendBlueOrders(this.cmdHelper.initEncode3())
+									// }
 								} else {
 									console.log('initEncodeCount-2', this.initEncodeCount)
 									this.connectStatus = "设备连接初始化失败";

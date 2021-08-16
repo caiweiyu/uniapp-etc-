@@ -53,6 +53,8 @@
     import conf from '@/config/conf.js'
     import * as API from "@/interfaces/base";
 
+    import ytkDataEncode from "@/packageA/pages/test/blueAPIs/ytkDataEncode";
+
     export default {
         data() {
             return {
@@ -101,6 +103,9 @@
         },
         methods: {
             test1() {
+                let aa = ytkDataEncode.initEncode("A2")
+                console.log('aa: ',aa)
+
             },
             test2() {
             },
