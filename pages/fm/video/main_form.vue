@@ -17,7 +17,7 @@
                         </view>
                         <view>
                             <text>{{item.comment.likeNum}}</text>
-                            <image class="demo-time-image" @click="touchClick(item.comment.id,index)" src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" />
+                            <image class="demo-time-image" @click.stop="touchClick(item.comment.id,index)" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                         </view>
                     </view>
                     <view class="item_content">
@@ -52,7 +52,7 @@
                             </view>
                             <view>
                                 <text>{{item.comment.likeNum}}</text>
-                                <image @click="touchClick(item.comment.id,index)" class="demo-time-image" src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" />
+                                <image @click.stop="touchClick(item.comment.id,index)" class="demo-time-image" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                             </view>
                         </view>
                         <view class="item_content">
@@ -76,22 +76,25 @@
                             </view>
                             <view>
                                 <text>{{item.comment.likeNum}}</text>
-                                <image @click="touchClick(item.comment.id,index)" class="demo-time-image" src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" />
+                                <image @click.stop="touchClick(item.comment.id,index)" class="demo-time-image" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                             </view>
                         </view>
-                        <view :class="['item_header','item_headerlf']"  v-for="(item,indexi) in item.replyList" :key="indexi">
-                            <view class="item_header_box1">
-                                <view>{{item.userName}}</view>
-                                <view>
-                                    {{item.likeNum}}
-                                    <image @click="touchClick(item.id,index,indexi)" :src="'https://image.etcchebao.com/etc-min/info/touch.png'" mode="" />
+                        <view class="item_headerlf">
+                            <view :class="['item_headerlf_header']"  v-for="(item,indexi) in item.replyList" :key="indexi">
+                                <view class="item_headerlf_header_box1">
+                                    <view>{{item.userName}}</view>
+                                    <view>
+                                        {{item.likeNum}}
+                                        <image @click.stop="touchClick(item.id,index,indexi)" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
+                                    </view>
                                 </view>
-                            </view>
-                            <view class="item_header_box2">
-                                {{item.createTime}}
-                            </view>
-                            <view class="item_header_box3">
-                                {{item.content}}
+                                <view class="item_headerlf_header_box2">
+                                    {{item.createTime}}
+                                </view>
+                                <view class="item_headerlf_header_box3" :style="{display: item.flexBox}">
+                                    {{item.content}}
+                                </view>
+                                <view @click="allExpandi(index,indexi)" class="item_headerlf_header_box4">{{ item.expandName }}</view>
                             </view>
                         </view>
                         <view class="item_content">
@@ -117,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150"  :value="value" @confirm="formCommentAfter" :focus="focus" @blur="bindBlur" @focus="bindFocus" placeholder-style="#CCCCCC" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" @input="bindInput"  :value="value" @confirm="formCommentAfter" :focus="focus" @blur="bindBlur" @focus="bindFocus" placeholder-style="#CCCCCC" cursor-spacing="10" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -155,7 +158,11 @@ export default {
             focus:false,
             value:"",
             replyCommentId:'0',
-            replyUserId:0
+            replyUserId:0,
+            isclicked:[
+                'https://image.etcchebao.com/etc-min/info/touch.png',
+                'https://image.etcchebao.com/etc-min/info/touch_active.png'
+            ]
 
         }
     },
@@ -169,7 +176,7 @@ export default {
                 })
             let {code,msg,data} = res
             if(code == 0){
-                if(data.newList != null){
+                if(data != null){
                     if(data.newList.length == 0){
                         this.is_show = true
                     }else{
@@ -183,6 +190,12 @@ export default {
                         for(let i=0;i<data.newList.length;i++){
                             data.newList[i].flexBox='-webkit-box';
                             data.newList[i].expandName='展开全部';
+                            data.newList[i].isLiked=false;
+                            for(let j=0;j<data.newList[i].replyList.length;j++){
+                                data.newList[i].replyList[j].flexBox='-webkit-box';
+                                data.newList[i].replyList[j].expandName='展开全部';
+                                data.newList[i].replyList[j].isLiked=false;
+                            }
                             this.list.push(data.newList[i])
                         }
                         /**
@@ -204,6 +217,7 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
+           this.list = [], this.hotList=[],this.loading=false;
            formaddComment({
                type:5,
                relateId:this.id,
@@ -216,9 +230,12 @@ export default {
            }).then(res=>{
                let {code,data,msg} = res;
                if(code == 0){
-                   this.list = [];
-                   this.getformGetCommentList(this.id);
-                   this.value = "";
+                   this.$nextTick(()=>{
+                       this.value = "";
+                         console.log(this.list,111111111111);
+                        this.getformGetCommentList(this.id);
+                        console.log(this.list,22222222222);
+                   }) 
                }
            })
         },
@@ -234,7 +251,7 @@ export default {
          * 凝聚焦点
          */
         bindFocus(e){
-            this.value = "";
+            // this.value = "";
         },
         /**
          * 失去焦点
@@ -243,16 +260,29 @@ export default {
             this.value = e.detail.value;
         },
         /**
-         * 展开全部
+         * 监听输入
+         */
+        bindInput(e){
+            this.value = e.detail.value;
+        },
+        /**
+         * 展开全部主
          */
         allExpand(index){
             this.list[index].expandName == '展开全部' ? this.list[index].expandName='收起全部' : this.list[index].expandName='展开全部';
             this.list[index].flexBox == '-webkit-box' ? this.list[index].flexBox = 'block' : this.list[index].flexBox = '-webkit-box';
         },
         /**
+         * 展开全部副
+         */
+        allExpandi(index,indexi){
+            this.list[index].replyList[indexi].expandName == '展开全部' ? this.list[index].replyList[indexi].expandName='收起全部' : this.list[index].replyList[indexi].expandName='展开全部';
+            this.list[index].replyList[indexi].flexBox == '-webkit-box' ? this.list[index].replyList[indexi].flexBox = 'block' : this.list[index].replyList[indexi].flexBox = '-webkit-box';
+        },
+        /**
          * 点赞评论
          */
-        async toformcommentLike(commentId,indexi,indexj){
+        async toformcommentLike(commentId,index,indexj){
             let res = await formcommentLike({
                 deviceId:'ea1e3f5d',
                 commentId:commentId
@@ -261,9 +291,11 @@ export default {
             if(res){
                 if(code == 0){
                     if(indexj != undefined){
-                        this.list[indexi].replyList[indexj].likeNum=data;
+                        this.list[index].replyList[indexj].likeNum=data.totalLike;
+                        this.list[index].replyList[indexj].isLiked = true;
                     }else{
-                        this.list[indexi].comment.likeNum=data;
+                        this.list[index].comment.likeNum=data.totalLike;
+                        this.list[index].isLiked = true;
                     }
                 }
             }else{
@@ -273,10 +305,11 @@ export default {
                     icon:'none'
                 });
             }
+            console.log(this.list,'--list--')
         },
-        touchClick(id,indexi,indexj){
-            console.log(id,'评论的id',indexi,'下标',indexj)
-            this.toformcommentLike(id,indexi,indexj)
+        touchClick(id,index,indexj){
+            console.log(id,index,indexj)
+            this.toformcommentLike(id,index,indexj);
         }
     },
     mounted() {
@@ -368,48 +401,63 @@ export default {
                         margin: 0 36rpx 0 17rpx;
                     }
                 }
-                &_header{
-                    width: 619rpx;
-                    background-color: #F9F9F9;
-                    border-radius: 4rpx;
-                    display: block;
-                    margin-left: 90rpx;
-                    &_box1{
-                        display: flex;
-                        justify-content: space-between;
-                        >view:nth-child(1){
-                            color: #666666;
-                            font-size: 28rpx;
-                            margin-left: 31rpx;
-                            margin-top: 32rpx;
-                        }
-                        >view:nth-child(2){
-                            font-size: 22rpx;
-                            color: #222222;
-                            margin-top: 31rpx;
-                            image{
-                                width: 26rpx;
-                                height: 26rpx;
-                                display: inline-block;
-                                vertical-align: middle;
-                                margin: 0 28rpx 0 16rpx;
+                .item_headerlf{
+                    >view:not(:last-child){
+                        border-bottom: 1rpx solid #EBEBEB;
+                    }
+                    &_header{
+                        width: 619rpx;
+                        background-color: #F9F9F9;
+                        border-radius: 4rpx;
+                        display: block;
+                        margin-left: 90rpx;
+                        &_box1{
+                            display: flex;
+                            justify-content: space-between;
+                            >view:nth-child(1){
+                                color: #666666;
+                                font-size: 28rpx;
+                                margin-left: 31rpx;
+                                margin-top: 32rpx;
+                            }
+                            >view:nth-child(2){
+                                font-size: 22rpx;
+                                color: #222222;
+                                margin-top: 31rpx;
+                                image{
+                                    width: 26rpx;
+                                    height: 26rpx;
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                    margin: 0 28rpx 0 16rpx;
+                                }
                             }
                         }
+                        &_box2{
+                            margin: 19rpx 0 0 32rpx;
+                            color: #CCCCCC;
+                            font-size: 24rpx;
+                        }
+                        &_box3{
+                            padding: 0 0 0 0;
+                            margin: 19rpx 0 0 32rpx;
+                            color: #222222;
+                            font-size: 32rpx;
+                            overflow:hidden;
+                            text-overflow:ellipsis;
+                            -webkit-box-orient: vertical;
+                            word-wrap:break-word;
+                            word-break: break-all;
+                            -webkit-line-clamp: 6;
+                            width: 548rpx;
+                        }
+                        &_box4{
+                            margin: 31rpx 0 0 483rpx;
+                            padding-bottom: 29rpx;
+                            color: #44A0FF;
+                            font-size: 24rpx;
+                        }
                     }
-                    &_box2{
-                        margin: 19rpx 0 0 32rpx;
-                        color: #CCCCCC;
-                        font-size: 24rpx;
-                    }
-                    &_box3{
-                        padding: 0 0 31rpx 0;
-                        margin: 19rpx 0 0 32rpx;
-                        color: #222222;
-                        font-size: 32rpx;
-                    }
-                }
-                &_headerlf:not(:last-child){
-                    border-bottom: 1rpx solid #EBEBEB;
                 }
                 &_content{
                     display: flex;
