@@ -1,9 +1,9 @@
 <!--
  * @Description:
  * @Version: 1.0
- * @Autor: 
+ * @Autor:
  * @Date: 2020-07-16 10:06:49
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2020-07-28 10:28:55
 -->
 
@@ -12,9 +12,10 @@
 		<image class="icon-success" src="https://image.etcchebao.com/etc-min/pay_success.png" alt="" />
 		<view class="text">支付成功</view>
 		<view class="money">{{money}}</view>
+		<view class="describe">{{describe}}</view>
 		<view class="btn-group">
-			<view class="ant-button" @click="toBackHome">返回首页</view>
-			<view class="ant-button" @click="toOrderDetail" v-if="detailUrl">查看订单</view>
+			<view class="ant-button" @click="toBackHome">{{backName}}</view>
+			<view class="ant-button" @click="toOrderDetail" v-if="detailUrl">{{detailName}}</view>
 		</view>
 	</view>
 </template>
@@ -27,36 +28,44 @@
 		data() {
 			return {
 				money: "",
-				homeUrl: "",
 				backUrl: "",
-				detailUrl: ""
+				detailUrl: "",
+				backName: "",
+				detailName: "",
+				backMarkImg: "",
+				detailMarkImg: "",
+				describe: "",
 			};
 		},
 		computed: {},
 		onShow() {
 			this.$token(() => {
-				
+
 			});//检测page是否授权，token是否过期
 		},
 		mounted() {
 			let {
-				money,
-				homeUrl = '',
+				money = 0,
 				backUrl = '',
-				detailUrl = '',
+				detailUrl = '1',
+				backName = '返回首页',
+				detailName = '查看订单',
+				backMarkImg = '',
+				detailMarkImg = '',
+				describe = '温馨提示：支付成功，我们会尽快处理，请您耐心的等待。',
 			} = this.$root.$mp.query;
-			this.homeUrl = decodeURIComponent(homeUrl);
 			this.backUrl = decodeURIComponent(backUrl);
 			this.detailUrl = decodeURIComponent(detailUrl);
+			this.backMarkImg = decodeURIComponent(backMarkImg);
+			this.detailMarkImg = decodeURIComponent(detailMarkImg);
+			this.describe = describe;
+			this.backName = backName;
+			this.detailName = detailName;
 			this.money = money;
 		},
 		methods: {
 			toBackHome() {
-				if (this.homeUrl) {
-					uni.redirectTo({
-						url: "/pages/webview/main?src=" + encodeURIComponent(this.homeUrl)
-					});
-				}else if (this.backUrl) {
+				if (this.backUrl) {
 					uni.redirectTo({
 						url: "/pages/webview/main?src=" + encodeURIComponent(this.backUrl)
 					});
