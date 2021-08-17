@@ -36,11 +36,11 @@
                     pay_amount,
                     back_url,
                     detail_url,
-                    back_name="",
-                    detail_name="",
-                    back_mark_img='',
-                    detail_mark_img='',
-                    describe=''
+                    back_name = "返回首页",
+                    detail_name = "查看订单",
+                    back_mark_img = '',
+                    detail_mark_img = '',
+                    describe = ''
                 } = this.$root.$mp.query;
 
 				if (Number(pay_amount) <= 0) {

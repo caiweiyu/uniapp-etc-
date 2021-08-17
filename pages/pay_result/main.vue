@@ -112,7 +112,7 @@
 			font-weight: bold;
 			color: #222222;
 		}
-		
+
 		.money::before {
 			content: "￥";
 			display: inline-block;
@@ -121,7 +121,7 @@
 			font-size: 28rpx;
 			color: #222222;
 		}
-		
+
 		.describe {
 			color: #999999;
 			font-size: 26rpx;
