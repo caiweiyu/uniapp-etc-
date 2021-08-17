@@ -316,6 +316,12 @@
 					coupon_id: id
 				})
 				if (res.code == 0) {
+					uni.showToast({
+						title: "领取成功",
+						mask: true,
+						duration: 1500,
+						icon: "none"
+					})
 					let sinoepc_init = this.sinoepc_init;
 					sinoepc_init.new_coupon_list = res.data;
 					this.$store.dispatch("sinoepc/ac_sinoepc_init", sinoepc_init);
