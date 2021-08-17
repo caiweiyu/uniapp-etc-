@@ -434,7 +434,7 @@
 			}),
 			statusBarHeight(){
 				if(uni.getSystemInfoSync().statusBarHeight > 20){
-					return (uni.getSystemInfoSync().statusBarHeight * 2)+159+'rpx'
+					return (uni.getSystemInfoSync().statusBarHeight * 2)+179+'rpx'
 				}else{
 					return (uni.getSystemInfoSync().statusBarHeight * 2)+199+'rpx'
 				}
