@@ -62,7 +62,7 @@
 							<view class="box" v-for="(item,index) in sinoepc_init.coupon.coupon_list" :key="index" @click="bindSelectCoupon(index)">
 								<view class="left-box">
 									<view class="min">{{item.discount_quota}}</view>
-									<view class="min">{{item.limit_msg}}</view>
+									<view class="min">{{item.limit_money}}</view>
 								</view>
 								<view class="right-box">
 									<view class="min">{{item.coupon_type}}</view>

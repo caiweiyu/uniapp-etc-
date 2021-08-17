@@ -106,7 +106,6 @@
 			return {
 				popup_level: 0,//弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分
 				dialog_window: 0,//全局弹窗返回值
-				curLock: true,//禁止连续下单
 				timeout: null,//计时器
 				item_coupon_inner: {
 					is_need_login: 1,
@@ -342,7 +341,10 @@
 			 * 下单
 			 */
 			async downOrder(item) {
-				if (!this.curLock) return;
+				uni.showLoading({
+					title: "下单中...",
+					mask: true
+				})
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
 					third_no: item.third_no,
@@ -362,7 +364,6 @@
 						duration: 1500,
 						icon: 'none'
 					})
-					this.curLock = true;
 				}
 			},
 			
@@ -381,13 +382,13 @@
 						uni.navigateTo({
 							url: `/packageA/pages/sinopec/home/pay_success?price=${(item.recharge_price - pay_amount).toFixed(2)}&order_id=${data.orderid}`
 						})
-						this.curLock = true;
+						uni.hideLoading();
 						return;
 					}
 			        if (code == 0) {
 			            this.toPay(data, pay_amount, item)
 			        } else {
-						this.curLock = true;
+						uni.hideLoading();
 					}
 			    })
 			},
@@ -427,7 +428,7 @@
 				            });
 				        },
 						complete: (res) => {
-							this.curLock = true;
+							uni.hideLoading();
 						}
 				    });
 				} catch (error) {
