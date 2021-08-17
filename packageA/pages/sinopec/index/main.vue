@@ -408,6 +408,7 @@
 				} = data.prepaid_info;
 				try {
 				    //发起支付
+					uni.hideLoading();
 				    uni.requestPayment({
 				        timeStamp,
 				        nonceStr,
@@ -427,9 +428,6 @@
 								duration: 1500
 				            });
 				        },
-						complete: (res) => {
-							uni.hideLoading();
-						}
 				    });
 				} catch (error) {
 				    app.log({
