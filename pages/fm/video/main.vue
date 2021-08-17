@@ -253,6 +253,10 @@ export default {
             path: "/pages/fm/video/main?ID="+this.share.ID
         }
     },
+  destroyed(){
+      console.log('销毁了---');
+      uni.$emit("updateFMPage",{videoDestory:true})
+  },
   mounted() {
         let { ID } = this.$root.$mp.query;
         console.log(ID,'---99--')

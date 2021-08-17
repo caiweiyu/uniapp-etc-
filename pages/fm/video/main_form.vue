@@ -157,8 +157,8 @@ export default {
             id:null,
             focus:false,
             value:"",
-            replyCommentId:'0',
-            replyUserId:0,
+            replyCommentId:'1',
+            replyUserId:1,
             isclicked:[
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
@@ -176,7 +176,7 @@ export default {
                 })
             let {code,msg,data} = res
             if(code == 0){
-                if(data != null){
+                if(data != null && data.newList != null){
                     if(data.newList.length == 0){
                         this.is_show = true
                     }else{
@@ -217,7 +217,6 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
-           this.list = [], this.hotList=[],this.loading=false;
            formaddComment({
                type:5,
                relateId:this.id,
@@ -231,10 +230,8 @@ export default {
                let {code,data,msg} = res;
                if(code == 0){
                    this.$nextTick(()=>{
-                       this.value = "";
-                         console.log(this.list,111111111111);
+                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
                         this.getformGetCommentList(this.id);
-                        console.log(this.list,22222222222);
                    }) 
                }
            })
@@ -243,6 +240,7 @@ export default {
          * 回复评论
          */
         submitComment(id,user_id){
+            console.log('id=',id,'user_id=',user_id)
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
@@ -305,10 +303,8 @@ export default {
                     icon:'none'
                 });
             }
-            console.log(this.list,'--list--')
         },
         touchClick(id,index,indexj){
-            console.log(id,index,indexj)
             this.toformcommentLike(id,index,indexj);
         }
     },

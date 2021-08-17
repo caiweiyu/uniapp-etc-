@@ -191,6 +191,12 @@
 			this.init()
 		},
 		onShow(){
+			uni.$on("updateFMPage",(e)=>{
+				if(e.videoDestory){
+					this.onRefresh(this.swiperCurrent);
+					uni.$off("updateFMPage")
+				}
+			})
 			this.$token(()=>{
 				this.init();
 			})
