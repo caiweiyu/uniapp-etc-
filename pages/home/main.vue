@@ -194,7 +194,7 @@
 			this.$store.commit("home/mt_share_info", "");
 		},
 		mounted() {
-
+			
 		},
 		beforeDestroy() {
 			this.unsubscribeFn();
