@@ -111,7 +111,7 @@
                 console.log('aa: ',aa)
             },
             test2() {
-                CMDHelper.initEncode()
+
             },
             initAll() {
                 //const ble = new BLE(emitter, '');

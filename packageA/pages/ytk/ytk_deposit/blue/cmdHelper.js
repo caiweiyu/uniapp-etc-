@@ -32,7 +32,7 @@ class CMDHelper {
         list.push(sendBuf)
         return list;
     }
-    initEncode_s() { //非国密初始化
+    initEncode() { //非国密初始化
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
@@ -42,7 +42,7 @@ class CMDHelper {
         list.push(sendBuf)
         return list;
     }
-    initEncode() { //非国密初始化
+    initEncode1() { //非国密初始化
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
