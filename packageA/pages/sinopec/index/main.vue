@@ -342,7 +342,7 @@
 			 */
 			async downOrder(item) {
 				uni.showLoading({
-					title: "下单中...",
+					title: "提交订单",
 					mask: true
 				})
 				let res = await API.axios_coupon_order({
