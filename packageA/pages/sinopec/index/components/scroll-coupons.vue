@@ -18,7 +18,7 @@
 						<text :class="['text', item.get_money.length >= 6 ? 'text-font' : '']">￥</text>{{item.get_money}}
 					</view>
 					<view :class="['minbox', item.status != 1 ? 'text-color' : '']">
-						<view class="min">{{item.title}}</view>
+						<view class="min">{{item.limit_msg}}</view>
 						<view :class="['min', item.status != 1 ? 'text-color' : '']">{{item.expire_time}}</view>
 					</view>
 					<view :class="['minbox', sinoepc_init.new_coupon_list.length <= 1 ? 'box-once-minbox' : '', item.status != 1 ? 'text-color' : '']">
