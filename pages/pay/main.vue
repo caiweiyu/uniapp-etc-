@@ -71,7 +71,7 @@
                         paySign: prepaid_info.paySign,
                         success: function (res) {
                             wx.redirectTo({
-                                url: `/pages/pay_result/main?money=${pay_amount}&backUrl=${back_url}&detailUrl=${detail_url}`,
+                                url: `/pages/pay_result/main?money=${pay_amount}&backUrl=${back_url}&detailUrl=${detail_url}&backName=${back_name}&detailName=${detail_name}&backMarkImg=${back_mark_img}&detailMarkImg=${detail_mark_img}&describe=${describe}`,
                             });
                         },
                         fail: function () {
