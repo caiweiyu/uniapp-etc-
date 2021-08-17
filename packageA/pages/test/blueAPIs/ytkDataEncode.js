@@ -35,9 +35,14 @@ function a(e) {
 }
 
 function n(e) {
-    var t = {}, r = ytkUtils.getPagLenMax(), a = parseInt(e.length / 2 / r);
-    e.length / 2 % r != 0 && (a += 1), t.serviceCode = 0, t.serviceInfo = "encode ok",
-    t.serviceData = {}, t.serviceData.dataEncode = new Array();
+    var t = {},
+        r = ytkUtils.getPagLenMax(),
+        a = parseInt(e.length / 2 / r);
+        e.length / 2 % r != 0 && (a += 1),
+            t.serviceCode = 0,
+            t.serviceInfo = "encode ok",
+            t.serviceData = {},
+            t.serviceData.dataEncode = new Array();
     console.log('r1: ',r)
     console.log('a1: ',a)
     for (var n = 0; n < a - 1; n++) t.serviceData.dataEncode[n] = e.substr(n * r * 2, 2 * r),
