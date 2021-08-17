@@ -7,7 +7,7 @@
       </view>
       <view class="box2" v-if="list.image_help != '' || dots2.length > 0">
         <text class="boxsize boxitem">省钱教程</text>
-        <swiper :autoplay="true"
+        <swiper :autoplay="false"
 								:interval="5000"
 								:duration="300"
                 :circular="true"
