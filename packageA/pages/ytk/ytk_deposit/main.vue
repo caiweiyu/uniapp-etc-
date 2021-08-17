@@ -586,21 +586,22 @@
 							console.log('initEncode', res)
 							if (res.code === "0") {
 								this.initEncodeCount = this.initEncodeCount + 1
-								if (this.initEncodeCount < 9) {
+								if (this.initEncodeCount < 30) {
 									console.log('initEncodeCount-1', this.initEncodeCount)
-									that.sendBlueOrders(this.cmdHelper.initEncode())
-
-									// let intType = this.initEncodeCount % 4
-									// switch (intType) {
-									// 	case 0:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
-									// 	case 1:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode1())
-									// 	case 2:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode2())
-									// 	case 3:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode3())
-									// }
+									//that.sendBlueOrders(this.cmdHelper.initEncode())
+									let intType = this.initEncodeCount % 4
+									switch (intType) {
+										case 0:
+											that.sendBlueOrders(this.cmdHelper.initEncode())
+										case 1:
+											that.sendBlueOrders(this.cmdHelper.initEncode1())
+										case 2:
+											that.sendBlueOrders(this.cmdHelper.initEncode2())
+										case 3:
+											that.sendBlueOrders(this.cmdHelper.initEncode3())
+										default:
+											that.sendBlueOrders(this.cmdHelper.initEncode())
+									}
 								} else {
 									console.log('initEncodeCount-2', this.initEncodeCount)
 									this.connectStatus = "设备连接初始化失败";

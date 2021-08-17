@@ -32,7 +32,7 @@ class CMDHelper {
         list.push(sendBuf)
         return list;
     }
-    initEncode_s() { //非国密初始化
+    initEncode() { //非国密初始化
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
@@ -42,14 +42,16 @@ class CMDHelper {
         list.push(sendBuf)
         return list;
     }
-    initEncode() { //非国密初始化
+    initEncode1() { //非国密初始化
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
         Util.print('------非国密初始化initEncode1------');
-        let sendBuf = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B100018002000");//安卓 电服2
+        let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");//安卓 电服2
+        let sendBuf2 = Util.hexString2Bytes("2000000000000000000000000000000000000000");
         let list = []
-        list.push(sendBuf)
+        list.push(sendBuf1)
+        list.push(sendBuf2)
         return list;
     }
     initEncode2() { //非国密初始化
