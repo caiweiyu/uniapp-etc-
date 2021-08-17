@@ -14,8 +14,14 @@
 		<view class="money">{{money}}</view>
 		<view class="describe">{{describe}}</view>
 		<view class="btn-group">
-			<view class="ant-button" @click="toBackHome">{{backName}}</view>
-			<view class="ant-button" @click="toOrderDetail" v-if="detailUrl">{{detailName}}</view>
+			<view :class="['ant-button', !detailUrl ? 'ant-button-max' : '']" @click="toBackHome">
+				<text>{{backName}}</text>
+				<image class="img" :src="backMarkImg" mode="heightFix" v-if="backMarkImg"></image>
+			</view>
+			<view :class="['ant-button', !detailUrl ? 'ant-button-max' : '']" @click="toOrderDetail" v-if="detailUrl">
+				<text>{{detailName}}</text>
+				<image class="img" :src="detailMarkImg" mode="heightFix" v-if="detailMarkImg"></image>
+			</view>
 		</view>
 	</view>
 </template>
@@ -45,14 +51,14 @@
 		},
 		mounted() {
 			let {
-				money = 0,
+				money,
 				backUrl = '',
-				detailUrl = '1',
+				detailUrl = '',
 				backName = '返回首页',
 				detailName = '查看订单',
 				backMarkImg = '',
 				detailMarkImg = '',
-				describe = '温馨提示：支付成功，我们会尽快处理，请您耐心的等待。',
+				describe = '',
 			} = this.$root.$mp.query;
 			this.backUrl = decodeURIComponent(backUrl);
 			this.detailUrl = decodeURIComponent(detailUrl);
@@ -89,7 +95,7 @@
 		opacity: 0.7;
 	}
 	.pay-result-page {
-		padding: 150rpx 0rpx 0;
+		padding: 220rpx 0rpx 0;
 		text-align: center;
 		background: #ffffff;
 
@@ -102,10 +108,11 @@
 
 		.money {
 			font-size: 46rpx;
-			margin-top: 50rpx;
+			margin-top: 28rpx;
 			font-weight: bold;
 			color: #222222;
 		}
+		
 		.money::before {
 			content: "￥";
 			display: inline-block;
@@ -113,6 +120,13 @@
 			margin: 0 0 4rpx 0;
 			font-size: 28rpx;
 			color: #222222;
+		}
+		
+		.describe {
+			color: #999999;
+			font-size: 26rpx;
+			margin: 60rpx auto 0 auto;
+			width: 518rpx;
 		}
 
 		.icon-success {
@@ -132,13 +146,20 @@
 			flex-direction: row;
 			flex-wrap: wrap;
 			justify-content: center;
-			margin: 240rpx 40rpx 0 40rpx;
+			margin: 76rpx 30rpx 0 30rpx;
 			.ant-button {
-				width: 320rpx;
+				width: 330rpx;
 				height: 96rpx;
 				border-radius: 100rpx;
 				line-height: 96rpx;
 				font-size: 32rpx;
+				position: relative;
+				.img {
+					height: 36rpx;
+					position: absolute;
+					right: 0;
+					top: -15rpx;
+				}
 			}
 			.ant-button:nth-child(1) {
 				border: 1rpx solid #FF5C2A;
@@ -151,6 +172,9 @@
 				box-sizing: border-box;
 				background-color: #FF5C2A;
 				color: #FFFFFF;
+			}
+			.ant-button-max {
+				width: 100%;
 			}
 		}
 	}

@@ -49,7 +49,7 @@
 			
 			<!-- 我的券 -->
 			<view class="mine-coupon" @click="$debounce(bindMineCoupon)">
-				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_37.png" mode="aspectFit"></image>
+				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_37_1.png" mode="aspectFit"></image>
 				<button-getPhoneNumber v-if="!item_coupon_inner.is_need_login || item_coupon_inner.is_need_login == '1'" type="local" :item="item_coupon_inner" />
 			</view>
 		</view>
