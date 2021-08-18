@@ -25,7 +25,7 @@
 				<block v-if="global_popup.type > 1">
 					<!-- 弹窗图片（局部） -->
 					<view class="pic">
-						<image class="img" :src="global_popup.img_url" mode="widthFix"></image>
+						<image class="img" :src="global_popup.img_url" mode="aspectFill"></image>
 					</view>
 					<!-- 弹窗title -->
 					<view class="title">{{global_popup.img_text.title}}</view>
@@ -34,18 +34,16 @@
 					<!-- 按钮 -->
 					<view class="button" :style="{display:'flex', flexDirection:direction}">
 						<!-- 图文（单按钮） -->
-						<view class="one" v-show="global_popup.type == 2">
-							<view class="box-1" @click="closeWindow">通知我</view>
+						<view class="one" v-if="global_popup.type == 2">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index == 0">{{item.label}}</view>
 						</view>
 						<!-- 图文（上下） -->
-						<view class="two" v-show="global_popup.type == 3">
-							<view class="box-1" @click="closeWindow">通知我</view>
-							<text class="box-2" @click="closeWindow">暂时不用</text>
+						<view class="two" v-if="global_popup.type == 3">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index <= 1">{{item.label}}</view>
 						</view>
 						<!-- 图文：左右 -->
-						<view class="three" v-show="global_popup.type == 4">
-							<view class="box-1" @click="closeWindow">不同意</view>
-							<view class="box-2" @click="closeWindow">同意</view>
+						<view class="three" v-if="global_popup.type == 4">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index <= 1">{{item.label}}</view>
 						</view>
 					</view>
 				</block>
@@ -325,9 +323,11 @@
 					border-radius: 30rpx 30rpx 0 0;
 					.img {
 						width: 630rpx;
+						height: 250rpx;
 					}
 				}
 				.title {
+					padding: 0 28rpx;
 					font-size: 36rpx;
 					color: #222222;
 					text-align: center;
@@ -335,6 +335,7 @@
 					font-weight: bold;
 				}
 				.content {
+					padding: 0 28rpx;
 					font-size: 28rpx;
 					color: #222222;
 					text-align: center;
