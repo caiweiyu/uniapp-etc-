@@ -202,7 +202,15 @@ class miniScript {
 				})
 				break;
 			default:
-				uni.navigateBack({})
+				uni.reLaunch({
+					url: `/pages/home/main`,
+					success: (res) => {
+						typeof success == 'function' && success(res);
+					},
+					fail: (err) => {
+						typeof fail == 'function' && fail(err);
+					}
+				})
 				typeof success == 'function' && success();
 				break;
 		}
