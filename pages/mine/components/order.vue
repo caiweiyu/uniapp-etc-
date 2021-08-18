@@ -144,11 +144,22 @@
 					this.menu_list = data.orderInfos;
 				}
 			},
-			init(){
-				this.getOrderInfolist()
+			async init(){
+				if(this.menu_list.length > 0){
+					let res = await getOrderInfo({});
+					let {code,msg,data} = res;
+					if(code==0){
+						for(let i=0;i<this.menu_list.length;i++){
+							this.menu_list[i].displayValue = data.orderInfos[i].displayValue;
+						}
+					}	
+				}
+				
 			}
 		},
-		mounted() {},
+		mounted() {
+			this.getOrderInfolist();
+		},
 	}
 </script>
 <style lang="scss" scoped>
