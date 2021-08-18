@@ -12,7 +12,7 @@
                 <view class="item" v-for="(item,index) in hotList" v-if="hotList.length > 0" :key="index" >
                     <view class="item_title">
                         <view>
-                            <image :src="item.comment.userImg" mode="" />
+                            <image :src="item.comment.userImg || user_img" mode="" />
                             <text>{{item.comment.userName}}</text>
                         </view>
                         <view>
@@ -21,7 +21,7 @@
                         </view>
                     </view>
                     <view class="item_content">
-                        <view class="item_content_item" :style="{display: item.flexBox}">
+                        <view :class="['item_content_item']" :style="{display: item.flexBox}">
                             {{item.comment.content}}
                         </view>
                     </view>
@@ -30,7 +30,7 @@
                             {{item.comment.createTime}}
                             <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                         </view> 
-                        <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                        <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                     </view>
                 </view>
                 <view class="noHotList" v-if="hotList.length == 0">
@@ -47,7 +47,7 @@
                     <block v-if="item.replyList.length == 0">
                         <view class="item_title">
                             <view>
-                                <image :src="item.comment.userImg" mode="" />
+                                <image :src="item.comment.userImg || user_img" mode="" />
                                 <text>{{item.comment.userName}}</text>
                             </view>
                             <view>
@@ -56,7 +56,7 @@
                             </view>
                         </view>
                         <view class="item_content">
-                            <view class="item_content_item" :style="{display: item.flexBox}">
+                            <view :class="['item_content_item']" :style="{display: item.flexBox}">
                                 {{item.comment.content}}
                             </view>
                         </view>
@@ -65,13 +65,13 @@
                                 {{item.comment.createTime}}
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
-                            <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                            <view class="item_bottom_all" v-if="item.comment.content.length > 150" @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
                     </block>
                     <block v-else>
                         <view class="item_title">
                             <view>
-                                <image :src="item.comment.userImg" mode="" />
+                                <image :src="item.comment.userImg || user_img" mode="" />
                                 <text>{{item.comment.userName}}</text>
                             </view>
                             <view>
@@ -91,14 +91,14 @@
                                 <view class="item_headerlf_header_box2">
                                     {{item.createTime}}
                                 </view>
-                                <view class="item_headerlf_header_box3" :style="{display: item.flexBox}">
+                                <view :class="['item_headerlf_header_box3']" :style="{display: item.flexBox}">
                                     {{item.content}}
                                 </view>
-                                <view @click="allExpandi(index,indexi)" class="item_headerlf_header_box4">{{ item.expandName }}</view>
+                                <view @click="allExpandi(index,indexi)" v-if="item.content.length > 150" class="item_headerlf_header_box4">{{ item.expandName }}</view>
                             </view>
                         </view>
                         <view class="item_content">
-                            <view class="item_content_item" :style="{display: item.flexBox}">
+                            <view :class="['item_content_item']" :style="{display: item.flexBox}">
                                 {{item.comment.content}}
                             </view>
                         </view>
@@ -107,7 +107,7 @@
                                 {{item.comment.createTime}}
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
-                            <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                            <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
                     </block>
                 </view>
@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" @focus="bindFocus" cursor-spacing="10" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" cursor-spacing="10" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -136,10 +136,10 @@
 			<view class="popup">
                 <view class="popup_header">
                     <view @click="show = false">取消</view>
-                    <view @click="formCommentAfter">发布</view>
+                    <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" cols="15" rows="10" :value="value" :focus="focus"  @blur="bindBlur"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" cols="200" rows="10" show-confirm-bar="" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -175,8 +175,10 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
-            show:false
 
+            show:false,
+            sumbitColor:'#CCCCCC',
+            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
         }
     },
     methods:{
@@ -234,6 +236,15 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
+            if(this.value == ''){
+                uni.showToast({
+                    title: '评论内容不能为空',
+                    duration: 1500,
+                    mark:true,
+                    icon:'none'
+                });
+                return;
+            }
            formaddComment({
                type:5,
                relateId:this.id,
@@ -245,22 +256,11 @@ export default {
                mac:'e2a134f5'
            }).then(res=>{
                let {code,data,msg} = res;
-               if(res){
-                  if(code == 0){
+               if(code == 0){
                     this.$nextTick(()=>{
                         this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
                         this.getformGetCommentList(this.id);
                     }) 
-                  }
-               }else{
-                   if(this.value == ''){
-                        uni.showToast({
-                            title: '评论内容不能为空',
-                            duration: 1500,
-                            mark:true,
-                            icon:'none'
-                        });
-                   }
                 }
            });
            this.show=false;
@@ -275,9 +275,9 @@ export default {
             this.replyUserId = user_id;
         },
         /**
-         * 凝聚焦点
+         * 点击评论
          */
-        bindFocus(e){         
+        bindText(e){         
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
@@ -288,12 +288,18 @@ export default {
          */
         bindBlur(e){
             this.value = e.detail.value;
+            this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
         },
+        /**
+         * 聚集焦点
+         */
+        bindFocus(e){},
         /**
          * 监听输入
          */
         bindInput(e){
             this.value = e.detail.value;
+            this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
         },
         /**
          * 展开全部主
@@ -338,12 +344,26 @@ export default {
         },
         touchClick(id,index,indexj){
             this.toformcommentLike(id,index,indexj);
+        },
+        //元素:elem 返回的true or false
+        isOverHeight(elem){
+            setTimeout(()=>{
+                let elems = elem.toString()
+                let info = uni.createSelectorQuery().in(this).select(elems);
+                info.boundingClientRect((data)=>{ 
+                    if(data.height >= 126){
+                        return true
+                    }else{
+                        return false
+                    }
+                }).exec()
+            },500)
         }
     },
     mounted() {
         let {
             id
-        } = this.$root.$mp.query;
+        } = this.$root.$mp.query;  
         this.id = id;
         this.getformGetCommentList(id)
     },
@@ -364,7 +384,7 @@ export default {
         overflow: hidden;
         .container{
             position: relative;
-            overflow: auto;
+            // overflow: auto;
             padding-bottom: 92rpx;
             .box{
                 position: relative;
@@ -593,7 +613,6 @@ export default {
                     margin: 30rpx 0 0 30rpx;
                 }
                 >view:nth-child(2){
-                    color: #CCCCCC;
                     margin: 30rpx 30rpx 0 0;
                 }
             }
