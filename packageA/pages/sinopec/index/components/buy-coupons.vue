@@ -31,7 +31,7 @@
 			<view class="box">
 				<text class="text">i</text>
 			</view>
-			<view class="box">手机号为电子邮件券账号，充值成功则不能退款</view>
+			<view class="box u-line-1">{{sinoepc_init.top_title}}</view>
 			<!-- 手机号历史记录 -->
 			<block v-if="phone_history.length > 0">
 				<view class="history" v-show="curHistory">
@@ -413,7 +413,7 @@
 			}
 		}
 		.tip {
-			padding: 30rpx 0;
+			padding: 30rpx 0 30rpx 36rpx;
 			color: #FF5C2A;
 			font-size: 26rpx;
 			display: flex;
@@ -421,7 +421,10 @@
 			position: relative;
 			z-index: 2;
 			.box:nth-child(1) {
-				margin: 0 10rpx 0 0;
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translate(0,-50%);
 				font-size: 20rpx;
 				width: 26rpx;
 				height: 26rpx;
@@ -429,7 +432,6 @@
 				text-align: center;
 				border: 2rpx solid #FF5C2A;
 				border-radius: 100%;
-				position: relative;
 				.text {
 					position: absolute;
 					left: 0;
