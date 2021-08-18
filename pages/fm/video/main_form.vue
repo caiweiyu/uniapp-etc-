@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" @input="bindInput"  :value="value" @confirm="formCommentAfter" :focus="focus" @blur="bindBlur" @focus="bindFocus" placeholder-style="#CCCCCC" cursor-spacing="10" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" @focus="bindFocus" cursor-spacing="10" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -131,6 +131,18 @@
             ]">
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
+        <!--评论弹层-->
+        <u-popup v-model="show" mode="bottom" height="300rpx" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
+			<view class="popup">
+                <view class="popup_header">
+                    <view @click="show = false">取消</view>
+                    <view @click="formCommentAfter">发布</view>
+                </view>
+                <view class="popup_content">
+                    <textarea name="" id="" cols="15" rows="10" :value="value" :focus="focus"  @blur="bindBlur"  placeholder="评论将审核筛选后显示"  @input="bindInput" :placeholder-style="'color:#dddddd !important;font-size:28rpx !important;'" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                </view>
+            </view>
+		</u-popup>
     </view>
 </template>
 
@@ -162,7 +174,8 @@ export default {
             isclicked:[
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
-            ]
+            ],
+            show:false
 
         }
     },
@@ -211,7 +224,11 @@ export default {
             } 
         },
         formComment(){
-            this.focus = true;
+            console.log('聚焦',this.replyCommentId,this.replyUserId)
+            this.replyCommentId = '1';
+            this.replyUserId = 1;
+            this.value="";
+            this.show = true;
         },
         /**
          * 提交评论
@@ -228,13 +245,25 @@ export default {
                mac:'e2a134f5'
            }).then(res=>{
                let {code,data,msg} = res;
-               if(code == 0){
-                   this.$nextTick(()=>{
+               if(res){
+                  if(code == 0){
+                    this.$nextTick(()=>{
                         this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
                         this.getformGetCommentList(this.id);
-                   }) 
-               }
-           })
+                    }) 
+                  }
+               }else{
+                   if(this.value == ''){
+                        uni.showToast({
+                            title: '评论内容不能为空',
+                            duration: 1500,
+                            mark:true,
+                            icon:'none'
+                        });
+                   }
+                }
+           });
+           this.show=false;
         },
         /**
          * 回复评论
@@ -248,8 +277,11 @@ export default {
         /**
          * 凝聚焦点
          */
-        bindFocus(e){
-            // this.value = "";
+        bindFocus(e){         
+            this.replyCommentId = '1';
+            this.replyUserId = 1;
+            this.value="";
+            this.show = true;
         },
         /**
          * 失去焦点
@@ -544,6 +576,40 @@ export default {
                     background-color: #F9F9F9;
                     border-radius: 32rpx;
                     padding-left: 25rpx;
+                }
+            }
+        }
+        .popup{
+            border-top: 1rpx solid #EBEBEB;
+            background-color: #ffffff;
+            height: 300rpx;
+            width: 100%;
+            &_header{
+                display: flex;
+                justify-content: space-between;
+                font-size: 24rpx;
+                >view:nth-child(1){
+                    color: #999999;
+                    margin: 30rpx 0 0 30rpx;
+                }
+                >view:nth-child(2){
+                    color: #CCCCCC;
+                    margin: 30rpx 30rpx 0 0;
+                }
+            }
+            &_content{
+                display: block;
+                margin: 30rpx auto 20rpx;
+                width: 690rpx;
+                height: 187rpx;
+                textarea{
+                    width: 690rpx;
+                    height: 187rpx;
+                    padding:17rpx 20rpx;
+                    background-color: #F5F5F5;
+                }
+                .textarea-placeholder{
+                    color: #CCCCCC !important;
                 }
             }
         }
