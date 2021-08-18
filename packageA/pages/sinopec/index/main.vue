@@ -39,17 +39,17 @@
 			<oil-station></oil-station>
 			
 			<!-- 卡券活动弹窗 -->
-			<popup :type="1" v-if="popup_level == 1"></popup>
+			<popup :type="1" ref="coupon" v-if="popup_level == 1"></popup>
 			
 			<!-- 积分弹窗 -->
-			<popup :type="2" v-if="popup_level == 3"></popup>
+			<popup :type="2" ref="coupon" v-if="popup_level == 3"></popup>
 			
 			<!-- 我的卡券弹窗 -->
-			<popup :type="3"></popup>
+			<popup :type="3" ref="coupon"></popup>
 			
 			<!-- 我的券 -->
 			<view class="mine-coupon" @click="$debounce(bindMineCoupon)">
-				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_37.png" mode="aspectFit"></image>
+				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_37_1.png" mode="aspectFit"></image>
 				<button-getPhoneNumber v-if="!item_coupon_inner.is_need_login || item_coupon_inner.is_need_login == '1'" type="local" :item="item_coupon_inner" />
 			</view>
 		</view>
@@ -106,7 +106,7 @@
 			return {
 				popup_level: 0,//弹窗等级: 1卡券活动 > 2全局弹窗 > 3积分
 				dialog_window: 0,//全局弹窗返回值
-				curLock: true,//禁止连续下单
+				timeout: null,//计时器
 				item_coupon_inner: {
 					is_need_login: 1,
 					jump_type: 1,
@@ -228,6 +228,12 @@
 					}
 					if (this.sinoepc_init.credit > 0) {//积分
 						this.popup_level = 3;
+						clearTimeout(this.timeout);
+						this.timeout = setTimeout(()=>{
+							uni.$emit("couponPopup", {
+								popup_level: 3
+							})
+						},3000)
 						return;
 					}
 				})
@@ -310,6 +316,12 @@
 					coupon_id: id
 				})
 				if (res.code == 0) {
+					uni.showToast({
+						title: "领取成功",
+						mask: true,
+						duration: 1500,
+						icon: "none"
+					})
 					let sinoepc_init = this.sinoepc_init;
 					sinoepc_init.new_coupon_list = res.data;
 					this.$store.dispatch("sinoepc/ac_sinoepc_init", sinoepc_init);
@@ -335,7 +347,10 @@
 			 * 下单
 			 */
 			async downOrder(item) {
-				if (!this.curLock) return;
+				uni.showLoading({
+					title: "提交订单",
+					mask: true
+				})
 				let res = await API.axios_coupon_order({
 					source_channel: 2,
 					third_no: item.third_no,
@@ -355,7 +370,6 @@
 						duration: 1500,
 						icon: 'none'
 					})
-					this.curLock = true;
 				}
 			},
 			
@@ -374,13 +388,13 @@
 						uni.navigateTo({
 							url: `/packageA/pages/sinopec/home/pay_success?price=${(item.recharge_price - pay_amount).toFixed(2)}&order_id=${data.orderid}`
 						})
-						this.curLock = true;
+						uni.hideLoading();
 						return;
 					}
 			        if (code == 0) {
 			            this.toPay(data, pay_amount, item)
 			        } else {
-						this.curLock = true;
+						uni.hideLoading();
 					}
 			    })
 			},
@@ -400,6 +414,7 @@
 				} = data.prepaid_info;
 				try {
 				    //发起支付
+					uni.hideLoading();
 				    uni.requestPayment({
 				        timeStamp,
 				        nonceStr,
@@ -419,9 +434,6 @@
 								duration: 1500
 				            });
 				        },
-						complete: (res) => {
-							this.curLock = true;
-						}
 				    });
 				} catch (error) {
 				    app.log({
@@ -478,7 +490,7 @@
 			.mine-coupon {
 				position: fixed;
 				right: 12rpx;
-				bottom: 200rpx;
+				bottom: 192rpx;
 				width: 120rpx;
 				height: 122rpx;
 			}

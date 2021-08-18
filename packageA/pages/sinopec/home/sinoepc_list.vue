@@ -21,6 +21,9 @@
                   </view>
               </view>
           </view>
+          <view class="isMore" v-if="isMore">
+				<u-loadmore :load-text="loadtext" :status="status" />
+		  </view>
       </scroll-view>
       <view v-if="!loading"
 				:style="[
@@ -50,7 +53,14 @@ export default {
             city:"",
             district:"",
             lat:"",
-            lng:""
+            lng:"",
+            isMore:false,
+            status:"nomore",
+            loadtext:{
+                nomore:"车宝加油 巨优惠",
+                // loading:"-车宝加油 巨优惠-",
+                // loadmore:"-车宝加油 巨优惠-"
+            },
         }
     },
     components:{
@@ -90,6 +100,7 @@ export default {
         },
         dealScrollBottom(){
           if(!this.emtry_list){
+              this.isMore = true;
               return;
           }
           this.page+=1;
@@ -103,6 +114,7 @@ export default {
            this.page_size = 10;
            this.lng = '',this.lat = '';
            this.emtry_list = true;
+           this.isMore = false;
            this.get_axios_station(this.page,this.page_size)
        },
        getAllCity(){
@@ -113,6 +125,7 @@ export default {
            this.page_size = 10;
            this.lng = '',this.lat = '';
            this.emtry_list = true;
+           this.isMore = false;
            this.get_axios_station(this.page,this.page_size)
        },
        getDistrict(item){
@@ -123,10 +136,11 @@ export default {
            this.page_size = 10;
            this.lng = '',this.lat = '';
            this.emtry_list = true;
+           this.isMore = false;
            this.get_axios_station(this.page,this.page_size)
        },
        /**
-        * 跳转地图h5
+        * 跳转地图
         */
        goMapLocation(item){
            uni.navigateTo({
@@ -183,8 +197,8 @@ export default {
         }
         .card-scroll{
             position: relative;
-			height:100vh;
-            background-color: #F4F4F4;
+			height:calc(100vh - 288rpx);
+            background-color: #F4F4F4;  
         }
         &_container{
             // height: 218rpx;
@@ -194,7 +208,8 @@ export default {
             border-radius: 14rpx;
             background-color: #FFFFFF;
             >view:last-child{
-                margin-bottom: 336rpx;
+                // margin-bottom: 336rpx;
+                 border-bottom: none !important;
             }
             &_item{
                 width: 666rpx;
@@ -264,6 +279,16 @@ export default {
                     }
                 }
             }
+        }
+        .isMore{
+            width: 100%;
+            display: block;
+            text-align: center;
+            color: #CCCCCC;
+            background-color: #F8F8F8;
+            font-size: 32rpx;
+            height: 60rpx;
+            line-height: 60rpx;
         }
     }
 </style>

@@ -18,6 +18,7 @@
               <view class="box2_right">
                   <view :class="['box2_right_item',index == currentdetail ? 'box2_right_item_active' : '']" :id="'into_right'+ index"  v-for="(item,index) in list[current].children" :key="index" @click.stop="$debounce(showAreadetail,index,item)">
                       {{item.name}}
+                      <view class="box2_right_item_icon" v-if="index == currentdetail"></view>
                   </view>
               </view>
           </scroll-view>
@@ -213,6 +214,17 @@ export default {
             .box2_right_item{
                 color: #222222;
                 border-bottom: 1rpx solid #F9F9F9;
+            }
+            .box2_right_item_icon{
+                margin-left: 372rpx;
+                vertical-align: middle;
+                display: inline-block;
+                width: 25.5rpx;
+                height: 18rpx;
+                border-left: 3rpx solid #FF5C2A;
+                border-bottom: 3rpx solid #FF5C2A;
+                transform: rotate(-50deg);
+                margin-bottom: 13rpx;
             }
             .box2_right_item_active{
                color:#FF5C2A;

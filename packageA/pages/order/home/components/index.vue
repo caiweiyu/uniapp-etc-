@@ -48,7 +48,7 @@
 						 :refresher-triggered="triggered" :refresher-threshold="50"
 						 refresher-background="#F0F0F0" @refresherrefresh="onRefresh"
 						 @refresherrestore="onRestore" @refresherabort="onAbort"
-						 :style="{top:(statusBarHeight+199)+'rpx'}"
+						 :style="{top:statusBarHeight}"
 						 :scroll-with-animation="true"
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list" :key="index">
@@ -150,7 +150,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="isMore" v-if="isMore" :style="{paddingBottom:(statusBarHeight+199)+'rpx'}">
+						<view class="isMore" v-if="isMore" :style="{paddingBottom:statusBarHeight}">
 							<u-loadmore :status="status" />
 						</view>
 					</scroll-view>
@@ -225,8 +225,7 @@
 				loading: false,//加载中...
 				status:'nomore',
 				triggered:false,
-				scrollTops:-1,
-				statusBarHeight: uni.getSystemInfoSync().statusBarHeight * 2
+				scrollTops:-1
 			}
 		},
 		methods: {
@@ -432,7 +431,14 @@
 			...mapState({
 				auth_info: (state) => state.user.auth_info,
 				token: (state) => state.user.token
-			})
+			}),
+			statusBarHeight(){
+				if(uni.getSystemInfoSync().statusBarHeight > 20){
+					return (uni.getSystemInfoSync().statusBarHeight * 2)+179+'rpx'
+				}else{
+					return (uni.getSystemInfoSync().statusBarHeight * 2)+199+'rpx'
+				}
+			}
 		},
 		mounted() {
 			let {
@@ -520,7 +526,7 @@
 	.box {
 		@media screen and (min-height: 812px) {
 			.order-list {
-				height: 210rpx !important;
+				// height: 210rpx !important;
 			}
 		}
 		.order-list {
@@ -565,7 +571,7 @@
 			}
 			@media screen and (min-height: 812px) {
 				.order-header {
-					margin-top: 105rpx !important;
+					// margin-top: 105rpx !important;
 				}
 			}
 			.order-header {
@@ -647,7 +653,7 @@
 
 	@media screen and (min-height: 812px) {
 		.banner {
-			top: 216rpx !important;
+			// top: 216rpx !important;
 		}
 	}
 	.banner {

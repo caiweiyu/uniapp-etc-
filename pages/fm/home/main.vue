@@ -42,7 +42,7 @@
 						</view>
 						<u-waterfall v-model="flowList[index]" v-if="flowList[index].length > 0" :ref="'uWaterfall'+`${index}`" >
 							<template v-slot:left="{leftList}">
-								<view :class="['demo-warter',index1==0 ? 'demo-water-right0' : 'demo-water-left']"  @click.stop="toUrllink(item)" v-for="(item, index1) in leftList" :key="index1">
+								<view :class="['demo-warter',index1==0 ? 'demo-water-right0' : 'demo-water-left']"  @click="toUrllink(item)" v-for="(item, index1) in leftList" :key="index1">
 									<block v-if="item.displayType == 2">
 										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index1"></u-lazy-load>
 									</block>
@@ -60,7 +60,7 @@
 											</view>
 											<view class="demo-time">
 												<image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image>
-												<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>							
+												<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>
 												<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
 												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 											</view>
@@ -69,7 +69,7 @@
 								</view>
 							</template>
 							<template v-slot:right="{rightList}">
-								<view :class="['demo-warter',index2==0 ? 'demo-water-right1' : 'demo-water-right']"  @click.stop="toUrllink(item)" v-for="(item, index2) in rightList" :key="index2">
+								<view :class="['demo-warter',index2==0 ? 'demo-water-right1' : 'demo-water-right']"  @click="toUrllink(item)" v-for="(item, index2) in rightList" :key="index2">
 									<block v-if="item.displayType == 2">
 										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index2"></u-lazy-load>
 									</block>
@@ -191,6 +191,12 @@
 			this.init()
 		},
 		onShow(){
+			uni.$on("updateFMPage",(e)=>{
+				if(e.videoDestory){
+					this.onRefresh(this.swiperCurrent);
+					uni.$off("updateFMPage")
+				}
+			})
 			this.$token(()=>{
 				this.init();
 			})
@@ -234,7 +240,7 @@
 						this.triggered = false;
 						clearTimeout(timer)
 					}, 1500)
-				}			
+				}
 			},
 			/* 下拉被复位 */
 			onRestore() {
@@ -251,7 +257,7 @@
 			onAbort() {
 				this.$debounce(()=>{
 					console.log('无效下拉')
-				})	
+				})
 			},
 			stopTouchMove(){
 				return true
