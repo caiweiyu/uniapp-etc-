@@ -65,13 +65,13 @@
 			}),
 			listWeight() {
 				let list = [];
-				if (this.etc && this.etc.hasOwnProperty("bground") == true) {
+				if (this.etc && this.etc.hasOwnProperty("bground") == true && String(this.etc.bground) != "null") {
 					list.push({ weight: this.etc.weight || 0, name: 1 });
 				}
-				if (this.carc && this.carc.hasOwnProperty("bground") == true) {
+				if (this.carc && this.carc.hasOwnProperty("bground") == true && String(this.carc.bground) != "null") {
 					list.push({ weight: this.carc.weight || 0, name: 2 });
 				}
-				// if (this.memberc && this.memberc.hasOwnProperty("bground") == true) {
+				// if (this.memberc && this.memberc.hasOwnProperty("bground") == true && String(this.memberc.bground) != "null") {
 				// 	list.push({ weight: this.memberc.weight || 0, name: 3 });
 				// }
 				list.sort(this.comparMax('weight'));

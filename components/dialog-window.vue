@@ -24,8 +24,9 @@
 				</view>
 				<block v-if="global_popup.type > 1">
 					<!-- 弹窗图片（局部） -->
-					<view class="pic">
+					<view class="pic" @click="$debounce(bindNav,global_popup)">
 						<image class="img" :src="global_popup.img_url" mode="aspectFill"></image>
+						<button-getPhoneNumber v-if="!global_popup.is_need_login || global_popup.is_need_login == '1'" type="local" :item="global_popup" />
 					</view>
 					<!-- 弹窗title -->
 					<view class="title">{{global_popup.img_text.title}}</view>
@@ -35,15 +36,24 @@
 					<view class="button" :style="{display:'flex', flexDirection:direction}">
 						<!-- 图文（单按钮） -->
 						<view class="one" v-if="global_popup.type == 2">
-							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index == 0">{{item.label}}</view>
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index == 0">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 						<!-- 图文（上下） -->
 						<view class="two" v-if="global_popup.type == 3">
-							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index <= 1">{{item.label}}</view>
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index <= 1">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 						<!-- 图文：左右 -->
 						<view class="three" v-if="global_popup.type == 4">
-							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" @click="$debounce(bindNav,item)" v-if="index <= 1">{{item.label}}</view>
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index <= 1">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 					</view>
 				</block>
