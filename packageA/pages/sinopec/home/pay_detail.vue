@@ -85,7 +85,8 @@
 				<view class="minbox">{{detail.trade_platform_name}}</view>
 			</view>
 		</view>
-        <view class="line1"></view>
+		<view style="background-color:#F4F4F4;height:197rpx;"></view>
+        <!-- <view class="line1"></view> -->
         <view class="box_bottom">
             <view class="box_bottom_item">
                 <view class="box_bottom_item_left">在“加油广东”APP和“大家来加油”小程序扫码使用优惠券</view>
@@ -240,19 +241,19 @@
 			position: relative;
 			overflow: hidden;
 			.box:nth-child(1) {
-				margin: 45rpx 0 0 40rpx;
+				margin: 42rpx 0 0 40rpx;
 				font-size: 28rpx;
 				color: #666;
 			}
 			.box:nth-child(2) {
-				margin: 0rpx 0rpx 0rpx 40rpx;
+				margin: 0rpx 0rpx 0rpx 42rpx;
 				font-size: 60rpx;
 				color: #222222;
 			}
 			.box:nth-child(3) {
 				position: absolute;
 				right: 40rpx;
-				bottom: 40rpx;
+				bottom: 36rpx;
 				font-size: 30rpx;
 				color: #FF5C2A;
                 font-weight: bold;
@@ -304,18 +305,18 @@
             height: 197rpx;
             width: 100%;
             background-color: #F4F4F4;
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
             &_item{
                 display: flex;
-                margin: auto;
+                margin: 28rpx auto;
                 width: 702rpx;
                 height: 120rpx;
                 background-color: #ffffff;
                 justify-content: space-between;
                 border-radius: 12rpx;
-				position: fixed;
-				bottom: 18rpx;
-				left: 50%;
-				transform: translateX(-50%);
                 &_left{
                     color: #229CF4;
                     font-size:28rpx;
@@ -343,6 +344,7 @@
         }
 		.none-boder {
 			border: none;
+			position: relative;
             padding-bottom: 32rpx;
 		}
 		.btn-group {
@@ -381,8 +383,8 @@
             // background-color: #ffffff;
             // z-index: 9999;
             position: fixed;
-            right: 13rpx;
-            bottom: 371rpx;
+            right: 12rpx;
+            bottom: 192rpx;
             background:url('https://image.etcchebao.com/etc-min/sinopec/serve_tip.png') no-repeat;
             background-size: 100% 100%;
             border-radius: 50%;
