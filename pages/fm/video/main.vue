@@ -51,10 +51,9 @@
                                                 <image src="https://image.etcchebao.com/etc-min/info/share.png"></image>
                                                 <text>{{item.shareCount}}</text>
                                             </view>
-                                            <view class="box_layout_like" @click.stop="clickLike(item)">
-                                                <image v-if="item.isStatus" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
-                                                <image v-if="!item.isStatus" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
-                                                <text>{{item.isFirst==true ? (item.isStatus==true ? item.likeCount : item.likeCount+1) : item.likeCount}}</text>
+                                            <view class="box_layout_like" @click.stop="clickLike(item,index)">
+                                                <image :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like.png'"></image>
+                                                <text>{{item.likeCount}}</text>
                                             </view>
                                         </view>
                                 </block>
@@ -128,12 +127,6 @@ export default {
                 this.pageTotal = data.pager.pageTotal;
                 this.pageSize = data.pager.pageSize;
                 for(let i=0;i<data.list.length;i++){
-                    data.list[i].isFirst = false;
-                    if(data.list[i].isLike==1){
-                        data.list[i].isStatus = false;
-                    }else{
-                        data.list[i].isStatus = true;
-                    }
                     this.lists.push(data.list[i])
                 }
                 this.total_num +=data.list.length;
@@ -148,24 +141,15 @@ export default {
         this.share.title = title;
     },
     //点赞方法
-    clickLike(item){
-        if(item.isLike==1){
-            uni.showToast({
-                title: '你已点过赞',
-                duration: 1500,
-                icon:'none'
-            });
-            return;
-        };
+    clickLike(item,index){
         if(item.isLike==0){
-            item.isFirst = true;
-            if(item.isStatus){
-                this.focusClickfn(item,1);
-                item.isStatus = false;
-            }else{
-                this.focusClickfn(item,0);
-                item.isStatus = true;
-            }  
+            this.focusClickfn(item,1);
+            this.lists[index].isLike = 1;
+            this.lists[index].likeCount+=1;
+        }else{
+            this.focusClickfn(item,0);
+            this.lists[index].isLike = 0;
+            this.lists[index].likeCount-=1;
         }  
     },
     //点赞
