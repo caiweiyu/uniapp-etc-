@@ -37,7 +37,7 @@
 			</view>
 			
 			<!--卡区域列表-->
-			<swiper-cards @callback_card="callback_card" v-cloak></swiper-cards>
+			<swiper-cards @callback_card="callback_card"></swiper-cards>
 			
 			<!--图标导航-->
 			<nav-icon></nav-icon>
@@ -180,7 +180,6 @@
 				this.loadCardPlate();//车卡
 			});//监听车卡emit触发刷新
 			eventMonitor("WeChat_HomePage", 1);
-			console.log(new RegExp(0-9))
 		},
 		onShow() {
 			this.$token(() => {
@@ -195,7 +194,7 @@
 			this.$store.commit("home/mt_share_info", "");
 		},
 		mounted() {
-
+			
 		},
 		beforeDestroy() {
 			this.unsubscribeFn();

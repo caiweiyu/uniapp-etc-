@@ -29,7 +29,23 @@
         methods: {
             async rePayment() {
                 console.log('this.$root.$mp.query',this.$root.$mp.query)
-                let {trade_id,trade_platform=1,trade_mode=3,pay_amount,back_url,detail_url} = this.$root.$mp.query;
+                let {
+                    trade_id,
+                    trade_platform=1,
+                    trade_mode=3,
+                    pay_amount,
+                    back_url,
+                    detail_url,
+                    back_name = "返回首页",
+                    detail_name = "查看订单",
+                    back_mark_img = '',
+                    detail_mark_img = '',
+                    describe = ''
+                } = this.$root.$mp.query;
+
+				if (Number(pay_amount) <= 0) {
+					trade_platform = 6;
+				}
 
                 let res = await apiRepaid({
                     trade_id,
@@ -41,6 +57,12 @@
                 let {prepaid_info} = res.data;
                 try {
                     //发起支付
+					if (prepaid_info.hasOwnProperty("trade_status") == true && Number(prepaid_info.trade_status) == 3 && trade_platform == 6) {
+						wx.redirectTo({
+						    url: `/pages/pay_result/main?money=${pay_amount}&backUrl=${back_url}&detailUrl=${detail_url}&backName=${back_name}&detailName=${detail_name}&backMarkImg=${back_mark_img}&detailMarkImg=${detail_mark_img}&describe=${describe}`,
+						});
+						return;
+					}
                     uni.requestPayment({
                         timeStamp: prepaid_info.timeStamp,
                         nonceStr: prepaid_info.nonceStr,
@@ -49,7 +71,7 @@
                         paySign: prepaid_info.paySign,
                         success: function (res) {
                             wx.redirectTo({
-                                url: `/pages/pay_result/main?money=${pay_amount}&backUrl=${back_url}&detailUrl=${detail_url}`,
+                                url: `/pages/pay_result/main?money=${pay_amount}&backUrl=${back_url}&detailUrl=${detail_url}&backName=${back_name}&detailName=${detail_name}&backMarkImg=${back_mark_img}&detailMarkImg=${detail_mark_img}&describe=${describe}`,
                             });
                         },
                         fail: function () {

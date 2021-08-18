@@ -11,12 +11,14 @@ import Vue from "vue";
 import createPersistedState from "vuex-persistedstate";
 import user from "./modules/user";
 import home from "./modules/home";
+import sinoepc from "./modules/sinoepc";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
     user,
 	home,
+	sinoepc
   },
   plugins: [
     createPersistedState({

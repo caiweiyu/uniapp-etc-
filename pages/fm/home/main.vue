@@ -61,10 +61,9 @@
 											<view class="demo-time">
 												<!-- <image
 													src="https://image.etcchebao.com/etc-min/info/touch.png"
-													mode=""></image>
-												<text v-if="item.totalLike == 0">赞</text>
-												<text v-if="item.likeCount == 0">赞</text>
-												<text v-else>{{item.totalLike || item.likeCount}}</text> -->
+													mode="" class="demo-time-image"></image>
+												<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
+												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
 											</view>
 										</view>
 									</view>
@@ -73,10 +72,10 @@
 							<template v-slot:right="{rightList}">
 								<view :class="['demo-warter',index2==0 ? 'demo-water-right1' : 'demo-water-right']"  @click="toUrllink(item)" v-for="(item, index2) in rightList" :key="index2">
 									<block v-if="item.displayType == 2">
-										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index1"></u-lazy-load>
+										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.imageList[0] || item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index2"></u-lazy-load>
 									</block>
 									<block v-else>
-										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index1"></u-lazy-load>
+										<u-lazy-load :errorImg="item.imgOwn" :loadingImg="item.imgOwn" :threshold="winH" border-radius="12rpx 12rpx 0 0;" :image="item.frontImgUrl || item.frontImg2Url || item.frontImage || item.imgOwn" :index="index2"></u-lazy-load>
 									</block>
 										<image v-if="item.type_id == 2" class="isVedio" src="https://image.etcchebao.com/etc-min/info/video_mark.png"></image>
 										<view class="avtor">
@@ -90,10 +89,9 @@
 												<view class="demo-time">
 													<!-- <image
 														src="https://image.etcchebao.com/etc-min/info/touch.png"
-														mode=""></image>
-													<text v-if="item.totalLike == 0">赞</text>
-													<text v-if="item.likeCount == 0">赞</text>
-													<text v-else>{{item.totalLike || item.likeCount}}</text> -->
+														mode="" class="demo-time-image"></image>
+													<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
+													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
 												</view>
 											</view>
 										</view>
@@ -128,7 +126,8 @@
          bannerList,
          dataList,
          tabVideoList,
-		articleDetail
+		articleDetail,
+		articleClick
 	}from "@/interfaces/info"
 	import { eventMonitor } from "@/common/utils"
 	export default {
@@ -569,7 +568,7 @@
 						})
 						uni.navigateTo({url: '/pages/fm/video/main?ID='+param});
 					}
-				})
+				})	
 			},
 			//顶部tab栏目请求
 			async gettabList() {
@@ -921,16 +920,16 @@
             color: #666666;
             font-size: 24rpx;
             margin-right: 17rpx;
-            // >image {
-            //     width: 26rpx;
-            //     height: 26rpx;
-            //     display: inline-block;
-            //     vertical-align: bottom;
-            //     margin: 0 8rpx 0 7rpx;
-            // }
-			// >text{
-			// 	vertical-align: bottom;
-			// }
+            .demo-time-image {
+                width: 26rpx;
+                height: 26rpx;
+                display: inline-block;
+                vertical-align: bottom;
+                margin: 0 8rpx 0 7rpx;
+            }
+			.demo-time-text{
+				vertical-align: bottom;
+			}
         }
     }
 </style>

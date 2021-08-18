@@ -8,16 +8,16 @@ const home = {
 		nav_four: "",//4大金刚
 		nav_recormmend: "",//推荐服务
 		banner: "",//banner
-		etc: "",//粤通卡数据
-		carc: "",//车卡数据
-		memberc: "",//会员卡数据
+		etc: {},//粤通卡数据
+		carc: {},//车卡数据
+		memberc: {},//会员卡数据
 		weather: "",//天气
 		strict_shop: [],//严选商品
 
 		vehicle_type: "",//车辆类型
 		fm_index: 0,//资讯tab导航index
 
-		ytk_bill: "111",//粤通卡账单
+		ytk_bill: "",//粤通卡账单
 		info_item:{}
 	},
 	mutations: {

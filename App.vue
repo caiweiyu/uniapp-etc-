@@ -15,6 +15,7 @@
 		},
 		onShow: function(options) {
 			console.log('App Show')
+			console.log("options:",options)
 		},
 		onHide: function() {
 			console.log('App Hide')

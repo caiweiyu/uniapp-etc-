@@ -51,6 +51,7 @@
 			/* 下拉被复位 */
 			onRestore() {
 				this.$refs.index.init();
+				this.$refs.order.init();
 				this.$refs.serve.init()
 			},
 			/**
@@ -72,8 +73,10 @@
 			
 		},
 		onShow() {
+			this.$refs.order.init();
 			this.$token(() => {
 				this.$refs.index.init();
+				this.$refs.order.init();
 				this.$refs.serve.init();
 			});//检测page是否授权，token是否过期
 			this.$store.dispatch("home/ac_share_info",2);//分享配置
