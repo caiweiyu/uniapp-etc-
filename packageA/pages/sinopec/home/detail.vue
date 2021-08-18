@@ -7,7 +7,7 @@
       </view>
       <view class="box2" v-if="list.image_help != '' || dots2.length > 0">
         <text class="boxsize boxitem">省钱教程</text>
-        <swiper :autoplay="true"
+        <swiper :autoplay="false"
 								:interval="5000"
 								:duration="300"
                 :circular="true"
@@ -26,10 +26,6 @@
               </scroll-view>
           </swiper-item>
         </swiper> 
-        <!--易捷提货券-->
-        <view class="box4" @click="changeCurrentRight" v-if="list.image_help != '' || dots2.length > 0">
-            <image :src="current == 1 ? pic_src[0] : pic_src[1]" mode="" />
-        </view>
       </view>
       <view class="box3">
         <text class="boxsize box3-item">使用须知</text>
@@ -39,6 +35,10 @@
               <view class="icon_text">{{item.title}}</view>
             </view>
         </scroll-view>
+      </view>
+      <!--易捷提货券-->
+      <view class="box4" @click="changeCurrentRight" v-if="list.image_help != '' || dots2.length > 0">
+          <image :src="current == 1 ? pic_src[0] : pic_src[1]" mode="" />
       </view>
   </view>
 </template>
@@ -140,6 +140,7 @@ export default {
     background-color: #F4F4F4;
     padding: 1rpx 0rpx;
     position: relative;
+    overflow: auto;
     .box1,.box2{
       width: 702rpx;
       height: 366rpx;
@@ -195,29 +196,16 @@ export default {
         display: block;
         margin: auto;
       }
-      .box4{
-        position: absolute;
-        right: -33rpx;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 90rpx;
-        height: 222rpx;
-        z-index: 9999;
-        image{
-          width: 90rpx;
-          height: 222rpx;
-        }
-      }
     }
     .box3{
       width: 702rpx;
       // height: 580rpx;
-      margin: 20rpx auto 0;
+      margin: 20rpx auto 20rpx;
       background-color: #ffffff;
       border-radius: 14rpx;
       display: flex;
       flex-direction: column;
-      padding-bottom: 25rpx;
+      padding-bottom: 37rpx;
       text{
         margin: 0 0 10rpx 20rpx;
         display: block;
@@ -247,6 +235,20 @@ export default {
           vertical-align: middle;
         }
       }
+    }
+    .box4{
+        position: absolute;
+        right: -3rpx;
+        top: 512rpx;
+        // top: 50%;
+        // transform: translateY(-50%);
+        width: 79rpx;
+        height: 212rpx;
+        z-index: 9999;
+        image{
+          width: 79rpx;
+          height: 212rpx;
+        }
     }
     .box5{
       z-index:9999;
