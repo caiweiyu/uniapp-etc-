@@ -139,7 +139,7 @@
                     <view @click="formCommentAfter">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" cols="15" rows="10" :value="value" :focus="focus"  @blur="bindBlur"  placeholder="评论将审核筛选后显示"  @input="bindInput" :placeholder-style="'color:#dddddd !important;font-size:28rpx !important;'" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" cols="15" rows="10" :value="value" :focus="focus"  @blur="bindBlur"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -603,15 +603,15 @@ export default {
                 width: 690rpx;
                 height: 187rpx;
                 textarea{
-                    width: 690rpx;
-                    height: 187rpx;
+                    width: 650rpx;
+                    height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
                 }
-                .textarea-placeholder{
-                    color: #CCCCCC !important;
-                }
             }
         }
+    }
+    /deep/.textarea-placeholder{
+        color: #CCCCCC !important;
     }
 </style>
