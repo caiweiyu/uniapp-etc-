@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" cursor-spacing="10" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -132,14 +132,14 @@
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
         <!--评论弹层-->
-        <u-popup v-model="show" mode="bottom" height="300rpx" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
+        <u-popup v-model="show" mode="bottom" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
 			<view class="popup">
                 <view class="popup_header">
                     <view @click="show = false">取消</view>
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" cols="200" rows="10" show-confirm-bar="" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="300" cols="200" rows="10" show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -175,9 +175,9 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
-
             show:false,
             sumbitColor:'#CCCCCC',
+            cancelColor:"#CCCCCC",
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
         }
     },
@@ -236,7 +236,7 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
-            if(this.value == ''){
+            if((this.value.replace(/\s+/g,"")) == ''){
                 uni.showToast({
                     title: '评论内容不能为空',
                     duration: 1500,
@@ -258,7 +258,7 @@ export default {
                let {code,data,msg} = res;
                if(code == 0){
                     this.$nextTick(()=>{
-                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
+                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC";
                         this.getformGetCommentList(this.id);
                     }) 
                 }
@@ -289,17 +289,27 @@ export default {
         bindBlur(e){
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
         },
         /**
          * 聚集焦点
          */
-        bindFocus(e){},
+        bindFocus(e){
+            //console.log(e.detail.value)
+        },
         /**
          * 监听输入
          */
         bindInput(e){
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
+        },
+        /**
+         * 处理键盘
+         */
+        keyboardheightchange(e){
+            console.log(e)
         },
         /**
          * 展开全部主
@@ -324,22 +334,14 @@ export default {
                 commentId:commentId
             });
             let {code,msg,data} = res;
-            if(res){
-                if(code == 0){
-                    if(indexj != undefined){
-                        this.list[index].replyList[indexj].likeNum=data.totalLike;
-                        this.list[index].replyList[indexj].isLiked = true;
-                    }else{
-                        this.list[index].comment.likeNum=data.totalLike;
-                        this.list[index].isLiked = true;
-                    }
+            if(code == 0){
+                if(indexj != undefined){
+                    this.list[index].replyList[indexj].likeNum=data.totalLike;
+                    this.list[index].replyList[indexj].isLiked = true;
+                }else{
+                    this.list[index].comment.likeNum=data.totalLike;
+                    this.list[index].isLiked = true;
                 }
-            }else{
-                uni.showToast({
-                    title: '你已点过赞啦',
-                    duration: 1500,
-                    icon:'none'
-                });
             }
         },
         touchClick(id,index,indexj){
@@ -487,7 +489,7 @@ export default {
                             font-size: 24rpx;
                         }
                         &_box3{
-                            padding: 0 0 0 0;
+                            padding: 0 0 31rpx 0;
                             margin: 19rpx 0 0 32rpx;
                             color: #222222;
                             font-size: 32rpx;
@@ -621,11 +623,14 @@ export default {
                 margin: 30rpx auto 20rpx;
                 width: 690rpx;
                 height: 187rpx;
+                background-color: #FFFFFF;
+                z-index: 10080;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
+                    z-index: 10080;
                 }
             }
         }
