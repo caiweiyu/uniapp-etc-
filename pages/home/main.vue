@@ -46,15 +46,15 @@
 			<operate-banner></operate-banner>
 
 			<!--附近门店-->
-			<!-- <nearby-stores></nearby-stores> -->
+			<nearby-stores></nearby-stores>
 
 			<!--热门资讯-->
 			<hot-consult @callback_msg="callback_msg" ref="hot_consult" :message_tab="message_tab" :message_article="message_article"></hot-consult>
 
 			<!--严选购物-->
-			<!-- <strict-shop ref="strict_shop">
+			<strict-shop>
 				<button-get-phone-number type="local" slot="getPhoneNumber" />
-			</strict-shop> -->
+			</strict-shop>
 
 			<!-- 空格 -->
 			<view class="space-white"></view>
@@ -133,6 +133,7 @@
 				etc: (state) => state.home.etc,
 				carc: (state) => state.home.carc,
 				memberc: (state) => state.home.memberc,
+				nearby_store: (state) => state.home.nearby_store,
 				strict_shop: (state) => state.home.strict_shop,
 				ytk_bill: (state) => state.home.ytk_bill,
 				fm_index: (state) => state.home.fm_index
@@ -239,8 +240,9 @@
 								this.loadNavFour(), //4大金刚
 								this.loadNavRecormmend(), //推荐服务
 								this.loadBanner(), //banner
-								this.gettabList(),
-								// this.loadStrictShop(),//严选商品
+								this.gettabList(),//资讯
+								this.loadNearbyStore(),//附近门店
+								this.loadStrictShop(),//严选商品
 							]);
 							break;
 							// 已登录
@@ -254,8 +256,9 @@
 								this.loadNavFour(), //4大金刚
 								this.loadNavRecormmend(), //推荐服务
 								this.loadBanner(), //banner
-								this.gettabList(),
-								// this.loadStrictShop(),//严选商品
+								this.gettabList(),//资讯
+								this.loadNearbyStore(),//附近门店
+								this.loadStrictShop(),//严选商品
 							]);
 							break;
 					}
@@ -452,7 +455,6 @@
 				})
 				this.$store.dispatch("home/ac_etc", res.data);
 				if (!this.token || String(res.data.top) == "null") return;
-				// this.loadYTKBill(res.data.top.num);
 			},
 			async loadCardPlate() {
 				let res = await API.axios_carc({
@@ -490,17 +492,6 @@
 			},
 
 			/**
-			 * 粤通卡账单
-			 */
-			// async loadYTKBill(carno) {
-			// 	let res = await API.axios_ytk_bill({
-			// 		startDate: miniapp.clock(new Date().getTime()).substring(0, 8) + "01",
-			// 		cardNo: carno,
-			// 	})
-			// 	this.$store.dispatch("home/ac_ytk_bill", res.data);
-			// },
-
-			/**
 			 * 天气预报接口
 			 */
 			async loadWeather() {
@@ -510,6 +501,17 @@
 					cityName: this.city
 				})
 				this.$store.dispatch("home/ac_weather", res.data);
+			},
+			
+			/**
+			 * 附近门店
+			 */
+			async loadNearbyStore() {
+				let res = await API.axios_nearby_stores({
+					lat: this.latitude,
+					lng: this.longitude,
+				})
+				this.$store.dispatch("home/ac_nearby_store", res.data);
 			},
 
 			/**
@@ -693,20 +695,10 @@
 			 */
 			async loadStrictShop() {
 				this.curLoading = true;
-				// let res = await API.axios_banner({
-				// 	token: this.token,
-				// 	citycode: this.city_code,
-
-				// })
-				await setTimeout(() => {
-					if (this.strict_shop.length == 0) {
-						this.$store.dispatch("home/ac_strict_shop", [...[], ...[0, 1, 0]]);
-					} else {
-						this.$store.dispatch("home/ac_strict_shop", [...this.strict_shop, ...[0, 0, 1]]);
-					}
-					this.$refs.strict_shop.bindPull();
-					this.curLoading = false;
-				}, 500)
+				let res = await API.axios_strict_shop({
+					
+				})
+				this.$store.dispatch("home/ac_strict_shop", res.data);
 			},
 			
 			/**

@@ -29,9 +29,13 @@
 						<button-getPhoneNumber v-if="!global_popup.is_need_login || global_popup.is_need_login == '1'" type="local" :item="global_popup" />
 					</view>
 					<!-- 弹窗title -->
-					<view class="title">{{global_popup.img_text.title}}</view>
+					<view class="title">
+						<text :decode="true">{{global_popup.img_text.title}}</text>
+					</view>
 					<!-- 弹窗content -->
-					<view class="content">{{global_popup.img_text.content}}</view>
+					<view class="content">
+						<text :decode="true">{{global_popup.img_text.content}}</text>
+					</view>
 					<!-- 按钮 -->
 					<view class="button" :style="{display:'flex', flexDirection:direction}">
 						<!-- 图文（单按钮） -->

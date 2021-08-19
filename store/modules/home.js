@@ -12,6 +12,7 @@ const home = {
 		carc: {},//车卡数据
 		memberc: {},//会员卡数据
 		weather: "",//天气
+		nearby_store: [],//附近门店
 		strict_shop: [],//严选商品
 
 		vehicle_type: "",//车辆类型
@@ -47,6 +48,9 @@ const home = {
 		},
 		mt_memberc: (state, n)=> {
 			state.memberc = n;
+		},
+		mt_nearby_store: (state, n)=> {
+			state.nearby_store = n;
 		},
 		mt_strict_shop: (state, n)=> {
 			state.strict_shop = n;
@@ -116,6 +120,9 @@ const home = {
 		},
 		ac_memberc: (context, obj)=> {
 			context.commit("mt_memberc", obj)
+		},
+		ac_nearby_store: (context, obj)=> {
+			context.commit("mt_nearby_store", obj)
 		},
 		ac_strict_shop: (context, obj)=> {
 			context.commit("mt_strict_shop", obj)

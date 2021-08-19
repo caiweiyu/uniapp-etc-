@@ -160,12 +160,23 @@ export function axios_weather(data) {
 }
 
 /**
- * 粤通卡账单
+ * 附近门店
  */
-export function axios_ytk_bill(data) {
+export function axios_nearby_stores(data) {
 	return request({
-		url: `${G}/unitoll-new/unitoll/monthBill2`,
-		method: "post",
+		url: `${G}/mini-program/v1/home-index/nearby-stores`,
+		method: "get",
+		data
+	});
+}
+
+/**
+ * 严选商店
+ */
+export function axios_strict_shop(data) {
+	return request({
+		url: `${G}/mini-program/v1/home-index/tabs-goods`,
+		method: "get",
 		data
 	});
 }
