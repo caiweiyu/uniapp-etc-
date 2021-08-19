@@ -631,18 +631,21 @@ export default {
             &_header{
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
+                height: 60rpx;
                 font-size: 24rpx;
                 >view:nth-child(1){
                     color: #999999;
-                    margin: 30rpx 0 0 30rpx;
+                    line-height: 60rpx;
+                    padding: 0 30rpx;
                 }
                 >view:nth-child(2){
-                    margin: 30rpx 30rpx 0 0;
+                    padding: 0 30rpx;
                 }
             }
             &_content{
                 display: block;
-                margin: 30rpx auto 20rpx;
+                margin: 0 auto 20rpx;
                 width: 690rpx;
                 height: 187rpx;
                 background-color: #FFFFFF;
