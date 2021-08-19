@@ -486,7 +486,7 @@ export default {
                             font-size: 24rpx;
                         }
                         &_box3{
-                            padding: 0 0 0 0;
+                            padding: 0 0 31rpx 0;
                             margin: 19rpx 0 0 32rpx;
                             color: #222222;
                             font-size: 32rpx;
