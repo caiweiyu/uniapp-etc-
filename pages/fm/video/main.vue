@@ -293,7 +293,7 @@ export default {
                 height: 100%;
             }
            .player-video{
-               z-index:0;
+               z-index:1;
            }
            .player-image{
                display: inline-block;
@@ -306,7 +306,7 @@ export default {
            }
         }
         .box_intro {
-            z-index: 999;
+            z-index: 998;
             position: absolute;
             width: 659rpx;
             height: 83rpx;
@@ -327,6 +327,7 @@ export default {
             position: fixed;
             display: flex;
             bottom: 28rpx;
+            z-index: 999;
             &_info {
             margin-left:54rpx;
             >image{

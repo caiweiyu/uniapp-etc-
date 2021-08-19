@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" cursor-spacing="10" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -139,7 +139,7 @@
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" cols="200" rows="10" show-confirm-bar="" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -258,7 +258,7 @@ export default {
                let {code,data,msg} = res;
                if(code == 0){
                     this.$nextTick(()=>{
-                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
+                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC";
                         this.getformGetCommentList(this.id);
                     }) 
                 }
@@ -300,6 +300,12 @@ export default {
         bindInput(e){
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+        },
+        /**
+         * 处理键盘
+         */
+        keyboardheightchange(e){
+            console.log(e)
         },
         /**
          * 展开全部主
@@ -621,11 +627,14 @@ export default {
                 margin: 30rpx auto 20rpx;
                 width: 690rpx;
                 height: 187rpx;
+                background-color: #FFFFFF;
+                z-index: 10080;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
+                    z-index: 10080;
                 }
             }
         }
