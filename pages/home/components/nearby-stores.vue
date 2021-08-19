@@ -21,12 +21,12 @@
 		<!-- 导航 -->
 		<!-- ************************** -->
 		<view class="nav">
-			<view :class="['box', curIndex == index ? 'active' : '']" v-for="(item,index) in listNav" :key="index" @click="bindNav($event,index)">
+			<view :class="['box', curIndex == index ? 'active' : '']" v-for="(item,index) in nearby_store.lists" :key="index" @click="bindNavWeb($event,index)">
 				<view class="minbox">
 					<view class="img">
-						<image :src="item.img" mode=""></image>
+						<image src=""></image>
 					</view>
-					<view class="text">{{item.name}}</view>
+					<view class="text">{{item.tab_name}}</view>
 				</view>
 			</view>
 		</view>
@@ -35,15 +35,15 @@
 		<!-- 门店列表 -->
 		<!-- ************************** -->
 		<view class="stores-list">
-			<view class="box" v-for="(item,index) in [0,0,0]" :key="index">
+			<view class="box" v-for="(item,index) in nearby_store.lists[0].rows" :key="index" @click="bindNav(item)">
 				<view class="minbox">
-					<image class="img" src="" mode=""></image>
-					<view class="text">99.99km</view>
+					<image class="img" src="item.img" mode="aspectFill"></image>
+					<view class="text">{{item.distance}}</view>
 				</view>
-				<view class="minbox">小程序开发工具的控制台查看</view>
+				<view class="minbox">{{item.name}}</view>
 				<view class="minbox">
-					<view class="text ">6.5</view>
-					<image class="img" :src="'https://image.etcchebao.com/etc-min/etc-f/icon_4.png'" mode=""></image>
+					<view class="text ">{{item.price}}</view>
+					<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_4.png"></image>
 				</view>
 			</view>
 		</view>
@@ -51,32 +51,28 @@
 		<!-- ************************** -->
 		<!-- 更多门店 -->
 		<!-- ************************** -->
-		<view class="stores-more">更多门店</view>
+		<view class="stores-more" @click="bindMore">更多门店</view>
 		
 	</view>
 </template>
 
 <script>
+	import miniScript from "@/common/miniScript"
+	const  miniapp = miniScript.getInstance()
+	
+	import { mapState } from "vuex"
 	export default {
 		props: {
 
 		},
+		computed: {
+			...mapState({
+				nearby_store: (state) => state.home.nearby_store,
+			})
+		},
 		data() {
 			return {
 				curIndex: 0, //导航index
-				listNav: [{
-						name: '加油',
-						img: 'https://image.etcchebao.com/etc-min/etc-f'
-					},
-					{
-						name: '洗车',
-						img: 'https://image.etcchebao.com/etc-min/etc-f'
-					},
-					{
-						name: '营业厅',
-						img: 'https://image.etcchebao.com/etc-min/etc-f'
-					},
-				], //导航
 			}
 		},
 		mounted() {
@@ -86,9 +82,39 @@
 			/**
 			 * 导航
 			 */
-			bindNav(e, index) {
+			bindNavWeb(e, index) {
 				this.curIndex = index;
 				console.log(index)
+			},
+			
+			/**
+			 * 详情
+			 */
+			bindNav(item) {
+				let items = {
+					jump_type: 3,
+					jump_url: item.target_url
+				}
+				miniapp.miniProgramRouter(items, (res)=>{
+					
+				}, (err)=> {
+					
+				})
+			},
+			
+			/**
+			 * 更多
+			 */
+			bindMore() {
+				let item = {
+					jump_type: 3,
+					jump_url: this.nearby_store.lists[0].mores
+				}
+				miniapp.miniProgramRouter(item, (res)=>{
+					
+				}, (err)=> {
+					
+				})
 			}
 		}
 	}
@@ -96,7 +122,7 @@
 
 <style lang="scss" scoped>
 	.zs-content {
-		margin: 30rpx 0 0 0;
+		margin: 30rpx 28rpx 0 28rpx;
 		padding: 20rpx;
 		background-color: rgba(255, 255, 255, 1);
 		color: #222222;
