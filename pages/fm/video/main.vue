@@ -25,15 +25,17 @@
                                             <video :id="'myVideo' + index"
                                                 :ref="'myVideo' + index"
                                                 @play="dealPlay(item.id,item.frontImage,item.title)"
+                                                @pause="dealPause"
+                                                @fullscreenclick="fullscreenclick"
                                                 class="player-video"
                                                 :src="item.videoUrl"
                                                 :controls="false"
                                                 :loop="true"
                                                 :show-center-play-btn="false"
-                                                @click="videoPlayPuse"
+                                                @click.stop="videoPlayPuse"
                                                 objectFit="contain">
                                             </video>
-                                            <image v-if="showStatus"  @click="videoPlayPuse"  class='player-image' :src="puaseIcon"></image>
+                                            <image v-if="showStatus" @click.stop="videoPlayPuse" class='player-image' :src="puaseIcon"></image>
                                         </view>
                                         <view class="box_title">
                                             <image :src="item.artist.avatar"></image>
@@ -139,6 +141,10 @@ export default {
         this.share.ID = ID;
         this.share.imageUrl = imageurl;
         this.share.title = title;
+        this.showStatus=false;
+    },
+    dealPause(){
+        this.showStatus=true;
     },
     //点赞方法
     clickLike(item,index){
@@ -194,6 +200,9 @@ export default {
         }
         return;
     },
+    fullscreenclick(){
+        this.videoPlayPuse()
+    },
     //视频播放及暂停
     videoPlayPuse(){
         let newVideo = uni.createVideoContext('myVideo'+this.current,this);
@@ -201,11 +210,9 @@ export default {
          if(this.status){
              this.player.pause();
              this.status = false;
-             this.showStatus = true;
          }else{
              this.player.play();
              this.status = true;
-             this.showStatus = false;
          }
     },
     handlerposition(e){},

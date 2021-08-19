@@ -132,14 +132,14 @@
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
         <!--评论弹层-->
-        <u-popup v-model="show" mode="bottom" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
+        <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
 			<view class="popup">
                 <view class="popup_header">
-                    <view @click="show = false">取消</view>
+                    <view @click="cancel">取消</view>
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="300" cols="200" rows="10" show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -258,7 +258,7 @@ export default {
                let {code,data,msg} = res;
                if(code == 0){
                     this.$nextTick(()=>{
-                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC";
+                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
                         this.getformGetCommentList(this.id);
                     }) 
                 }
@@ -269,7 +269,9 @@ export default {
          * 回复评论
          */
         submitComment(id,user_id){
-            console.log('id=',id,'user_id=',user_id)
+            setTimeout(()=>{
+                this.focus = true; 
+            },300)   
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
@@ -277,11 +279,31 @@ export default {
         /**
          * 点击评论
          */
-        bindText(e){         
+        bindText(e){  
+            setTimeout(()=>{
+                this.focus = true; 
+            },300)     
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
             this.show = true;
+        },
+        /**
+         * 关闭弹层
+         */
+        closepopup(){
+            setTimeout(()=>{
+                this.focus = false; 
+            },300)
+        },
+        /**
+         * 取消
+         */
+        cancel(){
+            setTimeout(()=>{
+                this.focus = false; 
+            },300)
+            this.show = false;
         },
         /**
          * 失去焦点
