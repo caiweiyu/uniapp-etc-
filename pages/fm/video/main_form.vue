@@ -12,7 +12,7 @@
                 <view class="item" v-for="(item,index) in hotList" v-if="hotList.length > 0" :key="index" >
                     <view class="item_title">
                         <view>
-                            <image :src="item.comment.userImg" mode="" />
+                            <image :src="item.comment.userImg || user_img" mode="" />
                             <text>{{item.comment.userName}}</text>
                         </view>
                         <view>
@@ -21,7 +21,7 @@
                         </view>
                     </view>
                     <view class="item_content">
-                        <view class="item_content_item" :style="{display: item.flexBox}">
+                        <view :class="['item_content_item']" :style="{display: item.flexBox}">
                             {{item.comment.content}}
                         </view>
                     </view>
@@ -30,7 +30,7 @@
                             {{item.comment.createTime}}
                             <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                         </view> 
-                        <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                        <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                     </view>
                 </view>
                 <view class="noHotList" v-if="hotList.length == 0">
@@ -47,7 +47,7 @@
                     <block v-if="item.replyList.length == 0">
                         <view class="item_title">
                             <view>
-                                <image :src="item.comment.userImg" mode="" />
+                                <image :src="item.comment.userImg || user_img" mode="" />
                                 <text>{{item.comment.userName}}</text>
                             </view>
                             <view>
@@ -56,7 +56,7 @@
                             </view>
                         </view>
                         <view class="item_content">
-                            <view class="item_content_item" :style="{display: item.flexBox}">
+                            <view :class="['item_content_item']" :style="{display: item.flexBox}">
                                 {{item.comment.content}}
                             </view>
                         </view>
@@ -65,13 +65,13 @@
                                 {{item.comment.createTime}}
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
-                            <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                            <view class="item_bottom_all" v-if="item.comment.content.length > 150" @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
                     </block>
                     <block v-else>
                         <view class="item_title">
                             <view>
-                                <image :src="item.comment.userImg" mode="" />
+                                <image :src="item.comment.userImg || user_img" mode="" />
                                 <text>{{item.comment.userName}}</text>
                             </view>
                             <view>
@@ -91,14 +91,14 @@
                                 <view class="item_headerlf_header_box2">
                                     {{item.createTime}}
                                 </view>
-                                <view class="item_headerlf_header_box3" :style="{display: item.flexBox}">
+                                <view :class="['item_headerlf_header_box3']" :style="{display: item.flexBox}">
                                     {{item.content}}
                                 </view>
-                                <view @click="allExpandi(index,indexi)" class="item_headerlf_header_box4">{{ item.expandName }}</view>
+                                <view @click="allExpandi(index,indexi)" v-if="item.content.length > 150" class="item_headerlf_header_box4">{{ item.expandName }}</view>
                             </view>
                         </view>
                         <view class="item_content">
-                            <view class="item_content_item" :style="{display: item.flexBox}">
+                            <view :class="['item_content_item']" :style="{display: item.flexBox}">
                                 {{item.comment.content}}
                             </view>
                         </view>
@@ -107,7 +107,7 @@
                                 {{item.comment.createTime}}
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
-                            <view class="item_bottom_all" @click="allExpand(index)">{{item.expandName}}</view>
+                            <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
                     </block>
                 </view>
@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" @focus="bindFocus" cursor-spacing="10" class="bottom_tip_input" type="text">
+                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" class="bottom_tip_input" type="text">
             </view>
         </view>
         <view v-if="!loading"
@@ -132,14 +132,14 @@
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
         <!--评论弹层-->
-        <u-popup v-model="show" mode="bottom" height="300rpx" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
+        <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
 			<view class="popup">
                 <view class="popup_header">
-                    <view @click="show = false">取消</view>
-                    <view @click="formCommentAfter">发布</view>
+                    <view @click="cancel">取消</view>
+                    <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" cols="15" rows="10" :value="value" :focus="focus"  @blur="bindBlur"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -175,8 +175,10 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
-            show:false
-
+            show:false,
+            sumbitColor:'#CCCCCC',
+            cancelColor:"#CCCCCC",
+            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
         }
     },
     methods:{
@@ -234,6 +236,15 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
+            if((this.value.replace(/\s+/g,"")) == ''){
+                uni.showToast({
+                    title: '评论内容不能为空',
+                    duration: 1500,
+                    mark:true,
+                    icon:'none'
+                });
+                return;
+            }
            formaddComment({
                type:5,
                relateId:this.id,
@@ -245,22 +256,11 @@ export default {
                mac:'e2a134f5'
            }).then(res=>{
                let {code,data,msg} = res;
-               if(res){
-                  if(code == 0){
+               if(code == 0){
                     this.$nextTick(()=>{
-                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1;
+                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
                         this.getformGetCommentList(this.id);
                     }) 
-                  }
-               }else{
-                   if(this.value == ''){
-                        uni.showToast({
-                            title: '评论内容不能为空',
-                            duration: 1500,
-                            mark:true,
-                            icon:'none'
-                        });
-                   }
                 }
            });
            this.show=false;
@@ -269,31 +269,69 @@ export default {
          * 回复评论
          */
         submitComment(id,user_id){
-            console.log('id=',id,'user_id=',user_id)
+            setTimeout(()=>{
+                this.focus = true; 
+            },300)   
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
         },
         /**
-         * 凝聚焦点
+         * 点击评论
          */
-        bindFocus(e){         
+        bindText(e){  
+            setTimeout(()=>{
+                this.focus = true; 
+            },300)     
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
             this.show = true;
         },
         /**
+         * 关闭弹层
+         */
+        closepopup(){
+            setTimeout(()=>{
+                this.focus = false; 
+            },300)
+        },
+        /**
+         * 取消
+         */
+        cancel(){
+            setTimeout(()=>{
+                this.focus = false; 
+            },300)
+            this.show = false;
+        },
+        /**
          * 失去焦点
          */
         bindBlur(e){
             this.value = e.detail.value;
+            this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
+        },
+        /**
+         * 聚集焦点
+         */
+        bindFocus(e){
+            //console.log(e.detail.value)
         },
         /**
          * 监听输入
          */
         bindInput(e){
             this.value = e.detail.value;
+            this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
+        },
+        /**
+         * 处理键盘
+         */
+        keyboardheightchange(e){
+            console.log(e)
         },
         /**
          * 展开全部主
@@ -318,32 +356,38 @@ export default {
                 commentId:commentId
             });
             let {code,msg,data} = res;
-            if(res){
-                if(code == 0){
-                    if(indexj != undefined){
-                        this.list[index].replyList[indexj].likeNum=data.totalLike;
-                        this.list[index].replyList[indexj].isLiked = true;
-                    }else{
-                        this.list[index].comment.likeNum=data.totalLike;
-                        this.list[index].isLiked = true;
-                    }
+            if(code == 0){
+                if(indexj != undefined){
+                    this.list[index].replyList[indexj].likeNum=data.totalLike;
+                    this.list[index].replyList[indexj].isLiked = true;
+                }else{
+                    this.list[index].comment.likeNum=data.totalLike;
+                    this.list[index].isLiked = true;
                 }
-            }else{
-                uni.showToast({
-                    title: '你已点过赞啦',
-                    duration: 1500,
-                    icon:'none'
-                });
             }
         },
         touchClick(id,index,indexj){
             this.toformcommentLike(id,index,indexj);
+        },
+        //元素:elem 返回的true or false
+        isOverHeight(elem){
+            setTimeout(()=>{
+                let elems = elem.toString()
+                let info = uni.createSelectorQuery().in(this).select(elems);
+                info.boundingClientRect((data)=>{ 
+                    if(data.height >= 126){
+                        return true
+                    }else{
+                        return false
+                    }
+                }).exec()
+            },500)
         }
     },
     mounted() {
         let {
             id
-        } = this.$root.$mp.query;
+        } = this.$root.$mp.query;  
         this.id = id;
         this.getformGetCommentList(id)
     },
@@ -364,7 +408,7 @@ export default {
         overflow: hidden;
         .container{
             position: relative;
-            overflow: auto;
+            // overflow: auto;
             padding-bottom: 92rpx;
             .box{
                 position: relative;
@@ -467,7 +511,7 @@ export default {
                             font-size: 24rpx;
                         }
                         &_box3{
-                            padding: 0 0 0 0;
+                            padding: 0 0 31rpx 0;
                             margin: 19rpx 0 0 32rpx;
                             color: #222222;
                             font-size: 32rpx;
@@ -593,7 +637,6 @@ export default {
                     margin: 30rpx 0 0 30rpx;
                 }
                 >view:nth-child(2){
-                    color: #CCCCCC;
                     margin: 30rpx 30rpx 0 0;
                 }
             }
@@ -602,11 +645,14 @@ export default {
                 margin: 30rpx auto 20rpx;
                 width: 690rpx;
                 height: 187rpx;
+                background-color: #FFFFFF;
+                z-index: 10080;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
+                    z-index: 10080;
                 }
             }
         }

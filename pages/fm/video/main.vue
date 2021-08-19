@@ -25,15 +25,17 @@
                                             <video :id="'myVideo' + index"
                                                 :ref="'myVideo' + index"
                                                 @play="dealPlay(item.id,item.frontImage,item.title)"
+                                                @pause="dealPause"
+                                                @fullscreenclick="fullscreenclick"
                                                 class="player-video"
                                                 :src="item.videoUrl"
                                                 :controls="false"
                                                 :loop="true"
                                                 :show-center-play-btn="false"
-                                                @click="videoPlayPuse"
+                                                @click.stop="videoPlayPuse"
                                                 objectFit="contain">
                                             </video>
-                                            <image v-if="showStatus"  @click="videoPlayPuse"  class='player-image' :src="puaseIcon"></image>
+                                            <image v-if="showStatus" @click.stop="videoPlayPuse" class='player-image' :src="puaseIcon"></image>
                                         </view>
                                         <view class="box_title">
                                             <image :src="item.artist.avatar"></image>
@@ -51,10 +53,9 @@
                                                 <image src="https://image.etcchebao.com/etc-min/info/share.png"></image>
                                                 <text>{{item.shareCount}}</text>
                                             </view>
-                                            <view class="box_layout_like" @click.stop="clickLike(item)">
-                                                <image v-if="item.isStatus" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
-                                                <image v-if="!item.isStatus" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
-                                                <text>{{item.isFirst==true ? (item.isStatus==true ? item.likeCount : item.likeCount+1) : item.likeCount}}</text>
+                                            <view class="box_layout_like" @click.stop="clickLike(item,index)">
+                                                <image :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like.png'"></image>
+                                                <text>{{item.likeCount}}</text>
                                             </view>
                                         </view>
                                 </block>
@@ -128,12 +129,6 @@ export default {
                 this.pageTotal = data.pager.pageTotal;
                 this.pageSize = data.pager.pageSize;
                 for(let i=0;i<data.list.length;i++){
-                    data.list[i].isFirst = false;
-                    if(data.list[i].isLike==1){
-                        data.list[i].isStatus = false;
-                    }else{
-                        data.list[i].isStatus = true;
-                    }
                     this.lists.push(data.list[i])
                 }
                 this.total_num +=data.list.length;
@@ -146,36 +141,26 @@ export default {
         this.share.ID = ID;
         this.share.imageUrl = imageurl;
         this.share.title = title;
+        this.showStatus=false;
+    },
+    dealPause(){
+        this.showStatus=true;
     },
     //点赞方法
-    clickLike(item){
-        if(item.isLike==1){
-            uni.showToast({
-                title: '你已点过赞',
-                duration: 1500,
-                icon:'none'
-            });
-            return;
-        };
-        if(item.isLike==0){
-            item.isFirst = true;
-            if(item.isStatus){
-                this.focusClickfn(item,1);
-                item.isStatus = false;
-            }else{
-                this.focusClickfn(item,0);
-                item.isStatus = true;
-            }  
-        }  
+    clickLike(item,index){
+        item.isLike==1 ? this.focusClickfn(item,0,index) : this.focusClickfn(item,1,index);
     },
     //点赞
-    async focusClickfn(item,param){
+    async focusClickfn(item,param,index){
         let res = await changeVideoLike({
             videoId:item.id,
             isLike:param
         })
         let {code,msg,data} = res
-        if(code == 0){}
+        if(code == 0){
+            param ==1 ? this.lists[index].isLike = 1 : this.lists[index].isLike = 0;
+            param ==1 ? this.lists[index].likeCount+=1 : this.lists[index].likeCount-=1;
+        }
     },
     commentsList(item){
         uni.navigateTo({
@@ -215,6 +200,9 @@ export default {
         }
         return;
     },
+    fullscreenclick(){
+        this.videoPlayPuse()
+    },
     //视频播放及暂停
     videoPlayPuse(){
         let newVideo = uni.createVideoContext('myVideo'+this.current,this);
@@ -222,11 +210,9 @@ export default {
          if(this.status){
              this.player.pause();
              this.status = false;
-             this.showStatus = true;
          }else{
              this.player.play();
              this.status = true;
-             this.showStatus = false;
          }
     },
     handlerposition(e){},
@@ -255,7 +241,6 @@ export default {
     },
   destroyed(){
       console.log('销毁了---');
-      uni.$emit("updateFMPage",{videoDestory:true})
   },
   mounted() {
         let { ID } = this.$root.$mp.query;
@@ -310,7 +295,7 @@ export default {
                 height: 100%;
             }
            .player-video{
-               z-index:0;
+               z-index:1;
            }
            .player-image{
                display: inline-block;
@@ -323,7 +308,7 @@ export default {
            }
         }
         .box_intro {
-            z-index: 999;
+            z-index: 998;
             position: absolute;
             width: 659rpx;
             height: 83rpx;
@@ -344,6 +329,7 @@ export default {
             position: fixed;
             display: flex;
             bottom: 28rpx;
+            z-index: 999;
             &_info {
             margin-left:54rpx;
             >image{

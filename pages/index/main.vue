@@ -91,11 +91,11 @@
 			},
 			toVip() {
 				let src = encodeURIComponent(
-					`${chewu}/vip/dist/#/index?city=&activityId=${this.activityId}&inviterUserId=${this.inviterUserId}`
+					`${chewu}/vip/dist/#/index?level=2&from=333&setHeadView=0&city=&activityId=${this.activityId}&inviterUserId=${this.inviterUserId}`
 				);
 				if (this.orderSource) {
 					src = encodeURIComponent(
-						`${chewu}/vip/dist/#/index?city=&activityId=${this.activityId}&inviterUserId=${this.inviterUserId}&from=${this.orderSource}`
+						`${chewu}/vip/dist/#/index?level=2&from=333&setHeadView=0&city=&activityId=${this.activityId}&inviterUserId=${this.inviterUserId}&from=${this.orderSource}`
 					);
 				}
 				uni.navigateTo({
