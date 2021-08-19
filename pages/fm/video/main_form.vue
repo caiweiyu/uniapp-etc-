@@ -132,7 +132,7 @@
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
         <!--评论弹层-->
-        <u-popup v-model="show" mode="bottom" height="300rpx" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
+        <u-popup v-model="show" mode="bottom" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
 			<view class="popup">
                 <view class="popup_header">
                     <view @click="show = false">取消</view>
@@ -177,6 +177,7 @@ export default {
             ],
             show:false,
             sumbitColor:'#CCCCCC',
+            cancelColor:"#CCCCCC",
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
         }
     },
@@ -288,6 +289,7 @@ export default {
         bindBlur(e){
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
         },
         /**
          * 聚集焦点
@@ -301,6 +303,7 @@ export default {
         bindInput(e){
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
+            this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
         },
         /**
          * 处理键盘
