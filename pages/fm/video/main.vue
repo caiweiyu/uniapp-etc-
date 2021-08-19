@@ -142,24 +142,19 @@ export default {
     },
     //点赞方法
     clickLike(item,index){
-        if(item.isLike==0){
-            this.focusClickfn(item,1);
-            this.lists[index].isLike = 1;
-            this.lists[index].likeCount+=1;
-        }else{
-            this.focusClickfn(item,0);
-            this.lists[index].isLike = 0;
-            this.lists[index].likeCount-=1;
-        }  
+        item.isLike==1 ? this.focusClickfn(item,0,index) : this.focusClickfn(item,1,index);
     },
     //点赞
-    async focusClickfn(item,param){
+    async focusClickfn(item,param,index){
         let res = await changeVideoLike({
             videoId:item.id,
             isLike:param
         })
         let {code,msg,data} = res
-        if(code == 0){}
+        if(code == 0){
+            param ==1 ? this.lists[index].isLike = 1 : this.lists[index].isLike = 0;
+            param ==1 ? this.lists[index].likeCount+=1 : this.lists[index].likeCount-=1;
+        }
     },
     commentsList(item){
         uni.navigateTo({

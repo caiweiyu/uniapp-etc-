@@ -139,7 +139,7 @@
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="300" cols="200" rows="10" show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -175,7 +175,6 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch.png',
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
-
             show:false,
             sumbitColor:'#CCCCCC',
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
@@ -236,7 +235,7 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
-            if(this.value == ''){
+            if((this.value.replace(/\s+/g,"")) == ''){
                 uni.showToast({
                     title: '评论内容不能为空',
                     duration: 1500,
@@ -293,7 +292,9 @@ export default {
         /**
          * 聚集焦点
          */
-        bindFocus(e){},
+        bindFocus(e){
+            //console.log(e.detail.value)
+        },
         /**
          * 监听输入
          */
@@ -330,22 +331,14 @@ export default {
                 commentId:commentId
             });
             let {code,msg,data} = res;
-            if(res){
-                if(code == 0){
-                    if(indexj != undefined){
-                        this.list[index].replyList[indexj].likeNum=data.totalLike;
-                        this.list[index].replyList[indexj].isLiked = true;
-                    }else{
-                        this.list[index].comment.likeNum=data.totalLike;
-                        this.list[index].isLiked = true;
-                    }
+            if(code == 0){
+                if(indexj != undefined){
+                    this.list[index].replyList[indexj].likeNum=data.totalLike;
+                    this.list[index].replyList[indexj].isLiked = true;
+                }else{
+                    this.list[index].comment.likeNum=data.totalLike;
+                    this.list[index].isLiked = true;
                 }
-            }else{
-                uni.showToast({
-                    title: '你已点过赞啦',
-                    duration: 1500,
-                    icon:'none'
-                });
             }
         },
         touchClick(id,index,indexj){
