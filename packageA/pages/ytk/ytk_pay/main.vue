@@ -382,6 +382,7 @@
 				    let {code, data} = res;
 				    if (code == 0 && data.length > 0) {
 						//有未处理订单
+						if (String(data[0].trade_id) == "null") return; 
 						uni.showModal({
 							title: "提示",
 							content: `您有订单未支付哦！订单金额：￥${data[0].recharge_money}，已优惠金额：￥${data[0].privilege_amount}`,
