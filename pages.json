@@ -102,7 +102,12 @@
 		{
 			"path": "pages/fm/video/main_form",
 			"style": {
-				"navigationBarTitleText": "评论列表"
+				"navigationBarTitleText": "评论列表",
+				"backgroundColor": "#FFFFFF",
+				"backgroundColorTop": "#FFFFFF",
+				"backgroundColorBottom": "#FFFFFF",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
 			}
 		},
 		{
