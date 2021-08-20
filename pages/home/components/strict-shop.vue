@@ -13,7 +13,7 @@
 		<!-- 标题 -->
 		<!-- ************************** -->
 		<view class="title">
-			<view class="box">严选购物</view>
+			<view class="box">{{strict_shop.lists[curIndex].tab_name}}</view>
 			<view class="box" @click="bindMore">更多</view>
 		</view>
 
@@ -21,7 +21,7 @@
 		<!-- 门店列表 -->
 		<!-- ************************** -->
 		<view class="stores-list">
-			<view class="box" v-for="(item,index) in strict_shop.lists[0].rows" :key="index" @click="bindNav(item)">
+			<view class="box" v-for="(item,index) in strict_shop.lists[curIndex].rows" :key="index" @click="bindNav(item)">
 				<view class="minbox">
 					<image class="img" :src="item.img_url" mode="aspectFill"></image>
 				</view>
@@ -34,10 +34,9 @@
 					<view class="text">{{item.vprice}}</view>
 					<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_4.png" mode=""></image>
 				</view>
+				<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
 			</view>
 		</view>
-
-		<slot name="getPhoneNumber" />
 
 	</view>
 </template>
@@ -48,13 +47,17 @@
 	
 	import { user, chewu } from "@/common/constant"
 	import { mapState } from "vuex";
+	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
+		components: {
+			buttonGetPhoneNumber
+		},
 		props: {
 			
 		},
 		data() {
 			return {
-				
+				curIndex: 0,//商品分类index
 			}
 		},
 		computed: {
@@ -95,7 +98,7 @@
 			bindMore() {
 				let item = {
 					jump_type: 3,
-					jump_url: this.strict_shop.lists[0].mores
+					jump_url: this.strict_shop.lists[this.curIndex].mores
 				}
 				miniapp.miniProgramRouter(item, (res)=>{
 					

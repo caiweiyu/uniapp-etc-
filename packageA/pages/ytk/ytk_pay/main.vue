@@ -22,7 +22,7 @@
 		<view class="select-gold">
 			<view :class="['box', indexGold == index ? 'active' : '']" v-for="(item,index) in listGold" :key="index" @click="bindSelect($event,index)">
 				<text>{{item.amount}}</text>
-				<!-- <image class="icon" src="https://image.etcchebao.com/etc-min/etc-f/icon_21.png" v-if="item.cut"></image> -->
+				<image class="icon" src="https://image.etcchebao.com/etc-min/etc-f/icon_21.png" v-if="item.is_icon_reduce == 1"></image>
 			</view>
 		</view>
 
@@ -50,7 +50,7 @@
 				</view>
 			</view>
 			<!-- 立减优惠 -->
-			<!-- <view class="box">
+			<view class="box" v-if="msgActivity.discount_switch == 'on'">
 				<view class="left">
 					<view class="minbox-1">
 						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
@@ -64,7 +64,7 @@
 					</view>
 					<view class="minbox-2"></view>
 				</view>
-			</view> -->
+			</view>
 		</view>
 
 		<!-- ***************************** -->
@@ -83,25 +83,23 @@
 		<!-- ***************************** -->
 		<!-- 活动详情弹窗 -->
 		<!-- ***************************** -->
-		<u-popup
-			v-model="curActivity"
-		    mode="bottom"
-			height="600rpx"
-		>
-			<view class="popup-activity">
-				<view class="title">说明</view>
-				<scroll-view class="dec">
-					<text>
-						活动时间：2021年6月29日-2021年7月29日
-						规则：
-						通过ETC小程序进行粤通卡充值，即享随机立减优惠，最高立减100元，活动名额有限，先充先得哦！
-					</text>
-				</scroll-view>
-				<view class="close" @click="bindActivity">
-					<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+		<block v-if="msgActivity.discount_switch == 'on'">
+			<u-popup
+				v-model="curActivity"
+				mode="bottom"
+				height="600rpx"
+			>
+				<view class="popup-activity">
+					<view class="title">{{msgActivity.discount_title}}</view>
+					<scroll-view class="dec">
+						<text>{{msgActivity.discount_content}}</text>
+					</scroll-view>
+					<view class="close" @click="bindActivity">
+						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+					</view>
 				</view>
-			</view>
-		</u-popup>
+			</u-popup>
+		</block>
 
 		<!-- ***************************** -->
 		<!-- 提交订单确认弹窗 -->
@@ -194,6 +192,8 @@
 				full_reduction: 0,//满减
 
 				curActivity: false,//活动详情弹窗show
+				msgActivity: {},//活动详情弹窗内容
+				
 				curOrder: false,//订单确认弹窗
 
 				total_gold: 0,//共实际支付
@@ -206,6 +206,7 @@
 			this.cardNo = options.cardNo || "";
 			this.plate = options.plate || "";
 			this.loadGoldList();
+			this.loadFullMinusTip();
 			this.checkRandomOrder();
 			eventMonitor("YTK_Order", 1);
 		},
@@ -214,6 +215,7 @@
 				this.cardNo = this.$root.$mp.query.cardNo || "";
 				this.plate = this.$root.$mp.query.plate || "";
 				this.loadGoldList();
+				this.loadFullMinusTip();
 				this.checkRandomOrder();
 			});//检测page是否授权，token是否过期
 		},
@@ -224,13 +226,18 @@
 			/**
 			 * 选择金额
 			 */
-			bindSelect(e,index) {
+			async bindSelect(e,index) {
 				this.coupon_gold = 0;
 				this.full_reduction = 0;
 				this.total_gold = 0;
 				this.total_discount = 0;
 				this.indexGold = index;
-				this.checkSelect(index);
+				try {
+					await this.loadFullMinusGet(index);
+					await this.checkSelect(index);
+				} catch(err) {
+					
+				}
 			},
 
 			/**
@@ -238,12 +245,34 @@
 			 */
 			async loadGoldList() {
 				let res = await API_YTK.ytk_pay_gold({
-
+					cardNo: this.cardNo
 				})
 				this.listGold = res.data.list;
 				for (let i = 0; i < this.listGold.length; i++) {
 					this.listGold[i].amount = (this.listGold[i].amount * 0.01).toFixed(2);
 				}
+			},
+			
+			/**
+			 * 满减说明
+			 */
+			async loadFullMinusTip() {
+				let res = await API_YTK.ytk_pay_full_minus_tip({
+					
+				})
+				this.msgActivity = res.data;
+			},
+			
+			/**
+			 * 满减金额获取
+			 */
+			async loadFullMinusGet(index) {
+				if (this.msgActivity.discount_switch != 'on') return;
+				let res = await API_YTK.ytk_pay_full_minus_get({
+					cardNo: this.cardNo,
+					id: this.listGold[index].id
+				})
+				this.full_reduction = res.data ?? 0;
 			},
 
 			/**

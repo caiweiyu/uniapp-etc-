@@ -130,11 +130,33 @@ export function ytk_default(data) {
 }
 
 /**
- * 粤通卡订单金额列表
+ * 粤通卡充值金额列表
  */
 export function ytk_pay_gold(data) {
 	return request({
-		url: `${G}/mini-program/v1/ytc-recharge/recharge`,
+		url: `${G}/mini-program/v1/ytc-recharge/rechargeV2`,
+		method: "get",
+		data
+	})
+}
+
+/**
+ * 粤通卡充值满减说明
+ */
+export function ytk_pay_full_minus_tip(data) {
+	return request({
+		url: `${G}/mini-program/v1/ytc-recharge/ReduceCode`,
+		method: "get",
+		data
+	})
+}
+
+/**
+ * 粤通卡充值满减金额获取
+ */
+export function ytk_pay_full_minus_get(data) {
+	return request({
+		url: `${G}/mini-program/v1/ytc-recharge/ReduceAmount`,
 		method: "get",
 		data
 	})

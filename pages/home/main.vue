@@ -22,11 +22,6 @@
 				</view>
 			</view>
 			
-			<!-- loading 刷新page -->
-			<!-- <view class="loading-reflash" v-if="goTop">
-				<view class="box" v-for="index in [0,0,0]" :key="index"></view>
-			</view> -->
-			
 			<!-- 车宝logo -->
 			<view class="logo-box">
 				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_2.png" class="img-logo" />
@@ -52,9 +47,7 @@
 			<hot-consult @callback_msg="callback_msg" ref="hot_consult" :message_tab="message_tab" :message_article="message_article"></hot-consult>
 
 			<!--严选购物-->
-			<strict-shop>
-				<button-get-phone-number type="local" slot="getPhoneNumber" />
-			</strict-shop>
+			<strict-shop></strict-shop>
 
 			<!-- 空格 -->
 			<view class="space-white"></view>
@@ -143,7 +136,6 @@
 			return {
 				statusBarHeight: uni.getSystemInfoSync()['statusBarHeight'],
 				unsubscribeFn: () => {},
-				curLoading: true,//严选商品加载中
 				goTop: false,//返回顶部
 				sign: true, //是否能签到1否2是
 				message_tab: [], //热门资讯tab
@@ -694,10 +686,15 @@
 			 * 严选商品列表
 			 */
 			async loadStrictShop() {
-				this.curLoading = true;
 				let res = await API.axios_strict_shop({
 					
 				})
+				for (let i = 0; i < res.data.lists.length; i++) {
+					for (let j = 0; j < res.data.lists[i].rows.length; j++) {
+						res.data.lists[i].rows[j].jump_type = 3;
+						res.data.lists[i].rows[j].jump_url = res.data.lists[i].rows[j].target_url;
+					}
+				}
 				this.$store.dispatch("home/ac_strict_shop", res.data);
 			},
 			
@@ -841,77 +838,6 @@
 					>text {
 						color: #09B27F;
 						font-size: 20rpx;
-					}
-				}
-			}
-			.loading {
-				padding: 20rpx 0;
-				width: 100%;
-			}
-			.loading-reflash {
-				margin: -60rpx 0 0 0;
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				justify-content: center;
-				height: 60rpx;
-				.box {
-					margin: 0 0 0 10rpx;
-					width: 12rpx;
-					height: 12rpx;
-					border-radius: 100%;
-					background-color: #999;
-				}
-				.box:nth-child(1) {
-					margin-left: 0;
-					animation: aniamte-1 linear 0.9s infinite;
-				}
-				.box:nth-child(2) {
-					animation: aniamte-2 linear 0.9s infinite;
-				}
-				.box:nth-child(3) {
-					animation: aniamte-3 linear 0.9s infinite;
-				}
-				@keyframes aniamte-1 {
-					0% {
-						background-color: #999;
-					}
-					33.33% {
-						background-color: #333;
-					}
-					66.66% {
-						background-color: #999;
-					}
-					100% {
-						background-color: #999;
-					}
-				}
-				@keyframes aniamte-2 {
-					0% {
-						background-color: #999;
-					}
-					33.33% {
-						background-color: #999;
-					}
-					66.66% {
-						background-color: #333;
-					}
-					100% {
-						background-color: #999;
-					}
-				}
-				@keyframes aniamte-3 {
-					0% {
-						background-color: #999;
-					}
-					33.33% {
-						background-color: #999;
-					}
-					66.66% {
-						background-color: #999;
-					}
-					100% {
-						background-color: #333;
 					}
 				}
 			}
