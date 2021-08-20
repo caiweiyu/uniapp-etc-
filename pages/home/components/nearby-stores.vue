@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-06-16 18:37:57
 -->
 <template>
-	<view class="zs-content">
+	<view class="zs-content" v-if="km">
 		
 		<!-- ************************** -->
 		<!-- 标题 -->
@@ -48,7 +48,7 @@
 			<view class="box" @click="bindNav">
 				<view class="minbox">
 					<view class="min u-line-1">{{nearby_store.lists[curIndex].rows[0].name}}</view>
-					<view class="min">{{(nearby_store.lists[curIndex].rows[0].distance * 0.001).toFixed(3)}}km</view>
+					<view class="min">{{km}}km</view>
 				</view>
 				<view class="minbox u-line-1">
 					<text>{{nearby_store.lists[curIndex].rows[0].address}}</text>
@@ -94,7 +94,11 @@
 		computed: {
 			...mapState({
 				nearby_store: (state) => state.home.nearby_store,
-			})
+			}),
+			km() {
+				if (this.nearby_store.hasOwnProperty("lists") == false) return "";
+				return (this.nearby_store.lists[this.curIndex].rows[0].distance * 0.001).toFixed(3)
+			}
 		},
 		data() {
 			return {

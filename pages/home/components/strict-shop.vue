@@ -14,11 +14,14 @@
 		<!-- ************************** -->
 		<view class="title">
 			<view class="box">{{strict_shop.lists[curIndex].tab_name}}</view>
-			<view class="box" @click="bindMore">更多</view>
+			<view class="box" @click="bindMore">
+				<text>更多</text>
+				<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="mores" />
+			</view>
 		</view>
 
 		<!-- ************************** -->
-		<!-- 门店列表 -->
+		<!-- 严选商城 -->
 		<!-- ************************** -->
 		<view class="stores-list">
 			<view class="box" v-for="(item,index) in strict_shop.lists[curIndex].rows" :key="index" @click="bindNav(item)">
@@ -64,7 +67,14 @@
 			...mapState({
 				token: (state) => state.user.token,
 				strict_shop: (state) => state.home.strict_shop,
-			})
+			}),
+			mores() {
+				if (this.strict_shop.hasOwnProperty("lists") == false) return {};
+				return {
+					jump_type: 3,
+					jump_url: this.strict_shop.lists[this.curIndex].mores
+				}
+			}
 		},
 		mounted() {
 			
@@ -144,6 +154,7 @@
 				font-size: 24rpx;
 				color: #CCCCCC;
 				margin: 0 0 0 10rpx;
+				position: relative;
 			}
 		}
 
@@ -153,6 +164,7 @@
 			flex-wrap: wrap;
 			justify-content: space-between;
 			margin: 20rpx 0 0 0;
+			position: relative;
 			
 			.box {
 				margin: 24rpx 0 0 0;
