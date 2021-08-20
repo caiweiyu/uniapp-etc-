@@ -27,7 +27,7 @@
                     </view>
                     <view class="item_bottom">
                         <view>
-                            {{item.comment.createTime}}
+                            <view class="createTimeColor">{{item.comment.createTime}}</view>
                             <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                         </view> 
                         <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
@@ -62,7 +62,7 @@
                         </view>
                         <view class="item_bottom">
                             <view>
-                                {{item.comment.createTime}}
+                                <view class="createTimeColor"> {{item.comment.createTime}}</view>                           
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150" @click="allExpand(index)">{{item.expandName}}</view>
@@ -88,7 +88,7 @@
                                         <image @click.stop="touchClick(item.id,index,indexi)" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                                     </view>
                                 </view>
-                                <view class="item_headerlf_header_box2">
+                                <view class="item_headerlf_header_box2 createTimeColor">
                                     {{item.createTime}}
                                 </view>
                                 <view :class="['item_headerlf_header_box3']" :style="{display: item.flexBox}">
@@ -104,7 +104,7 @@
                         </view>
                         <view class="item_bottom">
                             <view>
-                                {{item.comment.createTime}}
+                                <view class="createTimeColor">{{item.comment.createTime}}</view>
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
@@ -258,8 +258,7 @@ export default {
                let {code,data,msg} = res;
                if(code == 0){
                     this.$nextTick(()=>{
-                        this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
-                        this.getformGetCommentList(this.id);
+                        this.loadgetCommentList();
                     }) 
                 }
            });
@@ -364,6 +363,7 @@ export default {
                     this.list[index].comment.likeNum=data.totalLike;
                     this.list[index].isLiked = true;
                 }
+                this.loadgetCommentList()
             }
         },
         touchClick(id,index,indexj){
@@ -382,6 +382,13 @@ export default {
                     }
                 }).exec()
             },500)
+        },
+        /**
+         * 刷新列表的方法
+         */
+        loadgetCommentList(){
+            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
+            this.getformGetCommentList(this.id);
         }
     },
     mounted() {
@@ -390,6 +397,13 @@ export default {
         } = this.$root.$mp.query;  
         this.id = id;
         this.getformGetCommentList(id)
+    },
+    onPullDownRefresh() {
+        let timer = setTimeout( ()=> {
+            uni.stopPullDownRefresh();
+            clearTimeout(timer)
+            this.loadgetCommentList()
+        }, 1000);
     },
     onReachBottom(){
         let len = this.list.length;
@@ -659,6 +673,11 @@ export default {
                 }
             }
         }
+    }
+    .createTimeColor{
+        color: #CCCCCC;
+        font-size: 24rpx;
+        display: inline-block;
     }
     /deep/.textarea-placeholder{
         color: #CCCCCC !important;
