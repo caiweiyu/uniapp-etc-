@@ -139,7 +139,7 @@
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" :cursor-spacing="keysheight" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -178,6 +178,7 @@ export default {
             show:false,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
+            keysheight:100,
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
     },
@@ -331,7 +332,7 @@ export default {
          * 处理键盘
          */
         keyboardheightchange(e){
-            console.log(e)
+            this.keysheight = e.detail.height+100;
         },
         /**
          * 展开全部主
@@ -679,13 +680,13 @@ export default {
                 width: 690rpx;
                 height: 187rpx;
                 background-color: #FFFFFF;
-                z-index: 10080;
+                z-index: 10087;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
-                    z-index: 10080;
+                    z-index: 10088;
                 }
             }
         }
