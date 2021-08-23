@@ -178,7 +178,7 @@ export default {
             show:false,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
-            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
+            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
     },
     methods:{
@@ -206,10 +206,12 @@ export default {
                             data.newList[i].flexBox='-webkit-box';
                             data.newList[i].expandName='展开全部';
                             data.newList[i].isLiked=false;
+                            data.newList[i].clickStatus = true;
                             for(let j=0;j<data.newList[i].replyList.length;j++){
                                 data.newList[i].replyList[j].flexBox='-webkit-box';
                                 data.newList[i].replyList[j].expandName='展开全部';
                                 data.newList[i].replyList[j].isLiked=false;
+                                data.newList[i].replyList[j].clickStatus = true;
                             }
                             this.list.push(data.newList[i])
                         }
@@ -226,6 +228,9 @@ export default {
             } 
         },
         formComment(){
+            setTimeout(()=>{
+                this.focus = true; 
+            },300) 
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
@@ -267,9 +272,6 @@ export default {
          * 回复评论
          */
         submitComment(id,user_id){
-            setTimeout(()=>{
-                this.focus = true; 
-            },300)   
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
@@ -358,18 +360,26 @@ export default {
                 if(indexj != undefined){
                     this.list[index].replyList[indexj].likeNum=data.totalLike;
                     this.list[index].replyList[indexj].isLiked = true;
+                    this.list[index].replyList[indexj].clickStatus = false;
                 }else{
                     this.list[index].comment.likeNum=data.totalLike;
                     this.list[index].isLiked = true;
+                    this.list[index].clickStatus = false;
                 }
             }else{
                 if(indexj != undefined){
-                    this.list[index].replyList[indexj].likeNum+=1;
-                    this.list[index].replyList[indexj].isLiked = true;
+                    if(this.list[index].replyList[indexj].clickStatus){
+                        this.list[index].replyList[indexj].likeNum += 1;
+                        this.list[index].replyList[indexj].isLiked = true;
+                        this.list[index].replyList[indexj].clickStatus = false;
+                    };
                 }else{
-                    this.list[index].comment.likeNum+=1;
-                    this.list[index].isLiked = true;
-                }
+                    if(this.list[index].clickStatus){
+                        this.list[index].comment.likeNum += 1;
+                        this.list[index].isLiked = true;
+                        this.list[index].clickStatus = false;
+                    }
+                }       
             }
         },
         touchClick(id,index,indexj){
@@ -393,7 +403,7 @@ export default {
          * 刷新列表的方法
          */
         loadgetCommentList(){
-            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
+            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",setTimeout(()=>{this.focus = false},300); 
             this.getformGetCommentList(this.id);
         }
     },
