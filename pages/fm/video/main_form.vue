@@ -657,6 +657,7 @@ export default {
         .popup{
             border-top: 1rpx solid #EBEBEB;
             background-color: #ffffff;
+            z-index: 110089;
             height: 300rpx;
             width: 100%;
             &_header{
@@ -680,13 +681,13 @@ export default {
                 width: 690rpx;
                 height: 187rpx;
                 background-color: #FFFFFF;
-                z-index: 10087;
+                z-index: 110087;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
-                    z-index: 10088;
+                    z-index: 110088;
                 }
             }
         }
