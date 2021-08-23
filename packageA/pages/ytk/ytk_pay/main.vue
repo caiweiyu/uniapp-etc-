@@ -189,6 +189,7 @@
 					// { amount: 1000, cut: false },
 					// { amount: 1500, cut: false }
 				],//选择金额列表
+				recharge_id: -1,//选择金额挡位id
 
 				coupon_list: [],//优惠券列表
 				coupon_gold: 0,//优惠金额
@@ -259,6 +260,7 @@
 				this.total_gold = 0;
 				this.total_discount = 0;
 				this.indexGold = index;
+				this.recharge_id = -1;
 				this.loadFullMinusGet(index);//先算立减
 			},
 			
@@ -271,6 +273,7 @@
 					cardNo: this.cardNo,
 					id: this.listGold[index].id
 				})
+				this.recharge_id = this.listGold[index].id;
 				this.full_reduction = res.data.amount ?? 0;
 				this.full_reduction = (this.full_reduction * 0.01).toFixed(2);
 				this.checkSelect((this.listGold[index].amount - this.full_reduction).toFixed(2));//再算优惠券
@@ -478,7 +481,11 @@
 			    data["card_no"] = this.cardNo;
 			    data["load_type"] = 0;
 			    data["order_type"] = "11";
-			    data["privilege_amount"] = "0";//优惠后的价格
+				
+			    // data["privilege_amount"] = "0";//优惠后的价格
+				data["privilege_amount"] = this.full_reduction;//优惠后的价格
+				
+				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
 				data["coupon_id"] = this.coupon_id;// change
 
