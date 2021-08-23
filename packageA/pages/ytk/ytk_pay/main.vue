@@ -137,7 +137,7 @@
 				</view>
 				<view class="btn" @click="$debounce(ApiPrepaid)">确认</view>
 				<view class="close" @click="bindOrder">
-					<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+					<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
 				</view>
 			</view>
 		</u-popup>
@@ -251,7 +251,7 @@
 			/**
 			 * 选择金额
 			 */
-			async bindSelect(e,index) {
+			bindSelect(e,index) {
 				this.coupon_gold = 0;
 				this.full_reduction = 0;
 				this.total_gold = 0;
@@ -797,10 +797,21 @@
 			}
 			.close {
 				position: absolute;
-				right: 22rpx;
-				top: 37rpx;
-				width: 40rpx;
-				height: 40rpx;
+				right: 0;
+				top: 0;
+				width: 90rpx;
+				height: 110rpx;
+				.img {
+					position: absolute;
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					display: block;
+					width: 40rpx;
+					height: 40rpx;
+				}
 			}
 		}
 	}
