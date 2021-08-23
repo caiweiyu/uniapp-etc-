@@ -139,7 +139,7 @@
                     <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
                 </view>
                 <view class="popup_content">
-                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cursor-spacing="100" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" :cursor-spacing="keysheight" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
                 </view>
             </view>
 		</u-popup>
@@ -178,7 +178,8 @@ export default {
             show:false,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
-            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"         
+            keysheight:100,
+            user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
     },
     methods:{
@@ -206,10 +207,12 @@ export default {
                             data.newList[i].flexBox='-webkit-box';
                             data.newList[i].expandName='展开全部';
                             data.newList[i].isLiked=false;
+                            data.newList[i].clickStatus = true;
                             for(let j=0;j<data.newList[i].replyList.length;j++){
                                 data.newList[i].replyList[j].flexBox='-webkit-box';
                                 data.newList[i].replyList[j].expandName='展开全部';
                                 data.newList[i].replyList[j].isLiked=false;
+                                data.newList[i].replyList[j].clickStatus = true;
                             }
                             this.list.push(data.newList[i])
                         }
@@ -226,6 +229,9 @@ export default {
             } 
         },
         formComment(){
+            setTimeout(()=>{
+                this.focus = true; 
+            },300) 
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
@@ -267,9 +273,6 @@ export default {
          * 回复评论
          */
         submitComment(id,user_id){
-            setTimeout(()=>{
-                this.focus = true; 
-            },300)   
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
@@ -329,7 +332,7 @@ export default {
          * 处理键盘
          */
         keyboardheightchange(e){
-            console.log(e)
+            this.keysheight = e.detail.height+100;
         },
         /**
          * 展开全部主
@@ -358,18 +361,26 @@ export default {
                 if(indexj != undefined){
                     this.list[index].replyList[indexj].likeNum=data.totalLike;
                     this.list[index].replyList[indexj].isLiked = true;
+                    this.list[index].replyList[indexj].clickStatus = false;
                 }else{
                     this.list[index].comment.likeNum=data.totalLike;
                     this.list[index].isLiked = true;
+                    this.list[index].clickStatus = false;
                 }
             }else{
                 if(indexj != undefined){
-                    this.list[index].replyList[indexj].likeNum+=1;
-                    this.list[index].replyList[indexj].isLiked = true;
+                    if(this.list[index].replyList[indexj].clickStatus){
+                        this.list[index].replyList[indexj].likeNum += 1;
+                        this.list[index].replyList[indexj].isLiked = true;
+                        this.list[index].replyList[indexj].clickStatus = false;
+                    };
                 }else{
-                    this.list[index].comment.likeNum+=1;
-                    this.list[index].isLiked = true;
-                }
+                    if(this.list[index].clickStatus){
+                        this.list[index].comment.likeNum += 1;
+                        this.list[index].isLiked = true;
+                        this.list[index].clickStatus = false;
+                    }
+                }       
             }
         },
         touchClick(id,index,indexj){
@@ -393,7 +404,7 @@ export default {
          * 刷新列表的方法
          */
         loadgetCommentList(){
-            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",this.focus = false; 
+            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",setTimeout(()=>{this.focus = false},300); 
             this.getformGetCommentList(this.id);
         }
     },
@@ -646,6 +657,7 @@ export default {
         .popup{
             border-top: 1rpx solid #EBEBEB;
             background-color: #ffffff;
+            z-index: 110089;
             height: 300rpx;
             width: 100%;
             &_header{
@@ -669,13 +681,13 @@ export default {
                 width: 690rpx;
                 height: 187rpx;
                 background-color: #FFFFFF;
-                z-index: 10080;
+                z-index: 110087;
                 textarea{
                     width: 650rpx;
                     height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
-                    z-index: 10080;
+                    z-index: 110088;
                 }
             }
         }
