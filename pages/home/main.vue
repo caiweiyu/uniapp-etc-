@@ -50,7 +50,7 @@
 			<strict-shop></strict-shop>
 
 			<!-- 空格 -->
-			<view class="space-white"></view>
+			<!-- <view class="space-white"></view> -->
 
 			<!-- 全局弹窗 -->
 			<dialog-window ref="dialog" flag="1"></dialog-window>

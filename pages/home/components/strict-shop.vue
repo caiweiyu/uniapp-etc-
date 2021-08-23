@@ -15,7 +15,7 @@
 		<view class="title">
 			<view class="box">{{strict_shop.lists[curIndex].tab_name}}</view>
 			<view class="box" @click="bindMore">
-				<text>更多</text>
+				<text>{{strict_shop.lists[curIndex].m_title}}</text>
 				<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="mores" />
 			</view>
 		</view>
@@ -40,6 +40,11 @@
 				<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
 			</view>
 		</view>
+		
+		<!-- ************************** -->
+		<!-- 到底了 -->
+		<!-- ************************** -->
+		<view class="last">到底了...</view>
 
 	</view>
 </template>
@@ -71,8 +76,8 @@
 			mores() {
 				if (this.strict_shop.hasOwnProperty("lists") == false) return {};
 				return {
-					jump_type: 3,
-					jump_url: this.strict_shop.lists[this.curIndex].mores
+					jump_type: this.strict_shop.lists[this.curIndex].m_jump_type,
+					jump_url: this.strict_shop.lists[this.curIndex].m_jump_url
 				}
 			}
 		},
@@ -107,8 +112,8 @@
 			 */
 			bindMore() {
 				let item = {
-					jump_type: 3,
-					jump_url: this.strict_shop.lists[this.curIndex].mores
+					jump_type: this.strict_shop.lists[this.curIndex].m_jump_type,
+					jump_url: this.strict_shop.lists[this.curIndex].m_jump_url
 				}
 				miniapp.miniProgramRouter(item, (res)=>{
 					
@@ -260,6 +265,13 @@
 			.box:nth-child(2){
 				margin: 0;
 			}
+		}
+		
+		.last {
+			margin: 30rpx 0 0 0;
+			text-align: center;
+			color: #999999;
+			font-size: 24rpx;
 		}
 	}
 </style>

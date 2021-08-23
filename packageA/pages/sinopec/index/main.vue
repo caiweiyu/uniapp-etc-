@@ -130,7 +130,7 @@
 			uni.$emit("reflashBuyConpons", {});
 		},
 		onHide() {
-			
+			this.$store.commit("home/mt_share_info", "");
 		},
 		onReady() {
 			

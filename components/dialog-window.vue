@@ -264,6 +264,7 @@
 			},
 			callbackNav(item) {
 				// 跳转page || miniProgram
+				this.closeWindow();
 				miniapp.miniProgramRouter(item, (res) => {
 					this.closeWindow();
 				}, (err) => {
