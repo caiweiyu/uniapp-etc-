@@ -122,7 +122,6 @@
 			 */
 			bindNav() {
 				let item = this.nearby_store.lists[this.curIndex].rows[0];
-				console.log(item)
 				let items = {
 					jump_type: 3,
 					jump_url: item.target_url
