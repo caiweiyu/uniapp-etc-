@@ -30,6 +30,24 @@
 		<!-- 优惠券||折扣 -->
 		<!-- ***************************** -->
 		<view class="coupons">
+			<!-- 立减优惠 -->
+			<view class="box" v-if="msgActivity.discount_switch == 'on'">
+				<view class="left">
+					<view class="minbox-1">
+						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
+					</view>
+					<view class="minbox-2">立减优惠</view>
+					<view class="minbox-3" @click="bindActivity">
+						<view class="min">活动详情</view>
+					</view>
+				</view>
+				<view class="right">
+					<view class="minbox-1">
+						<text class="text-1">-￥{{full_reduction}}</text>
+					</view>
+					<view class="minbox-2"></view>
+				</view>
+			</view>
 			<!-- 优惠券抵扣 -->
 			<view class="box" @click="bindTicket">
 				<view class="left">
@@ -47,22 +65,6 @@
 					<view class="minbox-2">
 						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_24.png"></image>
 					</view>
-				</view>
-			</view>
-			<!-- 立减优惠 -->
-			<view class="box" v-if="msgActivity.discount_switch == 'on'">
-				<view class="left">
-					<view class="minbox-1">
-						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
-					</view>
-					<view class="minbox-2">立减优惠</view>
-					<view class="minbox-3" @click="bindActivity">活动详情</view>
-				</view>
-				<view class="right">
-					<view class="minbox-1">
-						<text class="text-1">-￥{{full_reduction}}</text>
-					</view>
-					<view class="minbox-2"></view>
 				</view>
 			</view>
 		</view>
@@ -90,12 +92,12 @@
 				height="600rpx"
 			>
 				<view class="popup-activity">
-					<view class="title">{{msgActivity.discount_title}}</view>
-					<scroll-view class="dec">
+					<view class="title u-line-1">{{msgActivity.discount_title}}</view>
+					<scroll-view scroll-y class="dec">
 						<text>{{msgActivity.discount_content}}</text>
 					</scroll-view>
 					<view class="close" @click="bindActivity">
-						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+						<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
 					</view>
 				</view>
 			</u-popup>
@@ -224,23 +226,6 @@
 		},
 		methods: {
 			/**
-			 * 选择金额
-			 */
-			async bindSelect(e,index) {
-				this.coupon_gold = 0;
-				this.full_reduction = 0;
-				this.total_gold = 0;
-				this.total_discount = 0;
-				this.indexGold = index;
-				try {
-					await this.loadFullMinusGet(index);
-					await this.checkSelect(index);
-				} catch(err) {
-					
-				}
-			},
-
-			/**
 			 * 充值列表
 			 */
 			async loadGoldList() {
@@ -264,6 +249,18 @@
 			},
 			
 			/**
+			 * 选择金额
+			 */
+			async bindSelect(e,index) {
+				this.coupon_gold = 0;
+				this.full_reduction = 0;
+				this.total_gold = 0;
+				this.total_discount = 0;
+				this.indexGold = index;
+				this.loadFullMinusGet(index);//先算立减
+			},
+			
+			/**
 			 * 满减金额获取
 			 */
 			async loadFullMinusGet(index) {
@@ -273,14 +270,16 @@
 					id: this.listGold[index].id
 				})
 				this.full_reduction = res.data ?? 0;
+				this.full_reduction = (this.full_reduction * 0.01).toFixed(2);
+				this.checkSelect((this.listGold[index].amount - this.full_reduction).toFixed(2));//再算优惠券
 			},
 
 			/**
 			 * 检测每次选择金额可用卡券
 			 */
-			async checkSelect(index) {
+			async checkSelect(consumeMoney) {
 				let res = await API_YTK.ytk_pay_select({
-					consumeMoney: this.listGold[index].amount,
+					consumeMoney: consumeMoney,
 					orderType: 111,
 					get_type: 2,
 					page: 1,
@@ -621,13 +620,16 @@
 					}
 					.minbox-3 {
 						margin: 0 0 0 16rpx;
-						padding: 0 15rpx;
-						height: 28rpx;
-						line-height: 28rpx;
-						border-radius: 100rpx;
-						background-color: rgba($color: #FF5C2A, $alpha: 0.1);
-						color: #FF5C2A;
-						font-size: 20rpx;
+						padding: 40rpx 0;
+						.min {
+							padding: 0 15rpx;
+							height: 28rpx;
+							line-height: 28rpx;
+							border-radius: 100rpx;
+							background-color: rgba($color: #FF5C2A, $alpha: 0.1);
+							color: #FF5C2A;
+							font-size: 20rpx;
+						}
 					}
 				}
 				.right {
@@ -713,7 +715,7 @@
 			border-radius: 12rpx 12rpx 0 0;
 			position: relative;
 			.title {
-				margin: 0 28rpx;
+				margin: 0 80rpx;
 				text-align: center;
 				font-size: 36rpx;
 				font-weight: 700;
@@ -728,10 +730,21 @@
 			}
 			.close {
 				position: absolute;
-				right: 22rpx;
-				top: 37rpx;
-				width: 40rpx;
-				height: 40rpx;
+				right: 0;
+				top: 0;
+				width: 90rpx;
+				height: 110rpx;
+				.img {
+					position: absolute;
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					display: block;
+					width: 40rpx;
+					height: 40rpx;
+				}
 			}
 		}
 		.popup-order {
