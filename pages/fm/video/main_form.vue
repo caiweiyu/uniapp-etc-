@@ -226,7 +226,6 @@ export default {
             } 
         },
         formComment(){
-            console.log('聚焦',this.replyCommentId,this.replyUserId)
             this.replyCommentId = '1';
             this.replyUserId = 1;
             this.value="";
@@ -252,8 +251,8 @@ export default {
                content: this.value,
                replyCommentId: this.replyCommentId,
                replyUserId: this.replyUserId,
-               userIp:'127.0.0.1',
-               mac:'e2a134f5'
+               userIp:'',
+               mac:''
            }).then(res=>{
                let {code,data,msg} = res;
                if(code == 0){
@@ -355,7 +354,7 @@ export default {
                 commentId:commentId
             });
             let {code,msg,data} = res;
-            if(code == 0){
+            if(res && code == 0){
                 if(indexj != undefined){
                     this.list[index].replyList[indexj].likeNum=data.totalLike;
                     this.list[index].replyList[indexj].isLiked = true;
@@ -363,7 +362,14 @@ export default {
                     this.list[index].comment.likeNum=data.totalLike;
                     this.list[index].isLiked = true;
                 }
-                this.loadgetCommentList()
+            }else{
+                if(indexj != undefined){
+                    this.list[index].replyList[indexj].likeNum+=1;
+                    this.list[index].replyList[indexj].isLiked = true;
+                }else{
+                    this.list[index].comment.likeNum+=1;
+                    this.list[index].isLiked = true;
+                }
             }
         },
         touchClick(id,index,indexj){
