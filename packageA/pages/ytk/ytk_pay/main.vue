@@ -68,8 +68,6 @@
 				</view>
 			</view>
 		</view>
-		
-		<textarea name="" id="" cols="30" rows="10" :cursor-spacing="200"></textarea>
 
 		<!-- ***************************** -->
 		<!-- 提交订单 -->
