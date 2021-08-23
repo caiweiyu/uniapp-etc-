@@ -68,6 +68,8 @@
 				</view>
 			</view>
 		</view>
+		
+		<textarea name="" id="" cols="30" rows="10" :cursor-spacing="200"></textarea>
 
 		<!-- ***************************** -->
 		<!-- 提交订单 -->
@@ -269,7 +271,7 @@
 					cardNo: this.cardNo,
 					id: this.listGold[index].id
 				})
-				this.full_reduction = res.data ?? 0;
+				this.full_reduction = res.data.amount ?? 0;
 				this.full_reduction = (this.full_reduction * 0.01).toFixed(2);
 				this.checkSelect((this.listGold[index].amount - this.full_reduction).toFixed(2));//再算优惠券
 			},
