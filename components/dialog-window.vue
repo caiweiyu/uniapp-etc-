@@ -99,7 +99,8 @@
 		},
 		computed: {
 			...mapState({
-				token: (state)=> state.user.token
+				token: (state)=> state.user.token,
+				from_type: (state)=> state.user.from_type
 			})
 		},
 		watch: {
@@ -139,11 +140,28 @@
 			 *  2 每天跳转一次 
 			 *  3 每次打开跳转(供测试用)
 			 */
-			async loadPopup() {
+			loadPopup() {
 				if (new Date().getTime() - this.showTime < 10000) return;
+				this.loadPopupCallBack();
+			},
+			
+			/**
+			 * 全局弹窗回调
+			 */
+			async loadPopupCallBack() {
+				let {
+					from_type = 0
+				} = this.$root.$mp.query;
+				if (Number(from_type) > 0) {
+					this.$store.commit("user/setFromType", Number(from_type));
+				}
+				if (from_type === 0) {
+					from_type = this.from_type
+				}
 				let res = await API.axios_global_popup({
-					flag: this.flag
-				});
+					flag: this.flag,
+					from_type: from_type
+				})
 				if (String(res.data) != 'null') {
 					let data = res.data;
 					data.dialog = 0;
