@@ -133,7 +133,7 @@
         </view>
         <!--评论弹层-->
         <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
-        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{bottom:keysheight}">
+        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{top:'0rpx'}">
             <view class="popup_header">
                 <view @click.stop="cancel">取消</view>
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
@@ -672,7 +672,7 @@ export default {
         .box4{
             width: 100%;
             position: fixed;
-            bottom: 0rpx;
+            top: 0rpx;
             z-index: 10087;
             background-color: rgba(0,0,0,0.4);
         }
@@ -699,11 +699,10 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                height: 60rpx;
+                height: 90rpx;
                 font-size: 24rpx;
                 >view:nth-child(1){
                     color: #999999;
-                    line-height: 60rpx;
                     padding: 0 30rpx;
                 }
                 >view:nth-child(2){
@@ -718,7 +717,7 @@ export default {
                 background-color: #FFFFFF;
                 textarea{
                     width: 650rpx;
-                    height: 187rpx;
+                    height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
                 }
