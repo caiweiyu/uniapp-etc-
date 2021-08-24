@@ -296,28 +296,10 @@
 						this.coupon_id = coupon_list[0].coupon_id;
 					}
 					this.coupon_list = coupon_list;
-					this.total_gold = this.change_total_gold();
-					this.total_discount = this.change_total_discount();
+					this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+					this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 				}
 			},
-			change_total_gold() {
-				let gold = 0;
-				if (this.indexGold == -1) {
-					gold = 0;
-				} else {
-					gold = (this.listGold[this.indexGold].amount - this.coupon_gold - this.full_reduction).toFixed(2);
-				}
-				return gold
-			},//共实际支付
-			change_total_discount() {
-				let discount = 0;
-				if (this.indexGold == -1) {
-					discount = 0;
-				} else {
-					discount = (this.coupon_gold + this.full_reduction).toFixed(2);
-				}
-				return discount
-			},//总优惠
 
 			/**
 			 * 优惠券
