@@ -1,5 +1,5 @@
 <template>
-    <view class="flex">
+    <view class="flex" :style="{ overflowX:'hidden',overflowY:show==true ? 'hidden':'auto' }">
         <view class="container" v-if="loading">
             <block v-if="list.length > 0">
                 <!--标题-->
@@ -132,17 +132,19 @@
             <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
         </view>
         <!--评论弹层-->
-        <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24">
-			<view class="popup">
-                <view class="popup_header">
-                    <view @click="cancel">取消</view>
-                    <view @click="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
-                </view>
-                <view class="popup_content">
-                    <textarea name="" id="" @keyboardheightchange="keyboardheightchange" :cursor-spacing="keysheight" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
-                </view>
+        <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
+        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{top:'0rpx'}">
+            <view class="popup_header">
+                <view @click.stop="cancel">取消</view>
+                <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
             </view>
-		</u-popup>
+            <view class="popup_content">
+                <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+            </view>
+        </view>
+        <view @click="cancel" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
+        <!-- <view :class="[show==true ? 'box3':'']" :style="{bottom:'300px'}"></view> -->
+		<!-- </u-popup> -->
     </view>
 </template>
 
@@ -178,7 +180,7 @@ export default {
             show:false,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
-            keysheight:100,
+            keysheight:'0rpx',
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
     },
@@ -241,6 +243,7 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
+            this.keysheight = '0rpx';
             if((this.value.replace(/\s+/g,"")) == ''){
                 uni.showToast({
                     title: '评论内容不能为空',
@@ -332,7 +335,8 @@ export default {
          * 处理键盘
          */
         keyboardheightchange(e){
-            this.keysheight = e.detail.height+100;
+            this.keysheight = (e.detail.height*2)+'rpx';
+            console.log(this.keysheight,'键盘')
         },
         /**
          * 展开全部主
@@ -436,10 +440,9 @@ export default {
 <style lang="scss" scoped>
     .flex{
         position: relative;
-        overflow: hidden;
+        height: 100vh;
         .container{
             position: relative;
-            // overflow: auto;
             padding-bottom: 92rpx;
             .box{
                 position: relative;
@@ -654,12 +657,40 @@ export default {
                 }
             }
         }
+        .box3{
+            width: 100%;
+            height: calc(100vh - 300rpx);
+            position: fixed;
+            // top: calc(667rpx);
+            z-index: 10088;
+            background-color: none;
+        }
+        .box4{
+            width: 100%;
+            position: fixed;
+            bottom: 0rpx;
+            z-index: 10087;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .box4_active{
+            height: 100vh !important;
+            transition: height linear 0s;
+        }   
+        .box4_active_off{
+            height: 0vh !important;
+            transition: height linear 0s;
+        }
+        .popup_active{
+            height: 100vh !important;
+            transition: height linear 0.2s;
+        }
         .popup{
             border-top: 1rpx solid #EBEBEB;
             background-color: #ffffff;
-            z-index: 110089;
-            height: 300rpx;
+            z-index: 10089;
             width: 100%;
+            position: fixed;
+            height: 0rpx;
             &_header{
                 display: flex;
                 justify-content: space-between;
@@ -681,13 +712,11 @@ export default {
                 width: 690rpx;
                 height: 187rpx;
                 background-color: #FFFFFF;
-                z-index: 110087;
                 textarea{
                     width: 650rpx;
-                    height: 153rpx;
+                    height: calc(100vh - 120rpx);
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
-                    z-index: 110088;
                 }
             }
         }
