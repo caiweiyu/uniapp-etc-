@@ -38,6 +38,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	export default {
 		computed: {
 			...mapState({
@@ -86,6 +87,7 @@
 					// 	duration: 1500
 					// })
 				} else {
+					eventMonitor("ZSHJYQDHSY_Couponlq_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 					uni.$emit("getCoupon", {
 						id: item.id
 					})

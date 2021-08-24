@@ -91,6 +91,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	export default {
 		props: {
 			type: {
@@ -148,6 +149,7 @@
 			 * 全部收下
 			 */
 			bindGetAllCoupon() {
+				eventMonitor("ZSHJYQDHSY_Couponlq_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 				let id = '';
 				for (let i = 0; i < this.sinoepc_init.new_coupon_list.length; i++) {
 					if (i == 0) {
@@ -186,6 +188,7 @@
 			 * 选择卡券类型
 			 */
 			bindSelectCoupon(index) {
+				eventMonitor("ZSHJYQDHSY_coupon_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 				for (let i = 0; i < this.sinoepc_init.coupon.coupon_list.length; i++) {
 					this.sinoepc_init.coupon.coupon_list[i].xcx_select = false;
 				}

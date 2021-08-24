@@ -108,6 +108,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {
@@ -279,6 +280,7 @@
 			 * 模拟得到焦点
 			 */
 			bindFocusFalse() {
+				eventMonitor("ZSHJYQDHSY_Phone_JY_JY-ZSHDZQCZ_406_Textarea_click", 2)
 				uni.$emit("getPhoneNumber", {})
 				this.curHistory = true;
 			},
@@ -331,6 +333,7 @@
 			bindPay(item) {
 				let reg = /^1[3456789]\d{9}$/;
 				if (reg.test(this.phone_number)) {
+					eventMonitor("ZSHJYQDHSY_List_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 					item.phone_number = this.phone_number;
 					item.coupon_id = this.coupon_id;
 					uni.$emit("pay_sinopec", {
