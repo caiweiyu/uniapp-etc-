@@ -264,7 +264,7 @@
 					.min:nth-child(1)::before {
 						content: "￥";
 						display: inline-block;
-						vertical-align: middle;
+						// vertical-align: middle;
 						font-size: 24rpx;
 					}
 					.min:nth-child(2) {
