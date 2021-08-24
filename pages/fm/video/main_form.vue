@@ -133,7 +133,7 @@
         </view>
         <!--评论弹层-->
         <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
-        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{top:'0rpx'}">
+        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{bottom:keysheight}">
             <view class="popup_header">
                 <view @click.stop="cancel">取消</view>
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
@@ -685,7 +685,7 @@ export default {
             transition: height linear 0s;
         }
         .popup_active{
-            height: 100vh !important;
+            height: 300rpx !important;
             transition: height linear 0.2s;
         }
         .popup{
@@ -718,7 +718,7 @@ export default {
                 background-color: #FFFFFF;
                 textarea{
                     width: 650rpx;
-                    height: calc(100vh - 120rpx);
+                    height: 187rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
                 }
