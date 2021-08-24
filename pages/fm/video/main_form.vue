@@ -699,11 +699,10 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                height: 60rpx;
+                height: 90rpx;
                 font-size: 24rpx;
                 >view:nth-child(1){
                     color: #999999;
-                    line-height: 60rpx;
                     padding: 0 30rpx;
                 }
                 >view:nth-child(2){
@@ -718,7 +717,7 @@ export default {
                 background-color: #FFFFFF;
                 textarea{
                     width: 650rpx;
-                    height: 187rpx;
+                    height: 153rpx;
                     padding:17rpx 20rpx;
                     background-color: #F5F5F5;
                 }
