@@ -494,12 +494,15 @@
 			    }
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
+					console.log("res", res)
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
 			                this.apiRepaid(trade_id)
 			            }
-			        }
+			        } else {
+						this.curLock = true;
+					}
 			    })
 			}
 		},
