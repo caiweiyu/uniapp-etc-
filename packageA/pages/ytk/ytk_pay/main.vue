@@ -481,7 +481,7 @@
 			    data["order_type"] = "11";
 				
 			    // data["privilege_amount"] = "0";//优惠后的价格
-				data["privilege_amount"] = this.full_reduction;//优惠后的价格
+				data["privilege_amount"] = this.full_reduction;//立减的价格
 				
 				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
