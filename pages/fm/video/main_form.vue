@@ -28,7 +28,7 @@
                     <view class="item_bottom">
                         <view>
                             <view class="createTimeColor">{{item.comment.createTime}}</view>
-                            <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
+                            <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                         </view> 
                         <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                     </view>
@@ -63,7 +63,7 @@
                         <view class="item_bottom">
                             <view>
                                 <view class="createTimeColor"> {{item.comment.createTime}}</view>                           
-                                <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
+                                <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150" @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
@@ -105,7 +105,7 @@
                         <view class="item_bottom">
                             <view>
                                 <view class="createTimeColor">{{item.comment.createTime}}</view>
-                                <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId)">回复</view>
+                                <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
                         </view>
@@ -139,7 +139,7 @@
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
             </view>
             <view class="popup_content">
-                <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  placeholder="评论将审核筛选后显示"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
             </view>
         </view>
         <view @click="cancel" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
@@ -181,6 +181,7 @@ export default {
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
             keysheight:'0rpx',
+            placeholder:"评论将审核筛选后显示",
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
     },
@@ -231,6 +232,7 @@ export default {
             } 
         },
         formComment(){
+            this.placeholder = "评论将审核筛选后显示";
             setTimeout(()=>{
                 this.focus = true; 
             },300) 
@@ -275,15 +277,17 @@ export default {
         /**
          * 回复评论
          */
-        submitComment(id,user_id){
+        submitComment(id,user_id,name){
             this.formComment();
             this.replyCommentId = id;
             this.replyUserId = user_id;
+            this.placeholder = "回复:"+name;
         },
         /**
          * 点击评论
          */
         bindText(e){  
+            this.placeholder = "评论将审核筛选后显示";
             setTimeout(()=>{
                 this.focus = true; 
             },300)     
