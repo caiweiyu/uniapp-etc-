@@ -133,13 +133,13 @@
         </view>
         <!--评论弹层-->
         <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
-        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{top:'0rpx'}">
+        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{bottom:'0rpx'}">
             <view class="popup_header">
                 <view @click.stop="cancel">取消</view>
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
             </view>
             <view class="popup_content">
-                <textarea name="" id="" @keyboardheightchange="keyboardheightchange" cols="200" rows="10" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" cursor="20" @confirm="formCommentAfter"></textarea>
+                <textarea @keyboardheightchange="keyboardheightchange" :cursor-spacing ="keysheight" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" @confirm="formCommentAfter"></textarea>
             </view>
         </view>
         <view @click="cancel" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
@@ -180,7 +180,7 @@ export default {
             show:false,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
-            keysheight:'0rpx',
+            keysheight:120,
             placeholder:"评论将审核筛选后显示",
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
@@ -245,7 +245,6 @@ export default {
          * 提交评论
          */
         formCommentAfter(){
-            this.keysheight = '0rpx';
             if((this.value.replace(/\s+/g,"")) == ''){
                 uni.showToast({
                     title: '评论内容不能为空',
@@ -317,6 +316,7 @@ export default {
          * 失去焦点
          */
         bindBlur(e){
+            // this.keysheight = 0;
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
             this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
@@ -339,7 +339,7 @@ export default {
          * 处理键盘
          */
         keyboardheightchange(e){
-            this.keysheight = (e.detail.height*2)+'rpx';
+            // this.keysheight = e.detail.height-120;
             console.log(this.keysheight,'键盘')
         },
         /**
