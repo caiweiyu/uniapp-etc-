@@ -22,7 +22,7 @@
                     </view>
                     <view class="item_content">
                         <view :class="['item_content_item']" :style="{display: item.flexBox}">
-                            {{item.comment.content}}
+                            <text :user-select="true">{{item.comment.content}}</text>  
                         </view>
                     </view>
                     <view class="item_bottom">
@@ -57,7 +57,7 @@
                         </view>
                         <view class="item_content">
                             <view :class="['item_content_item']" :style="{display: item.flexBox}">
-                                {{item.comment.content}}
+                                <text :user-select="true">{{item.comment.content}}</text>
                             </view>
                         </view>
                         <view class="item_bottom">
@@ -92,14 +92,14 @@
                                     {{item.createTime}}
                                 </view>
                                 <view :class="['item_headerlf_header_box3']" :style="{display: item.flexBox}">
-                                    {{item.content}}
+                                    <text :user-select="true">{{item.content}}</text>  
                                 </view>
                                 <view @click="allExpandi(index,indexi)" v-if="item.content.length > 150" class="item_headerlf_header_box4">{{ item.expandName }}</view>
                             </view>
                         </view>
                         <view class="item_content">
                             <view :class="['item_content_item']" :style="{display: item.flexBox}">
-                                {{item.comment.content}}
+                                <text :user-select="true">{{item.comment.content}}</text>
                             </view>
                         </view>
                         <view class="item_bottom">
@@ -609,7 +609,7 @@ export default {
                 text-align: center;
                 font-size: 29.59rpx;
                 color: #999999;
-                margin: 49rpx auto 49rpx;
+                margin: 49rpx auto 97rpx;
             }
             .no_card{
                 display: block;
