@@ -217,6 +217,7 @@
 						color: #FF5C2A;
 						font-size: 36rpx;
 						font-weight: 700;
+						font-family: "etccb-font";
 					}
 
 					.text:nth-child(1)::before {
@@ -242,6 +243,7 @@
 						vertical-align: middle;
 						font-size: 30rpx;
 						font-weight: 700;
+						font-family: "etccb-font";
 					}
 
 					.text::before {
