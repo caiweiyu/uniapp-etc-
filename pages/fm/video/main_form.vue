@@ -120,7 +120,7 @@
                 </view>
             </block>
             <view class="bottom_tip" v-if="loading">
-                <input placeholder="想说点什么吗？" maxlength="150" placeholder-style="#CCCCCC" :disabled="true" @click="bindText" class="bottom_tip_input" type="text">
+                <button @click.stop="bindText" class="bottom_tip_input" :plain="true" type="default">想说点什么吗？</button>
             </view>
         </view>
         <view v-if="!loading"
@@ -135,14 +135,14 @@
         <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
         <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{bottom:'0rpx'}">
             <view class="popup_header">
-                <view @click.stop="cancel">取消</view>
+                <view @click.stop="canCel">取消</view>
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
             </view>
             <view class="popup_content">
-                <textarea @keyboardheightchange="keyboardheightchange" :cursor-spacing ="keysheight" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" @confirm="formCommentAfter"></textarea>
+                <textarea :cursor-spacing ="keysheight" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" @confirm="formCommentAfter"></textarea>
             </view>
         </view>
-        <view @click="cancel" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
+        <view @click.stop="canCel" v-if="show" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
         <!-- <view :class="[show==true ? 'box3':'']" :style="{bottom:'300px'}"></view> -->
 		<!-- </u-popup> -->
     </view>
@@ -169,7 +169,6 @@ export default {
             loading: false,//加载中...
             is_show:false,
             id:null,
-            focus:false,
             value:"",
             replyCommentId:'1',
             replyUserId:1,
@@ -178,6 +177,7 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
             show:false,
+            focus:true,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
             keysheight:120,
@@ -232,14 +232,11 @@ export default {
             } 
         },
         formComment(){
-            this.placeholder = "评论将审核筛选后显示";
-            setTimeout(()=>{
-                this.focus = true; 
-            },300) 
-            this.replyCommentId = '1';
-            this.replyUserId = 1;
             this.value="";
-            this.show = true;
+            this.focus = this.show = true;
+            this.placeholder = "评论将审核筛选后显示";
+            this.replyCommentId = '1';
+            this.replyUserId = 1;  
         },
         /**
          * 提交评论
@@ -249,7 +246,7 @@ export default {
                 uni.showToast({
                     title: '评论内容不能为空',
                     duration: 1500,
-                    mark:true,
+                    mask:true,
                     icon:'none'
                 });
                 return;
@@ -285,38 +282,25 @@ export default {
         /**
          * 点击评论
          */
-        bindText(e){  
-            this.placeholder = "评论将审核筛选后显示";
-            setTimeout(()=>{
-                this.focus = true; 
-            },300)     
-            this.replyCommentId = '1';
-            this.replyUserId = 1;
+        bindText(){
             this.value="";
-            this.show = true;
+            this.focus= this.show = true;
+            this.placeholder = "评论将审核筛选后显示"; 
+            this.replyCommentId = '1';
+            this.replyUserId = 1; 
         },
         /**
          * 关闭弹层
          */
-        closepopup(){
-            setTimeout(()=>{
-                this.focus = false; 
-            },300)
-        },
-        /**
-         * 取消
-         */
-        cancel(){
-            setTimeout(()=>{
-                this.focus = false; 
-            },300)
+        canCel(){
             this.show = false;
         },
         /**
          * 失去焦点
          */
         bindBlur(e){
-            // this.keysheight = 0;
+            console.log('失')
+            this.focus = false;
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
             this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
@@ -325,7 +309,8 @@ export default {
          * 聚集焦点
          */
         bindFocus(e){
-            //console.log(e.detail.value)
+            console.log('聚');
+            this.focus = true; 
         },
         /**
          * 监听输入
@@ -412,7 +397,7 @@ export default {
          * 刷新列表的方法
          */
         loadgetCommentList(){
-            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC",setTimeout(()=>{this.focus = false},300); 
+            this.list = [], this.hotList=[],this.loading=false,this.value = "",this.page=1,this.sumbitColor = "#CCCCCC";this.show = false; 
             this.getformGetCommentList(this.id);
         }
     },
@@ -654,8 +639,12 @@ export default {
                     width: 690rpx;
                     height: 64rpx;
                     line-height: 64rpx;
+                    font-size: 28rpx;
                     margin: auto;
-                    background-color: #F9F9F9;
+                    background-color:#F9F9F9;
+                    color:#CCCCCC;
+                    text-align:left;
+                    border:none;
                     border-radius: 32rpx;
                     padding-left: 25rpx;
                 }
