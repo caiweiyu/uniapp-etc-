@@ -296,28 +296,10 @@
 						this.coupon_id = coupon_list[0].coupon_id;
 					}
 					this.coupon_list = coupon_list;
-					this.total_gold = this.change_total_gold();
-					this.total_discount = this.change_total_discount();
+					this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+					this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 				}
 			},
-			change_total_gold() {
-				let gold = 0;
-				if (this.indexGold == -1) {
-					gold = 0;
-				} else {
-					gold = (this.listGold[this.indexGold].amount - this.coupon_gold - this.full_reduction).toFixed(2);
-				}
-				return gold
-			},//共实际支付
-			change_total_discount() {
-				let discount = 0;
-				if (this.indexGold == -1) {
-					discount = 0;
-				} else {
-					discount = (this.coupon_gold + this.full_reduction).toFixed(2);
-				}
-				return discount
-			},//总优惠
 
 			/**
 			 * 优惠券
@@ -481,7 +463,7 @@
 			    data["order_type"] = "11";
 				
 			    // data["privilege_amount"] = "0";//优惠后的价格
-				data["privilege_amount"] = this.full_reduction;//优惠后的价格
+				data["privilege_amount"] = this.full_reduction;//立减的价格
 				
 				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
@@ -512,12 +494,15 @@
 			    }
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
+					console.log("res", res)
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
 			                this.apiRepaid(trade_id)
 			            }
-			        }
+			        } else {
+						this.curLock = true;
+					}
 			    })
 			}
 		},
