@@ -320,7 +320,7 @@
 							background-color: rgba($color: #ffffff, $alpha: 1);
 							position: absolute;
 							left: -20rpx;
-							bottom: 2rpx;
+							bottom: 6rpx;
 						}
 						.inner-item:nth-child(1)::before {
 							display: none;

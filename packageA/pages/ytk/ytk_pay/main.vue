@@ -385,9 +385,9 @@
 			/**
 			 * 获取微信小程序支付参数
 			 */
-			apiRepaid(trade_id){
+			apiRepaid(trade_id, trade_platform=1){
 			    API.apiRepaid({
-			        trade_platform:1,
+			        trade_platform: trade_platform,
 			        trade_mode:3,
 			        trade_id:trade_id,
 			        openid:this.openid,
@@ -494,11 +494,15 @@
 			    }
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
+					let trade_platform = 1;
 					console.log("res", res)
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
-			                this.apiRepaid(trade_id)
+							if (Number(data.trade_amount) <= 0) {//实际支付0元时
+								trade_platform = 6;
+							}
+			                this.apiRepaid(trade_id, trade_platform);
 			            }
 			        } else {
 						this.curLock = true;
