@@ -259,7 +259,12 @@
 				this.total_discount = 0;
 				this.indexGold = index;
 				this.recharge_id = -1;
-				this.loadFullMinusGet(index);//先算立减
+				if (this.listGold[index].is_icon_reduce == 0) {
+					this.recharge_id = this.listGold[index].id;
+					this.checkSelect(this.listGold[index].amount);
+				} else {
+					this.loadFullMinusGet(index);//先算立减
+				}
 			},
 			
 			/**
