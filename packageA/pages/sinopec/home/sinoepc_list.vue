@@ -41,6 +41,7 @@
 import * as API from "@/interfaces/sinoepc";
 import selectArea from "./components/selectArea";
 import {mapState} from "vuex"
+import { eventMonitor } from "@/common/utils"
 const app = getApp()
 export default {
     data(){
@@ -143,6 +144,7 @@ export default {
         * 跳转地图
         */
        goMapLocation(item){
+		   eventMonitor("ZSHJYQDHSY_Oillist_JY_JY-ZSHDZQCZ_406_Image_click", 2)
            uni.navigateTo({
                url: `/pages/location/main?latitude=${item.lat}&longitude=${item.lng}&address=${item.address}&name=${item.name}`
            })
