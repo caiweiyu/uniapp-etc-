@@ -38,6 +38,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {
@@ -62,6 +63,7 @@
 			 * 更多油站
 			 */
 			bindMore() {
+				eventMonitor("ZSHJYQDHSY_Oillist_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 				uni.navigateTo({
 					url: "/packageA/pages/sinopec/home/sinoepc_list"
 				})
@@ -80,6 +82,7 @@
 			 * 去地图导航
 			 */
 			bindMap(item) {
+				eventMonitor("ZSHJYQDHSY_Oillist_JY_JY-ZSHDZQCZ_406_Image_click", 2)
 				uni.navigateTo({
 				    url: `/pages/location/main?latitude=${item.lat}&longitude=${item.lng}&address=${item.address}&name=${item.name}`
 				})

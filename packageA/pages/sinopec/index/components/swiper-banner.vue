@@ -24,6 +24,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {
@@ -47,6 +48,7 @@
 			 * banner跳转
 			 */
 			bindNavBanner(item) {
+				eventMonitor("ZSHJYQDHSY_AD_JY_JY-ZSHDZQCZ_406_Image_click", 2)
 				if (typeof(item.subs_template_id) == "string") {
 					// 消息订阅
 					let arr = [];

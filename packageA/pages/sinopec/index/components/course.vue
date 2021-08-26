@@ -18,6 +18,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {
@@ -47,6 +48,7 @@
 			 * 使用教程(去详情页)
 			 */
 			bindCourse() {
+				eventMonitor("ZSHJYQDHSY_Using_JY_JY-ZSHDZQCZ_406_Button_click", 2)
 				uni.navigateTo({
 					url: "/packageA/pages/sinopec/home/detail"
 				})

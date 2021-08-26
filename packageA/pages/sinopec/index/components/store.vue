@@ -18,6 +18,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber"
 	export default {
 		components: {

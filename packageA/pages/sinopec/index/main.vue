@@ -66,6 +66,7 @@
 	const app = getApp()
 	
 	import { mapState } from "vuex"
+	import { eventMonitor } from "@/common/utils"
 	import * as API from "@/interfaces/sinoepc"
 	import * as API_BASE from "@/interfaces/base"
 	
@@ -118,6 +119,7 @@
 		},
 		onLoad(options) {
 			this.loadPageProps();
+			eventMonitor("JY_ZSHJYQDH", 1);
 		},
 		onShow() {
 			this.loadInit();
