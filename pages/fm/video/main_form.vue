@@ -133,16 +133,16 @@
         </view>
         <!--评论弹层-->
         <!-- <u-popup v-model="show" mode="bottom" @close="closepopup" height="300rpx" :custom-style="{color:cancelColor}" width="100%" closeable="true" close-icon-pos="top-left" close-icon="取消" close-icon-size="24"> -->
-        <view @click.stop="(()=>{return false})" v-if="show" :class="['popup',show==true ? 'popup_active' : '']" :style="{bottom:'0rpx'}">
+        <view @click.stop="(()=>{return})" :class="['popup',show==true ? 'popup_active' : '']">
             <view class="popup_header">
                 <view @click.stop="canCel">取消</view>
                 <view @click.stop="$debounce(formCommentAfter)" :style="{color:sumbitColor}">发布</view>
             </view>
             <view class="popup_content">
-                <textarea :cursor-spacing ="keysheight" :show-confirm-bar="false" :value="value" :focus="focus"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" @confirm="formCommentAfter"></textarea>
+                <textarea :cursor-spacing ="keysheight" :show-confirm-bar="isEnter" :value="value" :focus="show"  @blur="bindBlur" @focus="bindFocus"  :placeholder="placeholder"  @input="bindInput" placeholder-class="textarea-placeholder" placeholder-style="color:#CCCCCC;font-size:28rpx" maxlength="150" @confirm="formCommentAfter"></textarea>
             </view>
         </view>
-        <view @click.stop="canCel" v-if="show" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
+        <view @click.stop="canCel" :class="['box4',show==true ? 'box4_active':'box4_active_off']"></view>
         <!-- <view :class="[show==true ? 'box3':'']" :style="{bottom:'300px'}"></view> -->
 		<!-- </u-popup> -->
     </view>
@@ -177,10 +177,10 @@ export default {
                 'https://image.etcchebao.com/etc-min/info/touch_active.png'
             ],
             show:false,
-            focus:true,
             sumbitColor:'#CCCCCC',
             cancelColor:"#CCCCCC",
             keysheight:120,
+            isEnter:true,
             placeholder:"评论将审核筛选后显示",
             user_img:"https://image.etcchebao.com/etc-min/info/undefineuser.png"   
         }
@@ -233,7 +233,7 @@ export default {
         },
         formComment(){
             this.value="";
-            this.focus = this.show = true;
+            this.show = true;
             this.placeholder = "评论将审核筛选后显示";
             this.replyCommentId = '1';
             this.replyUserId = 1;  
@@ -284,7 +284,7 @@ export default {
          */
         bindText(){
             this.value="";
-            this.focus= this.show = true;
+            this.show = true;
             this.placeholder = "评论将审核筛选后显示"; 
             this.replyCommentId = '1';
             this.replyUserId = 1; 
@@ -300,7 +300,6 @@ export default {
          */
         bindBlur(e){
             console.log('失')
-            this.focus = false;
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
             this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
@@ -310,7 +309,7 @@ export default {
          */
         bindFocus(e){
             console.log('聚');
-            this.focus = true; 
+            this.show = true; 
         },
         /**
          * 监听输入
@@ -666,7 +665,7 @@ export default {
             background-color: rgba(0,0,0,0.4);
         }
         .box4_active{
-            height: 100vh !important;
+            height: calc(100vh - 300rpx) !important;
             transition: height linear 0s;
         }   
         .box4_active_off{
@@ -683,6 +682,7 @@ export default {
             z-index: 10089;
             width: 100%;
             position: fixed;
+            bottom: 0rpx;
             height: 0rpx;
             &_header{
                 display: flex;
