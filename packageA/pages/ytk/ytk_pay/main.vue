@@ -401,6 +401,12 @@
 			        //sourceChannel:2
 			    }).then(res => {
 			        let {code, data} = res;
+					if (data.prepaid_info.hasOwnProperty("trade_status") == true && Number(data.prepaid_info.trade_status) == 3) {
+						uni.redirectTo({
+						    url: "/packageA/pages/ytk/ytk_deposit/main?orderid="+data.orderid+"&trade_id="+data.trade_id+"&summary_order_id="+data.summary_order_id
+						});
+						return;
+					}
 			        if (code == 0) {
 			            this.onTradePay(data)
 			        }
@@ -497,10 +503,15 @@
 			    for(let item in data){
 			        dataobj[item] = data[item]
 			    }
+				console.log("res*********************")
+				console.log("res", "before request")
+				console.log("res*********************")
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
 					let trade_platform = 1;
-					console.log("res", res)
+					console.log("res*********************")
+					console.log("code, data, res", code, data, res)
+					console.log("res*********************")
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
