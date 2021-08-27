@@ -20,7 +20,7 @@
 		<!-- 选择充值金额 -->
 		<!-- ***************************** -->
 		<view class="select-gold">
-			<view :class="['box', indexGold == index ? 'active' : '']" v-for="(item,index) in listGold" :key="index" @click="bindSelect($event,index)">
+			<view :class="['box', indexGold == index ? 'active' : '']" v-for="(item,index) in listGold" :key="index" @click="$debounce(bindSelect,$event,index)">
 				<text>{{item.amount}}</text>
 				<image class="icon" src="https://image.etcchebao.com/etc-min/etc-f/icon_21.png" v-if="item.is_icon_reduce == 1"></image>
 			</view>
@@ -320,7 +320,7 @@
 					return
 				}
 				uni.navigateTo({
-					url: `/packageA/pages/ytk/ytk_pay/coupon?amount=${this.listGold[this.indexGold].amount}`,
+					url: `/packageA/pages/ytk/ytk_pay/coupon?amount=${(this.listGold[this.indexGold].amount - this.full_reduction).toFixed(2)}`,
 					events: {
 						toCoupon: (data)=> {
 							this.coupon_gold = data.coupon_gold;

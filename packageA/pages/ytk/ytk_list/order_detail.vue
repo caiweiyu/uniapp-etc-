@@ -37,9 +37,13 @@
 				<view class="minbox">充值金额</view>
 				<view class="minbox minblack">￥{{Number(detail.load_money).toFixed(2)}}</view>
 			</view>
-			<view class="box">
+			<!-- <view class="box">
 				<view class="minbox">优惠抵扣</view>
 				<view class="minbox minblack">-￥{{Number(detail.money).toFixed(2)}}</view>
+			</view> -->
+			<view class="box">
+				<view class="minbox">立减优惠</view>
+				<view class="minbox minblack">-￥{{Number(detail.reduce_amount).toFixed(2)}}</view>
 			</view>
 			<view class="box">
 				<view class="minbox">优惠券抵扣</view>
