@@ -17,7 +17,7 @@
                         </view>
                         <view>
                             <text>{{item.comment.likeNum}}</text>
-                            <image class="demo-time-image" @click.stop="touchClick(item.comment.id,index)" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
+                            <image class="demo-time-image" @click.stop="touchClick(item.comment.id,index,'hotList')" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                         </view>
                     </view>
                     <view class="item_content">
@@ -27,7 +27,7 @@
                     </view>
                     <view class="item_bottom">
                         <view>
-                            <view class="createTimeColor">{{item.comment.createTime}}</view>
+                            <view class="createTimeColor" v-if="item.comment.createTime != null">{{item.comment.createTime}}</view>
                             <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                         </view> 
                         <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
@@ -62,7 +62,7 @@
                         </view>
                         <view class="item_bottom">
                             <view>
-                                <view class="createTimeColor"> {{item.comment.createTime}}</view>                           
+                                <view class="createTimeColor" v-if="item.comment.createTime != null"> {{item.comment.createTime}}</view>                           
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150" @click="allExpand(index)">{{item.expandName}}</view>
@@ -88,7 +88,7 @@
                                         <image @click.stop="touchClick(item.id,index,indexi)" :src="item.isLiked==true ? isclicked[1] : isclicked[0]" mode="" />
                                     </view>
                                 </view>
-                                <view class="item_headerlf_header_box2 createTimeColor">
+                                <view class="item_headerlf_header_box2 createTimeColor" v-if="item.createTime != null">
                                     {{item.createTime}}
                                 </view>
                                 <view :class="['item_headerlf_header_box3']" :style="{display: item.flexBox}">
@@ -104,7 +104,7 @@
                         </view>
                         <view class="item_bottom">
                             <view>
-                                <view class="createTimeColor">{{item.comment.createTime}}</view>
+                                <view class="createTimeColor" v-if="item.comment.createTime != null">{{item.comment.createTime}}</view>
                                 <view class="item_bottom_tip" @click="submitComment(item.comment.id,item.comment.userId,item.comment.userName)">回复</view>
                             </view> 
                             <view class="item_bottom_all" v-if="item.comment.content.length > 150"  @click="allExpand(index)">{{item.expandName}}</view>
@@ -202,7 +202,20 @@ export default {
                         /**
                          * 热门评论
                          */
-                        this.hotList = data.hotList;
+                        for(let i=0;i<data.hotList.length;i++){
+                            data.hotList[i].flexBox='-webkit-box';
+                            data.hotList[i].expandName='展开全部';
+                            data.hotList[i].isLiked=false;
+                            data.hotList[i].clickStatus = true;
+                            for(let j=0;j<data.hotList[i].replyList.length;j++){
+                                data.hotList[i].replyList[j].flexBox='-webkit-box';
+                                data.hotList[i].replyList[j].expandName='展开全部';
+                                data.hotList[i].replyList[j].isLiked=false;
+                                data.hotList[i].replyList[j].clickStatus = true;
+                            }
+                            this.hotList.push(data.hotList[i]);
+                        }
+                        
                         /**
                          * 最新评论
                          */
@@ -262,10 +275,17 @@ export default {
                mac:''
            }).then(res=>{
                let {code,data,msg} = res;
-               if(code == 0){
+               if(res && code == 0){
                     this.$nextTick(()=>{
                         this.loadgetCommentList();
                     }) 
+                }else{
+                    uni.showToast({
+                        title: msg,
+                        duration: 1500,
+                        mask:true,
+                        icon:'none'
+                    });
                 }
            });
            this.show=false;
@@ -299,7 +319,6 @@ export default {
          * 失去焦点
          */
         bindBlur(e){
-            console.log('失')
             this.value = e.detail.value;
             this.value != "" ? this.sumbitColor = "#FF5C2A" : this.sumbitColor = "#CCCCCC";
             this.value != "" ? this.cancelColor = "#222222" : this.cancelColor = "#CCCCCC";
@@ -308,7 +327,6 @@ export default {
          * 聚集焦点
          */
         bindFocus(e){
-            console.log('聚');
             this.show = true; 
         },
         /**
@@ -360,18 +378,25 @@ export default {
                     this.list[index].clickStatus = false;
                 }
             }else{
-                if(indexj != undefined){
+                if(indexj == 'hotList'){
+                    if(this.hotList[index].clickStatus){
+                        this.hotList[index].comment.likeNum += 1;
+                        this.hotList[index].isLiked = true;
+                        this.hotList[index].clickStatus = false;
+                    }
+                }else if(indexj != undefined){
                     if(this.list[index].replyList[indexj].clickStatus){
-                        this.list[index].replyList[indexj].likeNum += 1;
+                        this.list[index].replyList[indexj].likeNum += 1;                     
                         this.list[index].replyList[indexj].isLiked = true;
-                        this.list[index].replyList[indexj].clickStatus = false;
+                        this.list[index].replyList[indexj].clickStatus = false;                
                     };
                 }else{
                     if(this.list[index].clickStatus){
                         this.list[index].comment.likeNum += 1;
                         this.list[index].isLiked = true;
-                        this.list[index].clickStatus = false;
-                    }
+                        this.list[index].clickStatus = false;   
+                    };
+                    
                 }       
             }
         },

@@ -54,7 +54,7 @@
                                                 <text>{{item.shareCount}}</text>
                                             </view>
                                             <view class="box_layout_like" @click.stop="clickLike(item,index)">
-                                                <image :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like.png'"></image>
+                                                <image :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like1.png'"></image>
                                                 <text>{{item.likeCount}}</text>
                                             </view>
                                         </view>
@@ -244,14 +244,12 @@ export default {
   },
   mounted() {
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
   },
   onShow(){
       this.$token(()=>{
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
       })

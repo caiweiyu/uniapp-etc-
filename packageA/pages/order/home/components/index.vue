@@ -225,7 +225,8 @@
 				loading: false,//加载中...
 				status:'nomore',
 				triggered:false,
-				scrollTops:-1
+				scrollTops:-1,
+				winStatusH:uni.getSystemInfoSync().statusBarHeight * 2
 			}
 		},
 		methods: {
@@ -321,7 +322,7 @@
 				}
 			},
 			//跳小程序原生
-			gotoLocation(){
+			gotoLocation(order_id){
 				uni.navigateTo({
 						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`,
 						events:{
@@ -346,7 +347,7 @@
 			toService(order_status_id, order_type, order_id,jump_url) {
 				switch(Number(order_type)){
 					case 11:
-						this.gotoLocation();
+						this.gotoLocation(order_id);
 					break;
 					case 140:
 						if(order_status_id == '6'){
@@ -441,6 +442,7 @@
 			}
 		},
 		mounted() {
+			console.log(uni.getSystemInfoSync(),'winStatusH',this.winStatusH)
 			let {
 				index
 			} = this.$root.$mp.query;
@@ -794,7 +796,8 @@
 				display: flex;
 				text-align: center;
 				width: 100%;
-				height: calc(100vh-35rpx);
+				height: 100vh;
+				background-color: #F6F6F6;
 				.un-order-image {
 					position: fixed;
 					top: 50%;
