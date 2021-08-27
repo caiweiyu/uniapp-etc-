@@ -50,7 +50,7 @@
 						</div>
 					</div>
 					<div class="content-right">
-						<input class="input-item" v-model="plate_detail" placeholder="填写车牌号" @input="plateDetailChange"
+						<input class="input-item" v-model="plate_detail" placeholder="填写车牌号" :disabled="editor" @input="plateDetailChange"
 							maxlength="6" />
 					</div>
 				</div>
@@ -295,6 +295,7 @@
 				plate_detail: "",
 				plate_value: "粤 A",
 				options: "", //page参数
+				editor: false,//是否编辑
 			};
 		},
 		computed: {
@@ -323,15 +324,17 @@
 			this.form.source = options.source;
 			let {
 				car_num = "",
-					card_no = "",
-					car_color = "",
-					car_id = ""
+				card_no = "",
+				car_color = "",
+				car_id = "",
+				editor = ""
 			} = options;
 			this.query_car_num = car_num || "";
 			this.query_card_no = card_no || "";
 			this.query_car_color = car_color || "";
 			this.query_car_id = car_id || "";
 			this.form.source = options.source || "";
+			this.editor = editor || false;
 			this.init();
 		},
 		onShow() {
@@ -830,7 +833,7 @@
 							border-width: 8rpx;
 							border-style: solid;
 							border-color: #FF5C2A transparent transparent transparent;
-							margin-top: 10rpx;
+							margin: 0 0 0 4rpx;
 							vertical-align: middle;
 						}
 					}

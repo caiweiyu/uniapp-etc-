@@ -196,7 +196,7 @@
 							border-width: 8rpx;
 							border-style: solid;
 							border-color: #FF5C2A transparent transparent transparent;
-							margin-top: 5rpx;
+							margin: 5rpx 0 0 4rpx;
 							vertical-align: middle;
 						}
 					}

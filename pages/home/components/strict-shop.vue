@@ -157,7 +157,7 @@
 
 			.box:nth-child(2) {
 				font-size: 24rpx;
-				color: #CCCCCC;
+				color: #999999;
 				margin: 0 0 0 10rpx;
 				position: relative;
 			}
@@ -192,7 +192,7 @@
 				}
 
 				.minbox:nth-child(2) {
-					margin: 5rpx 0 0 0;
+					margin: 20rpx 0 0 0;
 					padding: 0 20rpx;
 					font-size: 28rpx;
 					font-weight: 700;
@@ -230,12 +230,12 @@
 					.text:nth-child(2) {
 						color: #999999;
 						font-size: 24rpx;
-						line-height: 54rpx;
+						line-height: 40rpx;
 					}
 				}
 
 				.minbox:nth-child(4) {
-					margin: 0 0 0 0;
+					margin: -2rpx 0 0 0;
 					padding: 0 20rpx;
 
 					.text {
@@ -256,7 +256,7 @@
 					.img {
 						display: inline-block;
 						vertical-align: middle;
-						margin: 6rpx 0 0 10rpx;
+						margin: 3rpx 0 0 10rpx;
 						width: 42rpx;
 						height: 20rpx;
 					}

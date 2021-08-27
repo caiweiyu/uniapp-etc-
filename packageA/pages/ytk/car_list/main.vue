@@ -96,7 +96,7 @@
 			bindNavCarEditor(e,index) {
 				let obj = this.listcar[index];
 				uni.navigateTo({
-					url: "/packageA/pages/ytk/bind_car/main?car_num=" + obj.car_num + "&card_no=" + obj.card_num + "&car_color=" + obj.car_color + "&car_id=" + obj.id + "&source=" + ""
+					url: "/packageA/pages/ytk/bind_car/main?car_num=" + obj.car_num + "&card_no=" + obj.card_num + "&car_color=" + obj.car_color + "&car_id=" + obj.id + "&source=" + "" + "&editor=" + true
 				})
 			},
 
