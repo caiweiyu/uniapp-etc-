@@ -38,7 +38,7 @@
 					</view>
 					<view class="minbox-2">立减优惠</view>
 					<view class="minbox-3" @click="bindActivity">
-						<view class="min">活动详情</view>
+						<view class="min">{{msgActivity.discount_title}}</view>
 					</view>
 				</view>
 				<view class="right">
