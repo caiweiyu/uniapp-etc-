@@ -322,7 +322,7 @@
 				}
 			},
 			//跳小程序原生
-			gotoLocation(){
+			gotoLocation(order_id){
 				uni.navigateTo({
 						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`,
 						events:{
@@ -347,7 +347,7 @@
 			toService(order_status_id, order_type, order_id,jump_url) {
 				switch(Number(order_type)){
 					case 11:
-						this.gotoLocation();
+						this.gotoLocation(order_id);
 					break;
 					case 140:
 						if(order_status_id == '6'){
