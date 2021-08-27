@@ -24,9 +24,8 @@
 				</view>
 				<block v-if="global_popup.type > 1">
 					<!-- 弹窗图片（局部） -->
-					<view class="pic" @click="$debounce(bindNav,global_popup)">
+					<view class="pic">
 						<image class="img" :src="global_popup.img_url" mode="aspectFill"></image>
-						<button-getPhoneNumber v-if="!global_popup.is_need_login || global_popup.is_need_login == '1'" type="local" :item="global_popup" />
 					</view>
 					<!-- 弹窗title -->
 					<view class="title">
