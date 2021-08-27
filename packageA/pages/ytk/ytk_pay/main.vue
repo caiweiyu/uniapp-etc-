@@ -38,7 +38,7 @@
 					</view>
 					<view class="minbox-2">立减优惠</view>
 					<view class="minbox-3" @click="bindActivity">
-						<view class="min">活动详情</view>
+						<view class="min">{{msgActivity.discount_title}}</view>
 					</view>
 				</view>
 				<view class="right">
@@ -259,7 +259,12 @@
 				this.total_discount = 0;
 				this.indexGold = index;
 				this.recharge_id = -1;
-				this.loadFullMinusGet(index);//先算立减
+				if (this.listGold[index].is_icon_reduce == 0) {
+					this.recharge_id = this.listGold[index].id;
+					this.checkSelect(this.listGold[index].amount);
+				} else {
+					this.loadFullMinusGet(index);//先算立减
+				}
 			},
 			
 			/**
@@ -320,6 +325,8 @@
 						toCoupon: (data)=> {
 							this.coupon_gold = data.coupon_gold;
 							this.coupon_id = data.coupon_id;
+							this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+							this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 						}
 					},
 					success: (res)=> {
@@ -396,6 +403,12 @@
 			        //sourceChannel:2
 			    }).then(res => {
 			        let {code, data} = res;
+					if (data.prepaid_info.hasOwnProperty("trade_status") == true && Number(data.prepaid_info.trade_status) == 3) {
+						uni.redirectTo({
+						    url: "/packageA/pages/ytk/ytk_deposit/main?orderid="+data.orderid+"&trade_id="+data.trade_id+"&summary_order_id="+data.summary_order_id
+						});
+						return;
+					}
 			        if (code == 0) {
 			            this.onTradePay(data)
 			        }
@@ -492,10 +505,15 @@
 			    for(let item in data){
 			        dataobj[item] = data[item]
 			    }
+				console.log("res*********************")
+				console.log("res", "before request")
+				console.log("res*********************")
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
 					let trade_platform = 1;
-					console.log("res", res)
+					console.log("res*********************")
+					console.log("code, data, res", code, data, res)
+					console.log("res*********************")
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){

@@ -111,7 +111,6 @@
 <style lang="scss">
 	page {
 		background-color: #F9F9F9;
-		overflow: hidden;
 	}
 	.content {
 		.none-coupon {

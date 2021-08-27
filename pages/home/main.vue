@@ -772,7 +772,7 @@
 		.header-block {
 			padding: 20rpx 0 0 0;
 			min-height: 100vh;
-			background: linear-gradient(180deg, #E4F5EF 0%, #FFFFFF 10%, #EBECEC 80%, #EBECEC 100%);
+			background: linear-gradient(180deg, #E4F5EF 0%, #FFFFFF 552rpx, #EBECEC 998rpx, #EBECEC 100%);
 			.inline-img {
 				position: fixed;
 				z-index: 10;
