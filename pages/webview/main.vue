@@ -171,7 +171,11 @@
 				}
 				if (host.indexOf(`https://store${BASE_URL}.etcchebao.com`) > -1) {
 					//商城
-					host = `https://store${BASE_URL}.etcchebao.com/#/home`;
+					if (host.indexOf(`https://store${BASE_URL}.etcchebao.com/detail.html`) > -1) {
+						host = this.webviewShareCallBack(options, host);
+					} else {
+						host = `https://store${BASE_URL}.etcchebao.com/#/home`;
+					}
 				} else if (host.indexOf(`https://cp${BASE_URL}.etcchebao.com`) > -1) {
 					// 资讯
 					host = this.webviewShareCallBack(options, host);
