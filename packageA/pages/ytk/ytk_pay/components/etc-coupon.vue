@@ -11,7 +11,7 @@
 	<!-- ********************************* -->
 	<!-- 卡券 -->
 	<!-- ********************************* -->
-	<view class="content">
+	<view class="content-coupon">
 		
 		<!-- 有效卡券 -->
 		<view class="coupon" v-if="type == 'coupon'">
@@ -111,7 +111,7 @@
 </script>
 
 <style lang="scss">
-	.content {
+	.content-coupon {
 		.coupon {
 			margin: 20rpx 20rpx 0 20rpx;
 			.box {
