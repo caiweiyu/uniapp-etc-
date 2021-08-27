@@ -244,14 +244,12 @@ export default {
   },
   mounted() {
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
   },
   onShow(){
       this.$token(()=>{
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
       })
