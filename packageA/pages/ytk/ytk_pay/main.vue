@@ -325,6 +325,8 @@
 						toCoupon: (data)=> {
 							this.coupon_gold = data.coupon_gold;
 							this.coupon_id = data.coupon_id;
+							this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+							this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 						}
 					},
 					success: (res)=> {
