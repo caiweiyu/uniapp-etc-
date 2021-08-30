@@ -69,7 +69,7 @@ const interceptRequest = useIntercept(uni.request, {
 	success: (res) => {
 		// console.log("=====返回结果=====", res);
 		// uni.hideLoading();
-		if ((res.statusCode == 200 && res.data.code == 0) || res.data.code == 70 || res.data.code == 51 || res.data.code == 61) {
+		if ((res.statusCode == 200 && (res.data.code == 0 || res.data.code == 4000)) || res.data.code == 70 || res.data.code == 51 || res.data.code == 61) {
 			return res.data;
 		}else {
 			if (res.data.code == -10001 || res.data.code == -1) return false; //token过期不弹提示
