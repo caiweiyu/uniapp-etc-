@@ -575,9 +575,9 @@
 				.order-header {
 					margin-top: 105rpx !important;
 				}
-				.bar-meau{
-					bottom: -25rpx !important;
-				}
+				// .bar-meau{
+				// 	bottom: -25rpx !important;
+				// }
 			}
 			.order-header {
 				display: flex;
