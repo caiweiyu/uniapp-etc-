@@ -518,13 +518,13 @@
 			            }
 			        } else {
 						this.curLock = true;
+						this.loadReflash();
 						uni.showToast({
 							title: data.msg,
 							mask: true,
 							duration: 1500,
 							icon: "none"
 						})
-						this.loadReflash();
 					}
 			    })
 			},
