@@ -537,7 +537,7 @@
 				this.full_reduction = 0;
 				this.total_gold = 0;
 				this.total_discount = 0;
-				this.indexGold = index;
+				this.indexGold = -1;
 				this.recharge_id = -1;
 				this.curOrder = false;
 				this.loadGoldList();
