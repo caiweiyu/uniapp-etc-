@@ -31,7 +31,7 @@
 		<!-- ***************************** -->
 		<view class="coupons">
 			<!-- 立减优惠 -->
-			<view class="box" v-if="msgActivity.discount_switch == 'on'">
+			<view class="box" v-if="msgActivity.discount_switch == 'on' && curCutShow">
 				<view class="left">
 					<view class="minbox-1">
 						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
@@ -85,7 +85,7 @@
 		<!-- ***************************** -->
 		<!-- 活动详情弹窗 -->
 		<!-- ***************************** -->
-		<block v-if="msgActivity.discount_switch == 'on'">
+		<block v-if="msgActivity.discount_switch == 'on' && curCutShow">
 			<u-popup
 				v-model="curActivity"
 				mode="bottom"
@@ -203,6 +203,7 @@
 				total_discount: 0,//总优惠
 				
 				curLock: true,//禁止多次支付
+				curCutShow: false,//是否存在满减优惠
 			}
 		},
 		onLoad(options) {
@@ -236,6 +237,15 @@
 				this.listGold = res.data.list;
 				for (let i = 0; i < this.listGold.length; i++) {
 					this.listGold[i].amount = (this.listGold[i].amount * 0.01).toFixed(2);
+				}
+				let num = 0;
+				for(let i = 0; i < this.listGold.length; i++) {
+					if (Number(this.listGold[i].is_icon_reduce) == 1) {
+						num++;
+					}
+				}
+				if (num > 0) {
+					this.curCutShow = true;
 				}
 			},
 			
@@ -271,7 +281,7 @@
 			 * 满减金额获取
 			 */
 			async loadFullMinusGet(index) {
-				if (this.msgActivity.discount_switch != 'on') return;
+				if (this.msgActivity.discount_switch != 'on' && this.curCutShow) return;
 				let res = await API_YTK.ytk_pay_full_minus_get({
 					cardNo: this.cardNo,
 					id: this.listGold[index].id
