@@ -270,13 +270,14 @@ export default {
             position: absolute;
             top: 42rpx;
             left: 42rpx;
-            z-index:999;
+            z-index:998;
             image {
                 width: 67.22rpx;
                 height: 67.22rpx;
                 border-radius: 50%;
                 display: inline-block;
                 vertical-align: middle;
+                z-index:2;
             }
             text {
                 margin-left: 20rpx;
@@ -284,6 +285,7 @@ export default {
                 font-size: 32rpx;
                 display: inline-block;
                 vertical-align: middle;
+                z-index:2;
             }
         }
         .uni_vdplayer{
@@ -296,6 +298,7 @@ export default {
                z-index:1;
            }
            .player-image{
+               z-index: 2;
                display: inline-block;
                width: 100rpx;
                height: 100rpx;
@@ -306,7 +309,7 @@ export default {
            }
         }
         .box_intro {
-            z-index: 998;
+            z-index: 2;
             position: absolute;
             width: 659rpx;
             height: 83rpx;
@@ -327,14 +330,14 @@ export default {
             position: fixed;
             display: flex;
             bottom: 28rpx;
-            z-index: 999;
+            z-index: 998;
             &_info {
-            margin-left:54rpx;
+                margin-left:54rpx;
             >image{
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;
@@ -349,7 +352,7 @@ export default {
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;
@@ -364,7 +367,7 @@ export default {
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;

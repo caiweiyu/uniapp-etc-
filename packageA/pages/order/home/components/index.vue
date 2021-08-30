@@ -573,8 +573,11 @@
 			}
 			@media screen and (min-height: 812px) {
 				.order-header {
-					// margin-top: 105rpx !important;
+					margin-top: 105rpx !important;
 				}
+				// .bar-meau{
+				// 	bottom: -25rpx !important;
+				// }
 			}
 			.order-header {
 				display: flex;
