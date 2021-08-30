@@ -16,7 +16,7 @@
 				</view>
 				<view class="popule-content">
 					<picker-view indicatorStyle="height: 50px;color:#999" class="picker-view" :value="currentIndex"
-						@change="onChange" @bindpickstart="onPickstart" @bindpickend="onPickend">
+						@change="onChange" @pickstart="onPickstart" @pickend="onPickend">
 						<picker-view-column>
 							<view class="picker-view-column-item" v-for="(item, index) in provinces" :key="index">
 								{{ item.province }}
@@ -83,9 +83,9 @@
 			},
 			onChange(e) {
 				let [provinceIndex, cityIndex] = e.mp.detail.value;
-				if (this.currentIndex[0] !== provinceIndex) {
-					cityIndex = 0;
-				}
+				// if (this.currentIndex[0] !== provinceIndex) {
+				// 	cityIndex = 0;
+				// }
 				this.citys = this.provinces[provinceIndex].citys;
 				this.currentIndex = [provinceIndex, cityIndex];
 				let province = this.provinces[provinceIndex].province;
@@ -96,6 +96,7 @@
 				this.scroll = true;
 			},
 			onPickend(e) {
+				console.log(e)
 				this.scroll = false;
 			},
 			/**
@@ -123,7 +124,10 @@
 						}
 					});
 					this.provinceIndex = provinceIndex;
-					this.currentIndex = [provinceIndex, cityIndex];
+					
+					setTimeout(()=>{
+						this.currentIndex = [provinceIndex, cityIndex];
+					},1000)
 				}
 			},
 		},
@@ -168,7 +172,7 @@
 			}
 
 			.confirm {
-				color: #d1a86a;
+				color: #FF5C2A;
 			}
 		}
 

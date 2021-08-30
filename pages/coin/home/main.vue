@@ -94,7 +94,7 @@
 						</view>
 					</swiper-item>
 				</swiper>
-				<view class="dots">
+				<view class="dots" v-if="operaList.length > 1">
 					<block v-for="(item, index) in operaList" :key="index">
 						<view class="dot" :class="{ active: index == currentSwiper}"></view>
 					</block>
@@ -1059,22 +1059,24 @@
 					position: absolute;
 					left: calc(50% - 10rpx);
 					transform: translateX(-50%);
-					bottom: 15rpx;
+					bottom: 12rpx;
 
 					/*未选中时的小圆点样式 */
 					.dot {
 						width: 8rpx;
 						height: 8rpx;
 						border-radius: 50%;
-						background-color: #CCC;
-						margin-left: 10rpx;
+						background-color: rgba($color: #AAAAAA, $alpha: 0.5);
+						margin-left: 8rpx;
 
 						/*选中以后的小圆点样式 */
 						&.active {
 							width: 28rpx;
 							height: 8rpx;
-							background-color: #FF5C2A;
 							border-radius: 50px;
+							background-color: #FF5C2A !important;
+							width: 16rpx !important;
+							transition: width ease-in 0.5s; 
 						}
 					}
 				}
@@ -1123,7 +1125,7 @@
 
 						.empty-text {
 							font-size: 26rpx;
-							color: #cccccc;
+							color: #999999;
 						}
 					}
 

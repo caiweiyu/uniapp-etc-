@@ -86,8 +86,8 @@
 	
 			.ant-button {
 				background: none;
-				border: 2rpx solid #d1a86a;
-				color: #d1a86a;
+				border: 2rpx solid #ff5c2a;
+				color: #ff5c2a;
 				border-radius: 100rpx;
 	
 				&+.ant-button {
@@ -96,8 +96,8 @@
 	
 				&.lottery {
 					color: #222222;
-					border: 2rpx solid #f1cf92;
-					background-color: #f1cf92;
+					border: 2rpx solid #ff5c2a;
+					background-color: #ff5c2a;
 				}
 			}
 		}

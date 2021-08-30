@@ -25,6 +25,8 @@
                                             <video :id="'myVideo' + index"
                                                 :ref="'myVideo' + index"
                                                 @play="dealPlay(item.id,item.frontImage,item.title)"
+                                                @pause="dealPause"
+                                                @fullscreenclick="fullscreenclick"
                                                 class="player-video"
                                                 :src="item.videoUrl"
                                                 :controls="false"
@@ -33,7 +35,7 @@
                                                 @click.stop="videoPlayPuse"
                                                 objectFit="contain">
                                             </video>
-                                            <image v-if="showStatus"  @click.stop="videoPlayPuse"  class='player-image' :src="puaseIcon"></image>
+                                            <image v-if="showStatus" @click.stop="videoPlayPuse" class='player-image' :src="puaseIcon"></image>
                                         </view>
                                         <view class="box_title">
                                             <image :src="item.artist.avatar"></image>
@@ -42,21 +44,20 @@
                                         <view class="box_intro">
                                             <text>{{item.title}}</text>
                                         </view>
-                                        <!-- <view class="box_layout"> -->
-                                            <!-- <view class="box_layout_info">
+                                        <view class="box_layout">
+                                            <view class="box_layout_info" @click="commentsList(item)">
                                                 <image src="https://image.etcchebao.com/etc-min/info/info.png"></image>
-                                                <text>{{item.contentFrom}}</text>
-                                            </view> -->
-                                            <!-- <view class="box_layout_share">
+                                                <text>{{item.comentCount}}</text>
+                                            </view>
+                                            <view class="box_layout_share" style="opacity:0">
                                                 <image src="https://image.etcchebao.com/etc-min/info/share.png"></image>
                                                 <text>{{item.shareCount}}</text>
-                                            </view> -->
-                                            <!-- <view class="box_layout_like">
-                                                <image v-if="item.isLike==0" src="https://image.etcchebao.com/etc-min/info/like.png"></image>
-                                                <image v-if="item.isLike==1" src="https://image.etcchebao.com/etc-min/info/liked.png"></image>
+                                            </view>
+                                            <view class="box_layout_like" @click.stop="clickLike(item,index)">
+                                                <image :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like1.png'"></image>
                                                 <text>{{item.likeCount}}</text>
-                                            </view> -->
-                                        <!-- </view> -->
+                                            </view>
+                                        </view>
                                 </block>
                             </swiper-item>
                         </block>
@@ -68,7 +69,7 @@
 </template>
 
 <script>
-import { videoList } from "@/interfaces/info";
+import { videoList,changeVideoLike } from "@/interfaces/info";
 let list= [
     [], //旧
     []  //新
@@ -115,7 +116,6 @@ export default {
   components:{},
   methods: {
       getvideoList(data) {
-          console.log(data,'===============')
         videoList({
             videoId: data,  //videoId
             artistId: 0,
@@ -132,7 +132,7 @@ export default {
                     this.lists.push(data.list[i])
                 }
                 this.total_num +=data.list.length;
-                console.log('长度total_num',this.total_num)
+
                 this.getVideolistbox();
             }
       });
@@ -141,6 +141,31 @@ export default {
         this.share.ID = ID;
         this.share.imageUrl = imageurl;
         this.share.title = title;
+        this.showStatus=false;
+    },
+    dealPause(){
+        this.showStatus=true;
+    },
+    //点赞方法
+    clickLike(item,index){
+        item.isLike==1 ? this.focusClickfn(item,0,index) : this.focusClickfn(item,1,index);
+    },
+    //点赞
+    async focusClickfn(item,param,index){
+        let res = await changeVideoLike({
+            videoId:item.id,
+            isLike:param
+        })
+        let {code,msg,data} = res
+        if(code == 0){
+            param ==1 ? this.lists[index].isLike = 1 : this.lists[index].isLike = 0;
+            param ==1 ? this.lists[index].likeCount+=1 : this.lists[index].likeCount-=1;
+        }
+    },
+    commentsList(item){
+        uni.navigateTo({
+             url: `/pages/fm/video/main_form?id=${item.id}`
+        });
     },
     //获取播放列
     getVideolistbox(){
@@ -168,13 +193,15 @@ export default {
             return;
         }else{
             if(this.current+1 == this.total_num){
-                console.log('请求下一页',this.total_num)
                 this.pageIndex++;
                 this.num++;
                 this.getvideoList(this.idValue)
             }
         }
         return;
+    },
+    fullscreenclick(){
+        this.videoPlayPuse()
     },
     //视频播放及暂停
     videoPlayPuse(){
@@ -183,11 +210,9 @@ export default {
          if(this.status){
              this.player.pause();
              this.status = false;
-             this.showStatus = true;
          }else{
              this.player.play();
              this.status = true;
-             this.showStatus = false;
          }
     },
     handlerposition(e){},
@@ -214,16 +239,17 @@ export default {
             path: "/pages/fm/video/main?ID="+this.share.ID
         }
     },
+  destroyed(){
+      console.log('销毁了---');
+  },
   mounted() {
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
   },
   onShow(){
       this.$token(()=>{
         let { ID } = this.$root.$mp.query;
-        console.log(ID,'---99--')
         this.idValue = ID;
         this.getvideoList(ID);
       })
@@ -244,13 +270,14 @@ export default {
             position: absolute;
             top: 42rpx;
             left: 42rpx;
-            z-index:999;
+            z-index:998;
             image {
                 width: 67.22rpx;
                 height: 67.22rpx;
                 border-radius: 50%;
                 display: inline-block;
                 vertical-align: middle;
+                z-index:2;
             }
             text {
                 margin-left: 20rpx;
@@ -258,6 +285,7 @@ export default {
                 font-size: 32rpx;
                 display: inline-block;
                 vertical-align: middle;
+                z-index:2;
             }
         }
         .uni_vdplayer{
@@ -267,9 +295,10 @@ export default {
                 height: 100%;
             }
            .player-video{
-               z-index:-1;
+               z-index:1;
            }
            .player-image{
+               z-index: 2;
                display: inline-block;
                width: 100rpx;
                height: 100rpx;
@@ -280,7 +309,7 @@ export default {
            }
         }
         .box_intro {
-            z-index: 999;
+            z-index: 2;
             position: absolute;
             width: 659rpx;
             height: 83rpx;
@@ -301,13 +330,14 @@ export default {
             position: fixed;
             display: flex;
             bottom: 28rpx;
+            z-index: 998;
             &_info {
-            margin-left:54rpx;
+                margin-left:54rpx;
             >image{
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;
@@ -322,7 +352,7 @@ export default {
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;
@@ -337,7 +367,7 @@ export default {
                 width: 48rpx;
                 height: 48rpx;
                 display: block;
-                z-index: 888;
+                z-index: 2;
             }
             > text {
                 text-align: center;

@@ -161,7 +161,6 @@
 <style lang="scss">
 	page {
 		background-color: #F9F9F9;
-		overflow: hidden;
 	}
 	.content {
 		padding: 108rpx 0 20rpx 0;

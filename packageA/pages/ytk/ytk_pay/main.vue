@@ -20,9 +20,9 @@
 		<!-- 选择充值金额 -->
 		<!-- ***************************** -->
 		<view class="select-gold">
-			<view :class="['box', indexGold == index ? 'active' : '']" v-for="(item,index) in listGold" :key="index" @click="bindSelect($event,index)">
+			<view :class="['box', indexGold == index ? 'active' : '']" v-for="(item,index) in listGold" :key="index" @click="$debounce(bindSelect,$event,index)">
 				<text>{{item.amount}}</text>
-				<!-- <image class="icon" src="https://image.etcchebao.com/etc-min/etc-f/icon_21.png" v-if="item.cut"></image> -->
+				<image class="icon" src="https://image.etcchebao.com/etc-min/etc-f/icon_21.png" v-if="item.is_icon_reduce == 1"></image>
 			</view>
 		</view>
 
@@ -30,6 +30,24 @@
 		<!-- 优惠券||折扣 -->
 		<!-- ***************************** -->
 		<view class="coupons">
+			<!-- 立减优惠 -->
+			<view class="box" v-if="msgActivity.discount_switch == 'on'">
+				<view class="left">
+					<view class="minbox-1">
+						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
+					</view>
+					<view class="minbox-2">立减优惠</view>
+					<view class="minbox-3" @click="bindActivity">
+						<view class="min">{{msgActivity.discount_title}}</view>
+					</view>
+				</view>
+				<view class="right">
+					<view class="minbox-1">
+						<text class="text-1">-￥{{full_reduction}}</text>
+					</view>
+					<view class="minbox-2"></view>
+				</view>
+			</view>
 			<!-- 优惠券抵扣 -->
 			<view class="box" @click="bindTicket">
 				<view class="left">
@@ -49,22 +67,6 @@
 					</view>
 				</view>
 			</view>
-			<!-- 立减优惠 -->
-			<!-- <view class="box">
-				<view class="left">
-					<view class="minbox-1">
-						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
-					</view>
-					<view class="minbox-2">立减优惠</view>
-					<view class="minbox-3" @click="bindActivity">活动详情</view>
-				</view>
-				<view class="right">
-					<view class="minbox-1">
-						<text class="text-1">-￥{{full_reduction}}</text>
-					</view>
-					<view class="minbox-2"></view>
-				</view>
-			</view> -->
 		</view>
 
 		<!-- ***************************** -->
@@ -83,25 +85,23 @@
 		<!-- ***************************** -->
 		<!-- 活动详情弹窗 -->
 		<!-- ***************************** -->
-		<u-popup
-			v-model="curActivity"
-		    mode="bottom"
-			height="600rpx"
-		>
-			<view class="popup-activity">
-				<view class="title">说明</view>
-				<scroll-view class="dec">
-					<text>
-						活动时间：2021年6月29日-2021年7月29日
-						规则：
-						通过ETC小程序进行粤通卡充值，即享随机立减优惠，最高立减100元，活动名额有限，先充先得哦！
-					</text>
-				</scroll-view>
-				<view class="close" @click="bindActivity">
-					<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+		<block v-if="msgActivity.discount_switch == 'on'">
+			<u-popup
+				v-model="curActivity"
+				mode="bottom"
+				height="600rpx"
+			>
+				<view class="popup-activity">
+					<view class="title u-line-1">{{msgActivity.discount_title}}</view>
+					<scroll-view scroll-y class="dec">
+						<text>{{msgActivity.discount_content}}</text>
+					</scroll-view>
+					<view class="close" @click="bindActivity">
+						<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+					</view>
 				</view>
-			</view>
-		</u-popup>
+			</u-popup>
+		</block>
 
 		<!-- ***************************** -->
 		<!-- 提交订单确认弹窗 -->
@@ -137,7 +137,7 @@
 				</view>
 				<view class="btn" @click="$debounce(ApiPrepaid)">确认</view>
 				<view class="close" @click="bindOrder">
-					<image src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
+					<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_25.png"></image>
 				</view>
 			</view>
 		</u-popup>
@@ -187,6 +187,7 @@
 					// { amount: 1000, cut: false },
 					// { amount: 1500, cut: false }
 				],//选择金额列表
+				recharge_id: -1,//选择金额挡位id
 
 				coupon_list: [],//优惠券列表
 				coupon_gold: 0,//优惠金额
@@ -194,6 +195,8 @@
 				full_reduction: 0,//满减
 
 				curActivity: false,//活动详情弹窗show
+				msgActivity: {},//活动详情弹窗内容
+				
 				curOrder: false,//订单确认弹窗
 
 				total_gold: 0,//共实际支付
@@ -206,6 +209,7 @@
 			this.cardNo = options.cardNo || "";
 			this.plate = options.plate || "";
 			this.loadGoldList();
+			this.loadFullMinusTip();
 			this.checkRandomOrder();
 			eventMonitor("YTK_Order", 1);
 		},
@@ -214,6 +218,7 @@
 				this.cardNo = this.$root.$mp.query.cardNo || "";
 				this.plate = this.$root.$mp.query.plate || "";
 				this.loadGoldList();
+				this.loadFullMinusTip();
 				this.checkRandomOrder();
 			});//检测page是否授权，token是否过期
 		},
@@ -221,6 +226,29 @@
 
 		},
 		methods: {
+			/**
+			 * 充值列表
+			 */
+			async loadGoldList() {
+				let res = await API_YTK.ytk_pay_gold({
+					cardNo: this.cardNo
+				})
+				this.listGold = res.data.list;
+				for (let i = 0; i < this.listGold.length; i++) {
+					this.listGold[i].amount = (this.listGold[i].amount * 0.01).toFixed(2);
+				}
+			},
+			
+			/**
+			 * 满减说明
+			 */
+			async loadFullMinusTip() {
+				let res = await API_YTK.ytk_pay_full_minus_tip({
+					
+				})
+				this.msgActivity = res.data;
+			},
+			
 			/**
 			 * 选择金额
 			 */
@@ -230,28 +258,36 @@
 				this.total_gold = 0;
 				this.total_discount = 0;
 				this.indexGold = index;
-				this.checkSelect(index);
-			},
-
-			/**
-			 * 充值列表
-			 */
-			async loadGoldList() {
-				let res = await API_YTK.ytk_pay_gold({
-
-				})
-				this.listGold = res.data.list;
-				for (let i = 0; i < this.listGold.length; i++) {
-					this.listGold[i].amount = (this.listGold[i].amount * 0.01).toFixed(2);
+				this.recharge_id = -1;
+				if (this.listGold[index].is_icon_reduce == 0) {
+					this.recharge_id = this.listGold[index].id;
+					this.checkSelect(this.listGold[index].amount);
+				} else {
+					this.loadFullMinusGet(index);//先算立减
 				}
+			},
+			
+			/**
+			 * 满减金额获取
+			 */
+			async loadFullMinusGet(index) {
+				if (this.msgActivity.discount_switch != 'on') return;
+				let res = await API_YTK.ytk_pay_full_minus_get({
+					cardNo: this.cardNo,
+					id: this.listGold[index].id
+				})
+				this.recharge_id = this.listGold[index].id;
+				this.full_reduction = res.data.amount ?? 0;
+				this.full_reduction = (this.full_reduction * 0.01).toFixed(2);
+				this.checkSelect((this.listGold[index].amount - this.full_reduction).toFixed(2));//再算优惠券
 			},
 
 			/**
 			 * 检测每次选择金额可用卡券
 			 */
-			async checkSelect(index) {
+			async checkSelect(consumeMoney) {
 				let res = await API_YTK.ytk_pay_select({
-					consumeMoney: this.listGold[index].amount,
+					consumeMoney: consumeMoney,
 					orderType: 111,
 					get_type: 2,
 					page: 1,
@@ -265,28 +301,10 @@
 						this.coupon_id = coupon_list[0].coupon_id;
 					}
 					this.coupon_list = coupon_list;
-					this.total_gold = this.change_total_gold();
-					this.total_discount = this.change_total_discount();
+					this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+					this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 				}
 			},
-			change_total_gold() {
-				let gold = 0;
-				if (this.indexGold == -1) {
-					gold = 0;
-				} else {
-					gold = (this.listGold[this.indexGold].amount - this.coupon_gold - this.full_reduction).toFixed(2);
-				}
-				return gold
-			},//共实际支付
-			change_total_discount() {
-				let discount = 0;
-				if (this.indexGold == -1) {
-					discount = 0;
-				} else {
-					discount = (this.coupon_gold + this.full_reduction).toFixed(2);
-				}
-				return discount
-			},//总优惠
 
 			/**
 			 * 优惠券
@@ -302,11 +320,13 @@
 					return
 				}
 				uni.navigateTo({
-					url: `/packageA/pages/ytk/ytk_pay/coupon?amount=${this.listGold[this.indexGold].amount}`,
+					url: `/packageA/pages/ytk/ytk_pay/coupon?amount=${(this.listGold[this.indexGold].amount - this.full_reduction).toFixed(2)}`,
 					events: {
 						toCoupon: (data)=> {
 							this.coupon_gold = data.coupon_gold;
 							this.coupon_id = data.coupon_id;
+							this.total_gold = (Number(this.listGold[this.indexGold].amount) - Number(this.coupon_gold) - Number(this.full_reduction)).toFixed(2);
+							this.total_discount = (Number(this.coupon_gold) + Number(this.full_reduction)).toFixed(2);
 						}
 					},
 					success: (res)=> {
@@ -353,6 +373,7 @@
 				    let {code, data} = res;
 				    if (code == 0 && data.length > 0) {
 						//有未处理订单
+						if (String(data[0].trade_id) == "null") return; 
 						uni.showModal({
 							title: "提示",
 							content: `您有订单未支付哦！订单金额：￥${data[0].recharge_money}，已优惠金额：￥${data[0].privilege_amount}`,
@@ -371,9 +392,9 @@
 			/**
 			 * 获取微信小程序支付参数
 			 */
-			apiRepaid(trade_id){
+			apiRepaid(trade_id, trade_platform=1){
 			    API.apiRepaid({
-			        trade_platform:1,
+			        trade_platform: trade_platform,
 			        trade_mode:3,
 			        trade_id:trade_id,
 			        openid:this.openid,
@@ -382,6 +403,12 @@
 			        //sourceChannel:2
 			    }).then(res => {
 			        let {code, data} = res;
+					if (data.prepaid_info.hasOwnProperty("trade_status") == true && Number(data.prepaid_info.trade_status) == 3) {
+						uni.redirectTo({
+						    url: "/packageA/pages/ytk/ytk_deposit/main?orderid="+data.orderid+"&trade_id="+data.trade_id+"&summary_order_id="+data.summary_order_id
+						});
+						return;
+					}
 			        if (code == 0) {
 			            this.onTradePay(data)
 			        }
@@ -447,7 +474,11 @@
 			    data["card_no"] = this.cardNo;
 			    data["load_type"] = 0;
 			    data["order_type"] = "11";
-			    data["privilege_amount"] = "0";//优惠后的价格
+				
+			    // data["privilege_amount"] = "0";//优惠后的价格
+				data["privilege_amount"] = this.full_reduction;//立减的价格
+				
+				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
 				data["coupon_id"] = this.coupon_id;// change
 
@@ -474,14 +505,26 @@
 			    for(let item in data){
 			        dataobj[item] = data[item]
 			    }
+				console.log("res*********************")
+				console.log("res", "before request")
+				console.log("res*********************")
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
+					let trade_platform = 1;
+					console.log("res*********************")
+					console.log("code, data, res", code, data, res)
+					console.log("res*********************")
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
-			                this.apiRepaid(trade_id)
+							if (Number(data.trade_amount) <= 0) {//实际支付0元时
+								trade_platform = 6;
+							}
+			                this.apiRepaid(trade_id, trade_platform);
 			            }
-			        }
+			        } else {
+						this.curLock = true;
+					}
 			    })
 			}
 		},
@@ -591,13 +634,16 @@
 					}
 					.minbox-3 {
 						margin: 0 0 0 16rpx;
-						padding: 0 15rpx;
-						height: 28rpx;
-						line-height: 28rpx;
-						border-radius: 100rpx;
-						background-color: rgba($color: #FF5C2A, $alpha: 0.1);
-						color: #FF5C2A;
-						font-size: 20rpx;
+						padding: 40rpx 0;
+						.min {
+							padding: 0 15rpx;
+							height: 28rpx;
+							line-height: 28rpx;
+							border-radius: 100rpx;
+							background-color: rgba($color: #FF5C2A, $alpha: 0.1);
+							color: #FF5C2A;
+							font-size: 20rpx;
+						}
 					}
 				}
 				.right {
@@ -683,7 +729,7 @@
 			border-radius: 12rpx 12rpx 0 0;
 			position: relative;
 			.title {
-				margin: 0 28rpx;
+				margin: 0 80rpx;
 				text-align: center;
 				font-size: 36rpx;
 				font-weight: 700;
@@ -698,10 +744,21 @@
 			}
 			.close {
 				position: absolute;
-				right: 22rpx;
-				top: 37rpx;
-				width: 40rpx;
-				height: 40rpx;
+				right: 0;
+				top: 0;
+				width: 90rpx;
+				height: 110rpx;
+				.img {
+					position: absolute;
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					display: block;
+					width: 40rpx;
+					height: 40rpx;
+				}
 			}
 		}
 		.popup-order {
@@ -754,10 +811,21 @@
 			}
 			.close {
 				position: absolute;
-				right: 22rpx;
-				top: 37rpx;
-				width: 40rpx;
-				height: 40rpx;
+				right: 0;
+				top: 0;
+				width: 90rpx;
+				height: 110rpx;
+				.img {
+					position: absolute;
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					margin: auto;
+					display: block;
+					width: 40rpx;
+					height: 40rpx;
+				}
 			}
 		}
 	}

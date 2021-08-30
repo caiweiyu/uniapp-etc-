@@ -204,7 +204,7 @@
 					&_left{
 						width: 217rpx;
 						height: 210rpx;
-						background-color: #F9ECD3;
+						background-color: #FFEDE8;
 						position: relative;
 						>view{
 							font-size: 36rpx;
@@ -234,7 +234,7 @@
 							// display: flex;
 							// flex-direction: column;
 							>view:first-child{
-								border:1rpx solid #D1A86A;
+								border:.5rpx solid #ff5c2a;
 								display: inline-block;
 								// width: 86rpx;
 								padding:3rpx 7rpx;
@@ -244,7 +244,7 @@
 								font-size: 24rpx;
 								border-radius: 4rpx;
 								margin:34rpx 0 0 40rpx;
-								color: #D1A86A;
+								color: #ff5c2a;
 							}
 							>view:nth-child(2){
 								font-size: 32rpx;

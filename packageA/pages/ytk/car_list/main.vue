@@ -96,7 +96,7 @@
 			bindNavCarEditor(e,index) {
 				let obj = this.listcar[index];
 				uni.navigateTo({
-					url: "/packageA/pages/ytk/bind_car/main?car_num=" + obj.car_num + "&card_no=" + obj.card_num + "&car_color=" + obj.car_color + "&car_id=" + obj.id + "&source=" + ""
+					url: "/packageA/pages/ytk/bind_car/main?car_num=" + obj.car_num + "&card_no=" + obj.card_num + "&car_color=" + obj.car_color + "&car_id=" + obj.id + "&source=" + "" + "&editor=" + true
 				})
 			},
 
@@ -130,7 +130,7 @@
 
 <style lang="scss">
 	page {
-		background-color: #F9F9F9;
+		background-color: #F6F6F6;
 	}
 	.content {
 		padding: 0 0 160rpx 0;
@@ -209,7 +209,7 @@
 		}
 		.none {
 			.icon-car {
-				margin: 60rpx auto 0 auto;
+				margin: calc(100vh * 0.5 - 220rpx) auto 0 auto;
 				display: block;
 				width: 400rpx;
 				height: 300rpx;
@@ -218,7 +218,7 @@
 				margin: 30rpx 0 0 0;
 				text-align: center;
 				font-size: 28rpx;
-				color: #666666;
+				color: #999999;
 			}
 		}
 		.btn {

@@ -25,27 +25,38 @@
 				<block v-if="global_popup.type > 1">
 					<!-- 弹窗图片（局部） -->
 					<view class="pic">
-						<image class="img" :src="global_popup.img_url" mode="widthFix"></image>
+						<image class="img" :src="global_popup.img_url" mode="aspectFill"></image>
 					</view>
 					<!-- 弹窗title -->
-					<view class="title">{{global_popup.img_text.title}}</view>
+					<view class="title">
+						<text :decode="true">{{global_popup.img_text.title}}</text>
+					</view>
 					<!-- 弹窗content -->
-					<view class="content">{{global_popup.img_text.content}}</view>
+					<view class="content">
+						<text :decode="true">{{global_popup.img_text.content}}</text>
+					</view>
 					<!-- 按钮 -->
 					<view class="button" :style="{display:'flex', flexDirection:direction}">
 						<!-- 图文（单按钮） -->
-						<view class="one" v-show="global_popup.type == 2">
-							<view class="box-1" @click="closeWindow">通知我</view>
+						<view class="one" v-if="global_popup.type == 2">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index == 0">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 						<!-- 图文（上下） -->
-						<view class="two" v-show="global_popup.type == 3">
-							<view class="box-1" @click="closeWindow">通知我</view>
-							<text class="box-2" @click="closeWindow">暂时不用</text>
+						<view class="two" v-if="global_popup.type == 3">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index <= 1">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 						<!-- 图文：左右 -->
-						<view class="three" v-show="global_popup.type == 4">
-							<view class="box-1" @click="closeWindow">不同意</view>
-							<view class="box-2" @click="closeWindow">同意</view>
+						<view class="three" v-if="global_popup.type == 4">
+							<view :class="[`box-${(index + 1)}`]" v-for="(item, index) in global_popup.img_text.button" :key="index" v-if="index <= 1">
+								<view class="minbox" @click="$debounce(bindNav,item)">{{item.label}}</view>
+								<button-getPhoneNumber v-if="!item.is_need_login || item.is_need_login == '1'" type="local" :item="item" />
+							</view>
 						</view>
 					</view>
 				</block>
@@ -87,7 +98,8 @@
 		},
 		computed: {
 			...mapState({
-				token: (state)=> state.user.token
+				token: (state)=> state.user.token,
+				from_type: (state)=> state.user.from_type
 			})
 		},
 		watch: {
@@ -127,11 +139,28 @@
 			 *  2 每天跳转一次 
 			 *  3 每次打开跳转(供测试用)
 			 */
-			async loadPopup() {
+			loadPopup() {
 				if (new Date().getTime() - this.showTime < 10000) return;
+				this.loadPopupCallBack();
+			},
+			
+			/**
+			 * 全局弹窗回调
+			 */
+			async loadPopupCallBack() {
+				let {
+					from_type = 0
+				} = this.$root.$mp.query;
+				if (Number(from_type) > 0) {
+					this.$store.commit("user/setFromType", Number(from_type));
+				}
+				if (from_type === 0) {
+					from_type = this.from_type
+				}
 				let res = await API.axios_global_popup({
-					flag: this.flag
-				});
+					flag: this.flag,
+					from_type: from_type
+				})
 				if (String(res.data) != 'null') {
 					let data = res.data;
 					data.dialog = 0;
@@ -252,6 +281,7 @@
 			},
 			callbackNav(item) {
 				// 跳转page || miniProgram
+				this.closeWindow();
 				miniapp.miniProgramRouter(item, (res) => {
 					this.closeWindow();
 				}, (err) => {
@@ -325,9 +355,11 @@
 					border-radius: 30rpx 30rpx 0 0;
 					.img {
 						width: 630rpx;
+						height: 250rpx;
 					}
 				}
 				.title {
+					padding: 0 28rpx;
 					font-size: 36rpx;
 					color: #222222;
 					text-align: center;
@@ -335,6 +367,7 @@
 					font-weight: bold;
 				}
 				.content {
+					padding: 0 28rpx;
 					font-size: 28rpx;
 					color: #222222;
 					text-align: center;

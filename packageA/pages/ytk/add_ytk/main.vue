@@ -38,7 +38,7 @@
 			</view>
 		</view>
 		<view class="btn-footer">
-			<view class="btn-primary" @click="onSubmit">添加</view>
+			<view class="btn-primary" style="color: #FFFFFF; background-color: #FF5C2A;" @click="onSubmit">添加</view>
 		</view>
 		<car-plate v-model="plate_picker_show" :defautValue="plate_value" @onConfirm="onConfirm" />
 	</view>
@@ -187,6 +187,7 @@
 
 					.area {
 						margin-right: 24rpx;
+						color: #FF5C2A;
 
 						.arrow {
 							display: inline-block;
@@ -194,8 +195,8 @@
 							height: 0;
 							border-width: 8rpx;
 							border-style: solid;
-							border-color: #cccccc transparent transparent transparent;
-							margin-top: 5rpx;
+							border-color: #FF5C2A transparent transparent transparent;
+							margin: 5rpx 0 0 4rpx;
 							vertical-align: middle;
 						}
 					}
@@ -263,8 +264,8 @@
 				margin-top: 40rpx;
 
 				&.active {
-					color: #d6ab75;
-					border: 2rpx solid #d6ab75;
+					color: #FF5C2A;
+					border: 2rpx solid #FF5C2A;
 				}
 			}
 		}

@@ -11,7 +11,7 @@
 	<!-- ********************************* -->
 	<!-- 卡券 -->
 	<!-- ********************************* -->
-	<view class="content">
+	<view class="content-coupon">
 		
 		<!-- 有效卡券 -->
 		<view class="coupon" v-if="type == 'coupon'">
@@ -111,7 +111,7 @@
 </script>
 
 <style lang="scss">
-	.content {
+	.content-coupon {
 		.coupon {
 			margin: 20rpx 20rpx 0 20rpx;
 			.box {
@@ -134,7 +134,7 @@
 						align-content: center;
 						width: 215rpx;
 						height: 100%;
-						background-color: #F9ECD3;
+						background-color: #FFEDE8;
 						text-align: center;
 						.min:nth-child(1) {
 							font-size: 72rpx;
@@ -160,8 +160,8 @@
 							display: inline-block;
 							height: 38rpx;
 							line-height: 38rpx;
-							border: 1rpx solid #D1A86A;
-							color: #D1A86A;
+							border: 1rpx solid #FF5C2A;
+							color: #FF5C2A;
 							border-radius: 4rpx;
 							font-size: 24rpx;
 						}

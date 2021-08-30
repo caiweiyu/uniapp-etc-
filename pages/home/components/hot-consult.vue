@@ -48,7 +48,7 @@
 								<text v-if="item.likeCount != undefined" v-text="item.likeCount ? `${item.likeCount}人点赞` : '0人点赞'"></text> -->
 								<!-- <text v-if="item.publishTime != undefined" v-text="item.publishTime"></text>
 								<text v-if="item.createTime != undefined" v-text="item.createTime"></text> -->
-								<text>{{item.publishTime  || item.createTime}}</text>
+								<text>{{item.publishTime || item.createTime}}</text>
 							</view>
 							<view class="minbox minboxBg">
 								<image class="img" v-if="item.frontImgUrl" :src="item.frontImgUrl" mode="aspectFill"></image>

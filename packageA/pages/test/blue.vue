@@ -53,6 +53,10 @@
     import conf from '@/config/conf.js'
     import * as API from "@/interfaces/base";
 
+    import ytkDataEncode from "@/packageA/pages/test/blueAPIs/ytkDataEncode";
+    import ytkAuthAPI from "@/packageA/pages/test/blueAPIs/ytkAuthAPI";
+
+
     export default {
         data() {
             return {
@@ -101,8 +105,13 @@
         },
         methods: {
             test1() {
+                let aa = ytkDataEncode.initEncode("A2")
+                console.log('aa: ',aa)
+                aa = ytkDataEncode.initEncode("80")
+                console.log('aa: ',aa)
             },
             test2() {
+
             },
             initAll() {
                 //const ble = new BLE(emitter, '');

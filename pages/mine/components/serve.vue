@@ -125,7 +125,7 @@
 	.my-order-body{
 		background-color: #F4F4F4;
 		padding:0rpx 28rpx 20rpx 28rpx;
-		height:320rpx;
+		// height:320rpx;
 		.my-order{
 			// height: 363rpx;
 			width: 694rpx;

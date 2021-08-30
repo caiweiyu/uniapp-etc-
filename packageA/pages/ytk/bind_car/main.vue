@@ -50,7 +50,7 @@
 						</div>
 					</div>
 					<div class="content-right">
-						<input class="input-item" v-model="plate_detail" placeholder="填写车牌号" @input="plateDetailChange"
+						<input class="input-item" v-model="plate_detail" placeholder="填写车牌号" :disabled="editor" @input="plateDetailChange"
 							maxlength="6" />
 					</div>
 				</div>
@@ -163,14 +163,14 @@
 		<!-- ************************** -->
 		<!-- 请选择落地时间 -->
 		<!-- ************************** -->
-		<u-picker v-model="date_picker_show" mode="time" :default-time="defaultTime" title="请选择落地时间" :params="params" :start-year="startYear" :end-year="endYear" confirm-color="#f1cf92"
+		<u-picker v-model="date_picker_show" mode="time" :default-time="defaultTime" title="请选择落地时间" :params="params" :start-year="startYear" :end-year="endYear" confirm-color="#FF5C2A"
 			@confirm="onDatetimeConfirm" @cancel="date_picker_show = false" />
 
 		<!-- ************************** -->
 		<!-- 选择车辆颜色 -->
 		<!-- ************************** -->
 		<u-picker v-model="color_picker_show" mode="selector" :default-selector="defaultSelectorColor ? [defaultSelectorColor] : [0]" :range="color_columns" title="选择车辆颜色"
-			@confirm="onColorConfirm" @cancel="color_picker_show = false" range-key="text" confirm-color="#f1cf92" />
+			@confirm="onColorConfirm" @cancel="color_picker_show = false" range-key="text" confirm-color="#FF5C2A" />
 
 		<!-- ************************** -->
 		<!-- 驾驶证照片弹窗 -->
@@ -195,7 +195,7 @@
 			@cancel="plate_picker_show = false"
 			@columnchange="columnchange"
 			:default-selector='[0, 0]'
-			confirm-color="#f1cf92"
+			confirm-color="#FF5C2A"
 		/> -->
 
 	</div>
@@ -295,6 +295,7 @@
 				plate_detail: "",
 				plate_value: "粤 A",
 				options: "", //page参数
+				editor: false,//是否编辑
 			};
 		},
 		computed: {
@@ -323,15 +324,17 @@
 			this.form.source = options.source;
 			let {
 				car_num = "",
-					card_no = "",
-					car_color = "",
-					car_id = ""
+				card_no = "",
+				car_color = "",
+				car_id = "",
+				editor = ""
 			} = options;
 			this.query_car_num = car_num || "";
 			this.query_card_no = card_no || "";
 			this.query_car_color = car_color || "";
 			this.query_car_id = car_id || "";
 			this.form.source = options.source || "";
+			this.editor = editor || false;
 			this.init();
 		},
 		onShow() {
@@ -413,7 +416,7 @@
 				uni.showModal({
 					title: "删除车辆",
 					content: "删除后无法使用违章、限行提醒等平台服务，确定删除？",
-					confirmColor: "#d1a86a",
+					confirmColor: "#FF5C2A",
 					confirmText: "确认",
 					success: (res) => {
 						if (res.confirm) {
@@ -716,7 +719,7 @@
 	}
 
 	.van-picker__confirm {
-		color: #d1a86a;
+		color: #FF5C2A;
 	}
 
 	.driving_license {
@@ -819,7 +822,7 @@
 					}
 
 					.area {
-						color: #d1a86a;
+						color: #FF5C2A;
 						font-weight: 500;
 						margin-right: 24rpx;
 
@@ -829,8 +832,8 @@
 							height: 0;
 							border-width: 8rpx;
 							border-style: solid;
-							border-color: #d1a86a transparent transparent transparent;
-							margin-top: 10rpx;
+							border-color: #FF5C2A transparent transparent transparent;
+							margin: 0 0 0 4rpx;
 							vertical-align: middle;
 						}
 					}
@@ -893,7 +896,7 @@
 				}
 
 				&__value {
-					color: #d1a86a;
+					color: #FF5C2A;
 				}
 			}
 
@@ -1017,7 +1020,6 @@
 				color: #999999;
 				border: 1rpx solid #CCCCCC;
 				box-sizing: border-box;
-				// background-color: #f1cf92;
 				border-radius: 100rpx;
 			}
 
@@ -1027,7 +1029,8 @@
 				text-align: center;
 				line-height: 100rpx;
 				font-size: 36rpx;
-				background-color: #f1cf92;
+				background-color: #FF5C2A;
+				color: #FFFFFF;
 				border-radius: 100rpx;
 			}
 
@@ -1037,7 +1040,8 @@
 				text-align: center;
 				line-height: 100rpx;
 				font-size: 36rpx;
-				background-color: #f1cf92;
+				background-color: #FF5C2A;
+				color: #FFFFFF;
 				border-radius: 100rpx;
 			}
 		}

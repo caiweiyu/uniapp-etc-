@@ -100,6 +100,17 @@
 			}
 		},
 		{
+			"path": "pages/fm/video/main_form",
+			"style": {
+				"navigationBarTitleText": "评论列表",
+				"backgroundColor": "#FFFFFF",
+				"backgroundColorTop": "#FFFFFF",
+				"backgroundColorBottom": "#FFFFFF",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
+		},
+		{
 			"path": "pages/mine/main",
 			"style": {
 				"navigationBarTitleText": "我的",
@@ -407,37 +418,31 @@
 					"navigationBarTitleText": "失效券"
 				}
 			}]
+		},
+		{
+			//测试
+			"root": "packageA/pages/test/",
+			"pages": [
+				{
+					"path": "test",
+					"style": {
+						"navigationBarTitleText": "测试"
+					}
+				},
+				{
+					"path": "nfc",
+					"style": {
+						"navigationBarTitleText": "nfc测试"
+					}
+				},
+				{
+					"path": "blue",
+					"style": {
+						"navigationBarTitleText": "蓝牙测试"
+					}
+				}
+			]
 		}
-//		{
-//			//测试
-//			"root": "packageA/pages/test/",
-//			"pages": [
-//				{
-//					"path": "test",
-//					"style": {
-//						"navigationBarTitleText": "测试"
-//					}
-//				},
-//				{
-//					"path": "nfc",
-//					"style": {
-//						"navigationBarTitleText": "nfc测试"
-//					}
-//				},
-//				{
-//					"path": "blue",
-//					"style": {
-//						"navigationBarTitleText": "蓝牙测试"
-//					}
-//				}
-////				{
-////					"path": "sand",
-////					"style": {
-////						"navigationBarTitleText": "sand"
-////					}
-////				}
-//			]
-//		}
 	],
 	"preloadRule": {
 		"pages/home/main": {

@@ -59,11 +59,10 @@
 												{{item.publishTime  || item.createTime}}
 											</view>
 											<view class="demo-time">
-												<!-- <image
-													src="https://image.etcchebao.com/etc-min/info/touch.png"
-													mode="" class="demo-time-image"></image>
+												<image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image>
+												<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>
 												<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
-												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
+												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 											</view>
 										</view>
 									</view>
@@ -87,11 +86,10 @@
 													{{item.publishTime  || item.createTime}}
 												</view>
 												<view class="demo-time">
-													<!-- <image
-														src="https://image.etcchebao.com/etc-min/info/touch.png"
-														mode="" class="demo-time-image"></image>
+													<image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image>
+													<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>
 													<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
-													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text> -->
+													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 												</view>
 											</view>
 										</view>
@@ -193,6 +191,12 @@
 			this.init()
 		},
 		onShow(){
+			// uni.$on("updateFMPage",(e)=>{
+			// 	if(e.videoDestory){
+			// 		this.onRefresh(this.swiperCurrent);
+			// 		uni.$off("updateFMPage")
+			// 	}
+			// })
 			this.$token(()=>{
 				this.init();
 			})
@@ -236,7 +240,7 @@
 						this.triggered = false;
 						clearTimeout(timer)
 					}, 1500)
-				}			
+				}
 			},
 			/* 下拉被复位 */
 			onRestore() {
@@ -253,7 +257,7 @@
 			onAbort() {
 				this.$debounce(()=>{
 					console.log('无效下拉')
-				})	
+				})
 			},
 			stopTouchMove(){
 				return true
@@ -568,7 +572,7 @@
 						})
 						uni.navigateTo({url: '/pages/fm/video/main?ID='+param});
 					}
-				})	
+				})
 			},
 			//顶部tab栏目请求
 			async gettabList() {

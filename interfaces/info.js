@@ -119,7 +119,7 @@ export function articleClick(data) {
 }
 
 /**
- * 评论列表接口
+ * 获取评论列表接口
  */
  export function formGetCommentList(data) {
 	return request({
@@ -130,11 +130,22 @@ export function articleClick(data) {
 }
 
 /**
- * 视频提交评论
+ * 发表评论接口
  */
  export function formaddComment(data) {
 	return request({
 		url: `${G}/fm-new/fm/addComment`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 点赞评论接口
+ */
+ export function formcommentLike(data) {
+	return request({
+		url: `${G}/fm-new/fm/commentLike`,
 		method: "post",
 		data
 	});
@@ -150,3 +161,4 @@ export function articleClick(data) {
 		data
 	});
 }
+
