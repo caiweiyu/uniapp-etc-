@@ -524,8 +524,23 @@
 							duration: 1500,
 							icon: "none"
 						})
+						this.loadReflash();
 					}
 			    })
+			},
+			
+			/**
+			 * 刷新页面
+			 */
+			loadReflash() {
+				this.coupon_gold = 0;
+				this.full_reduction = 0;
+				this.total_gold = 0;
+				this.total_discount = 0;
+				this.indexGold = index;
+				this.recharge_id = -1;
+				this.curOrder = false;
+				this.loadGoldList();
 			}
 		},
 		/**
