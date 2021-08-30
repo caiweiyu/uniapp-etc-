@@ -505,15 +505,9 @@
 			    for(let item in data){
 			        dataobj[item] = data[item]
 			    }
-				console.log("res*********************")
-				console.log("res", "before request")
-				console.log("res*********************")
 			    bleProxy.prepaidV3(dataobj).then(res => {
 			        let {code, data} = res;
 					let trade_platform = 1;
-					console.log("res*********************")
-					console.log("code, data, res", code, data, res)
-					console.log("res*********************")
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
 			            if(trade_id){
@@ -524,6 +518,12 @@
 			            }
 			        } else {
 						this.curLock = true;
+						uni.showToast({
+							title: data.msg,
+							mask: true,
+							duration: 1500,
+							icon: "none"
+						})
 					}
 			    })
 			}
