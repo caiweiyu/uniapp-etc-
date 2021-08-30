@@ -417,6 +417,7 @@
 
 			/**
 			 * 调起微信小程序支付
+			 * https://user-test.etcchebao.com/hfrecharge/index.html?setShareBtn=2&clientVersion=4.4.1&token=92ce1d85a258812bc2df26f7f3cf288f&platform=app_android&distinct_id=d510fc40b04b0ec9fe3cac3a815b6de5&timestamp=1630309517018
 			 */
 			onTradePay(data) {
 			    let {
@@ -481,6 +482,8 @@
 				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
 				data["coupon_id"] = this.coupon_id;// change
+				
+				if (this.coupon_id) data["discount_type"] = 3;
 
 			    // //vip
 			    // data["vip_merge_type"] = "1"; // 1：套餐，2：特权
