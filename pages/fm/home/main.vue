@@ -59,8 +59,8 @@
 												{{item.publishTime  || item.createTime}}
 											</view>
 											<view class="demo-time">
-												<image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image>
-												<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>
+												<!-- <image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image> -->
+												<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" class="demo-time-image" ></image>
 												<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
 												<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 											</view>
@@ -86,8 +86,8 @@
 													{{item.publishTime  || item.createTime}}
 												</view>
 												<view class="demo-time">
-													<image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image>
-													<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" v-else class="demo-time-image"></image>
+													<!-- <image src="https://image.etcchebao.com/etc-min/info/touch_active.png" v-if="item.isLike==1" mode="" class="demo-time-image"></image> -->
+													<image src="https://image.etcchebao.com/etc-min/info/touch.png" mode="" class="demo-time-image"></image>
 													<text class="demo-time-text" v-if="item.totalLike == 0 || item.likeCount == 0">赞</text>
 													<text class="demo-time-text" v-else>{{item.totalLike || item.likeCount}}</text>
 												</view>
