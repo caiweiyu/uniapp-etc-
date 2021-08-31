@@ -96,6 +96,7 @@
 				nearby_store: (state) => state.home.nearby_store,
 			}),
 			km() {
+				if (String(this.nearby_store.lists) == "null") return "";
 				if (this.nearby_store.hasOwnProperty("lists") == false) return "";
 				return (this.nearby_store.lists[this.curIndex].rows[0].distance * 0.001).toFixed(3)
 			}

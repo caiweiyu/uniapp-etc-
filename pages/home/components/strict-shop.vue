@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-06-16 18:37:57
 -->
 <template>
-	<view class="zs-content">
+	<view class="zs-content" v-if="strict_shop.lists">
 
 		<!-- ************************** -->
 		<!-- 标题 -->
@@ -74,6 +74,7 @@
 				strict_shop: (state) => state.home.strict_shop,
 			}),
 			mores() {
+				if (String(this.strict_shop.lists) == "null") return {};
 				if (this.strict_shop.hasOwnProperty("lists") == false) return {};
 				return {
 					jump_type: this.strict_shop.lists[this.curIndex].m_jump_type,
