@@ -64,9 +64,9 @@
 			this.detailUrl = decodeURIComponent(detailUrl);
 			this.backMarkImg = decodeURIComponent(backMarkImg);
 			this.detailMarkImg = decodeURIComponent(detailMarkImg);
-			this.describe = describe;
-			this.backName = backName;
-			this.detailName = detailName;
+			this.describe = decodeURIComponent(describe);
+			this.backName = decodeURIComponent(backName);
+			this.detailName = decodeURIComponent(detailName);
 			this.money = money;
 		},
 		methods: {
