@@ -31,7 +31,7 @@
 		<!-- ***************************** -->
 		<view class="coupons">
 			<!-- 立减优惠 -->
-			<view class="box" v-if="msgActivity.discount_switch == 'on'">
+			<view class="box" v-if="msgActivity.discount_switch == 'on' && curCutShow">
 				<view class="left">
 					<view class="minbox-1">
 						<image src="https://image.etcchebao.com/etc-min/etc-f/icon_23.png"></image>
@@ -85,7 +85,7 @@
 		<!-- ***************************** -->
 		<!-- 活动详情弹窗 -->
 		<!-- ***************************** -->
-		<block v-if="msgActivity.discount_switch == 'on'">
+		<block v-if="msgActivity.discount_switch == 'on' && curCutShow">
 			<u-popup
 				v-model="curActivity"
 				mode="bottom"
@@ -203,6 +203,7 @@
 				total_discount: 0,//总优惠
 				
 				curLock: true,//禁止多次支付
+				curCutShow: false,//是否存在满减优惠
 			}
 		},
 		onLoad(options) {
@@ -236,6 +237,15 @@
 				this.listGold = res.data.list;
 				for (let i = 0; i < this.listGold.length; i++) {
 					this.listGold[i].amount = (this.listGold[i].amount * 0.01).toFixed(2);
+				}
+				let num = 0;
+				for(let i = 0; i < this.listGold.length; i++) {
+					if (Number(this.listGold[i].is_icon_reduce) == 1) {
+						num++;
+					}
+				}
+				if (num > 0) {
+					this.curCutShow = true;
 				}
 			},
 			
@@ -271,7 +281,7 @@
 			 * 满减金额获取
 			 */
 			async loadFullMinusGet(index) {
-				if (this.msgActivity.discount_switch != 'on') return;
+				if (this.msgActivity.discount_switch != 'on' && this.curCutShow) return;
 				let res = await API_YTK.ytk_pay_full_minus_get({
 					cardNo: this.cardNo,
 					id: this.listGold[index].id
@@ -417,6 +427,7 @@
 
 			/**
 			 * 调起微信小程序支付
+			 * https://user-test.etcchebao.com/hfrecharge/index.html?setShareBtn=2&clientVersion=4.4.1&token=92ce1d85a258812bc2df26f7f3cf288f&platform=app_android&distinct_id=d510fc40b04b0ec9fe3cac3a815b6de5&timestamp=1630309517018
 			 */
 			onTradePay(data) {
 			    let {
@@ -455,6 +466,7 @@
 			            },
 						complete: (res) => {
 							this.curLock = true;
+							uni.hideLoading()
 						}
 			        });
 			    } catch (error) {
@@ -468,6 +480,10 @@
 			ApiPrepaid() {
 				if (!this.curLock) return;
 				this.curLock = false;
+				uni.showLoading({
+					title: "提交订单",
+					mask: true
+				})
 				eventMonitor("YTKOrder_Popover_YTK_YTKRecharge_385_Button_click", 2)
 			    let data = []
 			    data["trade_num"] = this.listGold[this.indexGold].amount;// change
@@ -481,6 +497,8 @@
 				data["recharge_id"] =  this.recharge_id;//充值金额挡位id
 
 				data["coupon_id"] = this.coupon_id;// change
+				
+				if (this.coupon_id) data["discount_type"] = 3;
 
 			    // //vip
 			    // data["vip_merge_type"] = "1"; // 1：套餐，2：特权
@@ -526,6 +544,7 @@
 							icon: "none"
 						})
 					}
+					uni.hideLoading()
 			    })
 			},
 			
