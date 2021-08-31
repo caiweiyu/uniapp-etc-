@@ -466,6 +466,7 @@
 			            },
 						complete: (res) => {
 							this.curLock = true;
+							uni.hideLoading()
 						}
 			        });
 			    } catch (error) {
@@ -479,6 +480,10 @@
 			ApiPrepaid() {
 				if (!this.curLock) return;
 				this.curLock = false;
+				uni.showLoading({
+					title: "提交订单",
+					mask: true
+				})
 				eventMonitor("YTKOrder_Popover_YTK_YTKRecharge_385_Button_click", 2)
 			    let data = []
 			    data["trade_num"] = this.listGold[this.indexGold].amount;// change
@@ -539,6 +544,7 @@
 							icon: "none"
 						})
 					}
+					uni.hideLoading()
 			    })
 			},
 			
