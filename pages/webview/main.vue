@@ -189,9 +189,13 @@
 				} else if (host.indexOf(`https://chewu${BASE_URL}.etcchebao.com/vip/dist`) > -1) {
 					// 会员卡
 					host = `https://chewu${BASE_URL}.etcchebao.com/vip/dist/#/index`;
-				} else if(host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html`) > -1){
+				} else if(host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge`) > -1){
 					//话费充值
-					host = `https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html?setShareBtn=2`;
+					if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html`) > -1) {
+						host = this.webviewShareCallBack(options, host);	
+					}else{
+						host = `https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html?setShareBtn=2`;
+					}
 				} else {
 					type = 0;
 				}
