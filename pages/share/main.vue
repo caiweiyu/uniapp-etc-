@@ -1,6 +1,6 @@
 <template>
     <view class="content">
-        
+
 		<!-- ****************************************** -->
 		<!-- H5分享中转page -->
 		<!-- ****************************************** -->
@@ -17,7 +17,7 @@
 				<button class="button" open-type="share"></button>
 			</view>
 		</view>
-		
+
     </view>
 </template>
 
@@ -25,7 +25,7 @@
 	import miniScript from "@/common/miniScript"
 	const miniapp = miniScript.getInstance()
 	const app = getApp()
-	
+
     import { mapState } from "vuex"
     export default {
         data() {
@@ -53,8 +53,8 @@
 			let {share_data=''} = this.$root.$mp.query;
 			if(share_data!==''){
                 share_data = JSON.parse(share_data);
-                this.app_message.title = share_data.title;
-                this.app_message.imageUrl = share_data.img_url;
+                this.app_message.title = decodeURIComponent(share_data.title);
+                this.app_message.imageUrl = decodeURIComponent(share_data.img_url);
                 this.app_message.path = '/pages/login/main?from_type=2&share_id='+this.share_id+'&h5_url='+share_data.h5_url;
             }
             console.log('share_data',share_data);
@@ -64,9 +64,9 @@
             },
         },
         onUnload() {
-			
+
         },
-		
+
 		/**
 		 * 分享好友/群
 		 */
