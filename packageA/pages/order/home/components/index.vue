@@ -52,7 +52,7 @@
 						 :scroll-with-animation="true"
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list" :key="index">
-							<view class="order-card-header" v-if="['40','11','10','140'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
+							<view class="order-card-header" v-if="['40','11','10','140','100'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
 								<view class="header">
 									<view class="header_box_l">
 										<image class="header_box_l_img" :src="item.icon"></image>
