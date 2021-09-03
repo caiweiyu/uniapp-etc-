@@ -163,7 +163,7 @@
 						host += options.webViewUrl[i];
 					}
 				}
-				
+
 				// 条件判断对接H5业务
 				let BASE_URL = "";
 				if (config.fix !== '') {
@@ -189,18 +189,21 @@
 				} else if (host.indexOf(`https://chewu${BASE_URL}.etcchebao.com/vip/dist`) > -1) {
 					// 会员卡
 					host = `https://chewu${BASE_URL}.etcchebao.com/vip/dist/#/index`;
-				} else {
+				}else if (host.indexOf(`https://zt${BASE_URL}.etcchebao.com/mid/index.html`) > -1) {
+					// 中秋活动
+					host = this.webviewShareCallBack(options, host);
+				}else {
 					type = 0;
 				}
-				
+
 				// 拼接path
 				if (type == 1) {
 					path = `/pages/login/main?from_type=2&share_id=${this.share_id}&h5_url=${encodeURIComponent(host)}`;
 				} else {
 					path = `/pages/home/main?from_type=2&share_id=${this.$store.state.user.info.userid}`;
 				}
-				
-				app.log({ 
+
+				app.log({
 					host: host,
 					path: path
 				})
