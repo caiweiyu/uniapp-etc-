@@ -79,7 +79,7 @@
 									<view class="order-box1"></view>
 									<view class="order-box2">
 										<view class="order_pay"
-											v-if="['10','140'].indexOf(item.order_type) > -1 && item.order_status_id == '6'">
+											v-if="['10','140','100'].indexOf(item.order_type) > -1 && item.order_status_id == '6'">
 											支付
 										</view>
 										<view class="order_pay"
@@ -94,7 +94,7 @@
 											v-if="item.order_type == '11' && item.order_status_id == '0'">
 											继续写卡
 										</view>
-										<view @click.stop="$debounce(toServicedetail,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
+										<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="(['011000','100001'].indexOf(item.sub_order_type) > -1) && (['13','15','19'].indexOf(item.order_status_id) > -1)">
 											退款进度
 										</view>
 									</view>
@@ -143,7 +143,7 @@
 											v-if="item.order_type == '11' && item.order_status_id == '0'">
 											继续写卡
 										</view>
-											<view @click.stop="$debounce(toServicedetail,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
+											<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
 											退款进度
 										</view>
 									</view>
@@ -190,6 +190,7 @@
 		mapState
 	} from 'vuex';
 	import changeTabbar from "@/components/change-tabbar";
+	import fix from "@/config/conf";
 	export default {
 		props: {
 			name: {
@@ -226,7 +227,8 @@
 				status:'nomore',
 				triggered:false,
 				scrollTops:-1,
-				winStatusH:uni.getSystemInfoSync().statusBarHeight * 2
+				winStatusH:uni.getSystemInfoSync().statusBarHeight * 2,
+				fix:fix.fix
 			}
 		},
 		methods: {
@@ -367,12 +369,19 @@
 
 				}
 			},
-			//跳转订单详情
-			toServicedetail(order_type,order_id){
-				let url = `/packageA/pages/ytk/ytk_list/order_process?order_id=${order_id}&order_type=${order_type}`
-				uni.navigateTo({
-					url: url
-				});
+			//跳转订单进度
+			toServicedetail(item,order_type,order_id){
+				if(item.sub_order_type == '100001'){
+					let url_src = `https://user' + ${this.fix} + '.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(url_src)}`
+					});
+				}else{
+					let url = `/packageA/pages/ytk/ytk_list/order_process?order_id=${order_id}&order_type=${order_type}`
+					uni.navigateTo({
+						url: url
+					});
+				}
 			},
 			//获取全部菜单数据
 			async getOrderListtarget(page, page_size, order_status, sub_order_type) {
@@ -442,7 +451,7 @@
 			}
 		},
 		mounted() {
-			console.log(uni.getSystemInfoSync(),'winStatusH',this.winStatusH)
+			console.log(this.fix,uni.getSystemInfoSync(),'winStatusH',this.winStatusH)
 			let {
 				index
 			} = this.$root.$mp.query;
