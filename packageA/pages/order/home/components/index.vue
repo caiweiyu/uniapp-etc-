@@ -94,7 +94,7 @@
 											v-if="item.order_type == '11' && item.order_status_id == '0'">
 											继续写卡
 										</view>
-										<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="(['011000','100001'].indexOf(item.sub_order_type) > -1) && (['13','15','19'].indexOf(item.order_status_id) > -1)">
+										<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="(['011000','100001'].indexOf(item.sub_order_type) > -1) && (['12','13','15','19'].indexOf(item.order_status_id) > -1)">
 											退款进度
 										</view>
 									</view>
@@ -372,7 +372,7 @@
 			//跳转订单进度
 			toServicedetail(item,order_type,order_id){
 				if(item.sub_order_type == '100001'){
-					let url_src = `https://user' + ${this.fix} + '.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
+					let url_src = `https://user-${this.fix}.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
 					uni.navigateTo({
 						url: `/pages/webview/main?src=${encodeURIComponent(url_src)}`
 					});
