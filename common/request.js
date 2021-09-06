@@ -48,9 +48,9 @@ const interceptRequest = useIntercept(uni.request, {
 			params.data["latitude"] = store.state.user.latitude
 			params.data["longitude"] = store.state.user.longitude
 			//测试多token
-			// if (params.url.indexOf("/mini-program/v1/wechat/authPhone") > -1 || params.url.indexOf("/mini-program/v1/wechat/authLogin") > -1) {
-			// 	params.data["token"] = "";
-			// }
+			if (params.url.indexOf("/mini-program/v1/wechat/authPhone") > -1 || params.url.indexOf("/mini-program/v1/wechat/authLogin") > -1) {
+				params.data["token"] = "";
+			}
 
 		} else {
 			params.data["isWifi"] = conf.isWifi;
