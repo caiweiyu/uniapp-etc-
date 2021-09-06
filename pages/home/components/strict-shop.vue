@@ -33,7 +33,7 @@
 					<view class="text">{{item.price}}</view>
 					<view class="text">销量 {{item.gid}}</view>
 				</view>
-				<view class="minbox">
+				<view class="minbox" v-if="parseFloat(item.vprice).toFixed(2) >= 0.01">
 					<view class="text">{{item.vprice}}</view>
 					<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_4.png" mode=""></image>
 				</view>

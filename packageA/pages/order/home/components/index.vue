@@ -372,7 +372,8 @@
 			//跳转订单进度
 			toServicedetail(item,order_type,order_id){
 				if(item.sub_order_type == '100001'){
-					let url_src = `https://user-${this.fix}.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
+					let fix_mode = (this.fix == 'test' ? 'test' : 'dev');
+					let url_src = `https://user-${fix_mode}.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
 					uni.navigateTo({
 						url: `/pages/webview/main?src=${encodeURIComponent(url_src)}`
 					});

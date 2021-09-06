@@ -163,7 +163,7 @@
 						host += options.webViewUrl[i];
 					}
 				}
-				
+
 				// 条件判断对接H5业务
 				let BASE_URL = "";
 				if (config.fix !== '') {
@@ -192,22 +192,25 @@
 				} else if(host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge`) > -1){
 					//话费充值
 					if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html`) > -1) {
-						host = this.webviewShareCallBack(options, host);	
+						host = this.webviewShareCallBack(options, host);
 					}else{
 						host = `https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html?setShareBtn=2`;
 					}
-				} else {
+				} else if (host.indexOf(`https://zt${BASE_URL}.etcchebao.com/mid/index.html`) > -1) {
+					// 中秋活动
+					host = this.webviewShareCallBack(options, host);
+				}else {
 					type = 0;
 				}
-				
+
 				// 拼接path
 				if (type == 1) {
 					path = `/pages/login/main?from_type=2&share_id=${this.share_id}&h5_url=${encodeURIComponent(host)}`;
 				} else {
 					path = `/pages/home/main?from_type=2&share_id=${this.$store.state.user.info.userid}`;
 				}
-				
-				app.log({ 
+
+				app.log({
 					host: host,
 					path: path
 				})
