@@ -341,6 +341,7 @@
 			gotoWebView(url){
 				let h5_url = url.replace('https','http')
 					h5_url = h5_url.replace('http','https')
+					console.log('h5_url=',h5_url)
 					uni.navigateTo({
 						url: `/pages/webview/main?src=${encodeURIComponent(h5_url)}`
 					});
@@ -365,12 +366,14 @@
 						}
 					break;
 					default:
+						console.log('order_status_id, order_type, order_id,jump_url=',order_status_id, order_type, order_id,jump_url)
 						this.gotoWebView(jump_url);
 
 				}
 			},
 			//跳转订单进度
 			toServicedetail(item,order_type,order_id){
+				console.log('item,order_type,order_id=',item,order_type,order_id)
 				if(item.sub_order_type == '100001'){
 					let fix_mode = (this.fix == 'test' ? 'test' : 'dev');
 					let url_src = `https://user-${fix_mode}.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
