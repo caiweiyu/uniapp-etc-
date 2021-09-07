@@ -193,6 +193,9 @@
 				uni.$on('getAllCoupon', (e)=> {
 					this.getCoupon(e.id);
 				});//活动卡券全部领取
+				uni.$on('getCouponList', (e)=> {
+					this.getCouponList();
+				});//每次刷新卡券列表
 			},
 			
 			/**
@@ -206,6 +209,7 @@
 				uni.$off("pay_sinopec");
 				uni.$off("loadDialogWindow");
 				uni.$off("getAllCoupon");
+				uni.$off("getCouponList")
 			},
 			
 			/**

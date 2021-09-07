@@ -359,6 +359,7 @@
 				uni.$emit("couponPopup", {
 					show_coupons_mine: true
 				})
+				uni.$emit("getCouponList")
 			}
 		}
 	}
