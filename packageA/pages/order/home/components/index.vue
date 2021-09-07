@@ -325,14 +325,14 @@
 			gotoLocation(order_id){
 				uni.navigateTo({
 						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`,
-						events:{
-							getData:(data)=>{
-								this.getOrderListtarget(this.page, this.page_size,this.order_status, this.sub_order_type)
-							}
-						},
-						success:(res)=>{
-							res.eventChannel.emit('getData',{ data: 'detail' })
-						}
+						// events:{
+						// 	getData:(data)=>{
+						// 		this.getOrderListtarget(this.page, this.page_size,this.order_status, this.sub_order_type)
+						// 	}
+						// },
+						// success:(res)=>{
+						// 	res.eventChannel.emit('getData',{ data: 'detail' })
+						// }
 				})
 			},
 			//跳h5页

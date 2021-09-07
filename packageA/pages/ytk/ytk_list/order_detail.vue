@@ -147,10 +147,10 @@
 			eventMonitor("YTK_Orderdetail", 1, {
 				order_id: this.order_id
 			});
-			const eventChannel = this.getOpenerEventChannel();
-			eventChannel.on('getData', (res) => {
-				eventChannel.emit('getData',{data:'goback'})
-			})
+			// const eventChannel = this.getOpenerEventChannel();
+			// eventChannel.on('getData', (res) => {
+			// 	eventChannel.emit('getData',{data:'goback'})
+			// })
 		},
 		onShow() {
 			this.$token(() => {
@@ -158,9 +158,9 @@
 				this.order_type = this.$root.$mp.query.order_type || 11;
 				this.loadOrderDetail(this.order_id);
 			});//检测page是否授权，token是否过期
-			if (this.order_id && this.order_type) {
-				this.loadOrderDetail(this.order_id);
-			}
+			// if (this.order_id && this.order_type) {
+			// 	this.loadOrderDetail(this.order_id);
+			// }
 		},
 		methods: {
 			/**
