@@ -254,6 +254,14 @@
 					}
 				},
 				{
+					"path": "bill_all/main",
+					"style": {
+						"navigationBarTitleText": "我的新账单",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"navigationStyle": "custom"
+					}
+				},
+				{
 					"path": "bind_car/main",
 					"style": {
 						"navigationBarTitleText": "添加车辆"
