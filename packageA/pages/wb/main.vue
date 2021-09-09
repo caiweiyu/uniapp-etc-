@@ -1,5 +1,8 @@
 <template>
   <view class="box">
+    <block v-if="Object.keys(imgs).length > 0 && imgsParams.length > 0" v-for="(item,index) in imgs" :key="index">
+        <image :src="imgs[index]" mode="" :style="{width:imgsParams[index].width,height:imgsParams[index].height}" />
+    </block>
     <view class="box_bottom">
         <image :src="allImage[2]" class="box_bottom_image" mode="" @click.stop="agreeIdea" />
         <view class="box_bottom_view">
@@ -11,6 +14,13 @@
 </template>
 
 <script>
+import {
+    getwbIndex,
+    getwbJump,
+} from "@/interfaces/order";
+import miniScript from "@/common/miniScript"
+const  miniapp = miniScript.getInstance()
+import { mapState } from "vuex"
 export default {
     data(){
         return{
@@ -19,13 +29,73 @@ export default {
                 "https://image.etcchebao.com/etc-min/wb/checked_icon.png",
                 "https://image.etcchebao.com/etc-min/wb/wb_submit.png"
             ],
-            isAgree:false
+            isAgree:false,
+            imgs:[],
+            imgsParams:[],
+            item:{}
         }
     },
+    computed:{
+        ...mapState({
+			token: (state) => state.user.token
+        })
+    },
     methods: {
+        /**
+         * 微保首页
+         */
+        async getwbIndex(){
+            let res = await getwbIndex({})
+            let {
+                code,
+                msg,
+                data
+            } = res;
+            if(code == 0){
+                let _this = this;
+                if(Object.keys(data.img).length > 0){
+                    for(let i in data.img){
+                        _this.imgs.push(data.img[i]);
+                        uni.getImageInfo({
+                            src: data.img[i],
+                            success: function (image) {
+                                _this.imgsParams.push({
+                                    width:'750rpx',
+                                    height:(image.height * 750)/image.width +'rpx'
+                                })
+                            }
+                        });
+                    }
+                }
+            }
+        },
+        /**
+         * 微保跳转
+         */
+        async getwbJump(){
+            let res = await getwbJump({
+                token:this.token
+            });
+            let {
+                code,
+                msg,
+                data
+            } = res;
+            if(code == 0){
+                this.item = data;
+                this.item.jump_type = 2;
+                this.jump_url = data.mini_jump_url
+            }
+        },
+        /**
+         * 是否勾选
+         */
         isCheck(){
             this.isAgree = !this.isAgree;
         },
+        /**
+         * 点击跳转
+         */
         agreeIdea(){
             if(!this.isAgree){
                 uni.showToast({
@@ -36,11 +106,34 @@ export default {
                 });
                 return;
             }
+            if (typeof(this.item.subs_template_id) == "string") {
+					// 消息订阅
+					let arr = [];
+					arr.push(this.item.subs_template_id);
+					miniapp.subscribe(arr, (res)=>{
+						this.callback(this.item);
+					}, (err)=> {
+						this.callback(this.item);
+					})
+            } else {
+                // 直接跳转
+                this.callback(this.item);
+            }
             console.log('正在跳转第三方小程序...')
-        }
+        },
+        callback(item) {
+            // 跳转page || miniProgram
+            miniapp.miniProgramRouter(item, (res)=>{
+                
+            }, (err)=> {
+                
+            })
+        },
     },
     mounted() {
-  
+        console.log('token=====',this.token)
+        this.getwbIndex()
+        this.getwbJump()
     },
 }
 </script>
@@ -49,7 +142,7 @@ export default {
     .box{
         position: relative;
         width: 100%;
-        height: 2000rpx;
+        // height: 2000rpx;
         background-color: #ddd;
         &_bottom{
             position: fixed;

@@ -145,3 +145,25 @@ export function getCouponList(data) {
 		data
 	});
 }
+//微保首页
+export function getwbIndex(data) {
+	return request({
+		url: `${G}/mini-program/v1/wb/index`,
+		header: {
+			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输
+		},
+		method: "post",
+		data
+	});
+}
+//微保跳转
+export function getwbJump(data) {
+	return request({
+		url: `${G}/mini-program/v1/wb/jump`,
+		header: {
+			"content-type": "application/x-www-form-urlencoded", //formdata 数据传输
+		},
+		method: "post",
+		data
+	});
+}
