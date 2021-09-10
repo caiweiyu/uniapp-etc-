@@ -1,6 +1,4 @@
 <script>
-	import miniScript from "@/common/miniScript"
-	const miniapp = miniScript.getInstance()
 	import store from "@/store/index"
 	export default {
 		onLaunch: function(options) {

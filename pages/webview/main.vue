@@ -9,6 +9,7 @@
 	const miniapp = miniScript.getInstance()
 	const app = getApp();
 	import config from "@/config/conf"
+	import location from "@/common/location"
 	import {
 		mapState
 	} from "vuex"
@@ -30,29 +31,40 @@
 				share_id: (state) => state.user.share_id
 			}),
 		},
-		async onShow() {
-			let {
-				src,
-				isNeedLogin = 1,
-				isGps = 1
-			} = this.$root.$mp.query;
-			this.src = src;
-			let jumpUrl = decodeURIComponent(src);
-			try {
-				await this.loadIsNeedLogin(jumpUrl, isNeedLogin);
-				await this.loadIsGps(this.jumpUrl, isGps);
-				await this.loadVerson(this.jumpUrl, 1);
-				this.loadUrl = this.jumpUrl;
-				this.show = true;
-				console.log('this.loadUrl',this.loadUrl)
-			} catch(err) {
-
-			}
-		},
 		onLoad() {
-
+			
+		},
+		onShow() {
+			location.loadCheckLocation().then(()=>{
+				location.loadGetLocation().then(()=>{
+					this.loadInit();
+				})
+			})
 		},
 		methods: {
+			/**
+			 * 初始化
+			 */
+			async loadInit() {
+				let {
+					src,
+					isNeedLogin = 1,
+					isGps = 1
+				} = this.$root.$mp.query;
+				this.src = src;
+				let jumpUrl = decodeURIComponent(src);
+				try {
+					await this.loadIsNeedLogin(jumpUrl, isNeedLogin);
+					await this.loadIsGps(this.jumpUrl, isGps);
+					await this.loadVerson(this.jumpUrl, 1);
+					this.loadUrl = this.jumpUrl;
+					this.show = true;
+					console.log('this.loadUrl',this.loadUrl)
+				} catch(err) {
+				
+				}
+			},
+			
 			/**
 			 * token 授权
 			 */

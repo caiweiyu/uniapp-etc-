@@ -165,7 +165,7 @@
 			}
 		},
 		onLoad(options) {
-			this.loadToken();
+			this.loadGetLocation();
 			uni.$on("etc", (data)=>{
 				this.loadCardEtc();//粤通卡
 			});//监听粤通卡emit触发刷新
@@ -224,7 +224,6 @@
 						// 未登录
 						case 0:
 							await Promise.all([
-								this.loadGetLocation(),//地理位置授权
 								this.loadTopGuide(), //顶部运营位
 								this.loadCardEtc(),//粤通卡
 								this.loadCardPlate(),//车卡
@@ -240,7 +239,6 @@
 							// 已登录
 						case 1:
 							await Promise.all([
-								this.loadGetLocation(),//地理位置授权
 								this.loadTopGuide(), //顶部运营位
 								this.loadCardEtc(),//粤通卡
 								this.loadCardPlate(),//车卡
@@ -300,7 +298,7 @@
 								}
 							})
 						} else {
-							// this.loadGetLocation();
+							this.loadGetLocation();
 							if (uni.getStorageSync("cacheData")["location"]) {
 								miniapp.removeCacheData({key: "location"});
 							}
@@ -325,13 +323,16 @@
 								latitude,
 								longitude
 							})
+							this.loadToken();
 							this.loadCityCode(latitude,longitude);
 						},
 						fail: (err) => {
+							console.log("jsadsjadlksajdsladjsjd",err)
 							this.$store.commit("user/setLocation", {
 								latitude: 23.101494,
 								longitude: 113.389287
 							})//拒绝授权地理位置获取，保存公司经纬度113.389287,23.101494
+							this.loadToken();
 							this.loadCityCode();
 							if (uni.getStorageSync("cacheData")["location"] == undefined) {
 								miniapp.setCacheData({

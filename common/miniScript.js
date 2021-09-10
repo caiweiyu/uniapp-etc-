@@ -6,8 +6,9 @@
  * @LastEditors: fengzhuojian
  * @LastEditTime: 2021-06-23 15:58:36
  */
-// import store from "@/store/index"
-// console.log("token",store.state.user.token)
+import location from "@/common/location"
+import store from "@/store/index"
+
 class miniScript {
 	constructor() {
 		this.Instance = null;
@@ -99,7 +100,7 @@ class miniScript {
 					})
 				}
 				break;
-				/*跳转外部小程序(outer miniProgram)*/
+			/*跳转外部小程序(outer miniProgram)*/
 			case 2:
 				uni.navigateToMiniProgram({
 					appId: router.appid,
@@ -112,13 +113,14 @@ class miniScript {
 					}
 				})
 				break;
-				/*跳转H5(webview)*/
+			/*跳转H5(webview)*/
 			case 3:
-				// if (jump_url.indexOf("?") > -1) {
-				// 	jump_url = jump_url + "&token=" + this.token;
-				// } else {
-				// 	jump_url = jump_url + "?token=" + this.token;
-				// }
+				if (router.hasOwnProperty("isGps") == true) {
+					if (router.isGps == 1) {
+						location.loadCheckLocation();
+						return
+					}
+				}
 				uni.navigateTo({
 					url: `/pages/webview/main?src=${encodeURIComponent(router.jump_url)}`,
 					success: (res) => {
@@ -176,7 +178,7 @@ class miniScript {
 					})
 				}
 				break;
-				/*跳转外部小程序(outer miniProgram)*/
+			/*跳转外部小程序(outer miniProgram)*/
 			case 2:
 				uni.navigateToMiniProgram({
 					appId: router.appid,
@@ -189,7 +191,7 @@ class miniScript {
 					}
 				})
 				break;
-				/*跳转H5(webview)*/
+			/*跳转H5(webview)*/
 			case 3:
 				uni.redirectTo({
 					url: `/pages/webview/main?src=${encodeURIComponent(router.jump_url)}`,
