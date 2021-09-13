@@ -1,5 +1,6 @@
 <script>
 	import store from "@/store/index"
+	import location from "@/common/location"
 	export default {
 		onLaunch: function(options) {
 			console.log('App Launch');
@@ -14,6 +15,7 @@
 		onShow: function(options) {
 			console.log('App Show')
 			console.log("options:",options)
+			location.loadShowLocation();
 		},
 		onHide: function() {
 			console.log('App Hide')

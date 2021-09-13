@@ -35,11 +35,19 @@
 			
 		},
 		onShow() {
-			location.loadCheckLocation().then(()=>{
-				location.loadGetLocation().then(()=>{
-					this.loadInit();
+			/**
+			 * 检测用户是否地理位置授权，强制要求用户地理位授权，否则无法使用对应功能
+			 */
+			let jumpUrl = decodeURIComponent(this.$root.$mp.query.src);
+			if (jumpUrl.indexOf("isGps=1") > -1) {
+				location.loadCheckLocation().then(()=>{
+					location.loadGetLocation().then(()=>{
+						this.loadInit();
+					})
 				})
-			})
+			} else {
+				this.loadInit();
+			}
 		},
 		methods: {
 			/**

@@ -1,6 +1,27 @@
 import store from "@/store/index"
 
 /**
+ * app show检测地理位置授权
+ * 主要用于检测location缓存(初始授权location是不调用toast)
+ */
+function loadShowLocation() {
+	uni.getSetting({
+		success: (res)=> {
+			if (!res.authSetting["scope.userLocation"]) {
+				setCacheData({
+					key: "location",
+					value: new Date().getTime()
+				});
+			} else {
+				if (uni.getStorageSync("cacheData")["location"]) {
+					removeCacheData({key: "location"});
+				}
+			}
+		}
+	})
+}
+
+/**
  * 检测用户是否地理位置授权
  */
 function loadCheckLocation() {
@@ -121,6 +142,7 @@ function removeCacheData({
 }
 
 export default {
+	loadShowLocation,
 	loadCheckLocation,
 	loadGetLocation
 }

@@ -41,7 +41,7 @@
 			<operate-banner></operate-banner>
 
 			<!--附近门店-->
-			<nearby-stores></nearby-stores>
+			<nearby-stores :location="location"></nearby-stores>
 
 			<!--热门资讯-->
 			<hot-consult @callback_msg="callback_msg" ref="hot_consult" :message_tab="message_tab" :message_article="message_article"></hot-consult>
@@ -130,7 +130,7 @@
 				strict_shop: (state) => state.home.strict_shop,
 				ytk_bill: (state) => state.home.ytk_bill,
 				fm_index: (state) => state.home.fm_index
-			}),
+			})
 		},
 		data() {
 			return {
@@ -140,7 +140,8 @@
 				sign: true, //是否能签到1否2是
 				message_tab: [], //热门资讯tab
 				message_article: {}, //热门资讯文章列表
-				type: 0, // tab栏目type_id
+				type: 0, //tab栏目type_id
+				location: false,//是否地理位置授权
 			}
 		},
 		watch:{
@@ -325,6 +326,7 @@
 							})
 							this.loadToken();
 							this.loadCityCode(latitude,longitude);
+							this.location = true;
 						},
 						fail: (err) => {
 							console.log("jsadsjadlksajdsladjsjd",err)

@@ -115,21 +115,25 @@ class miniScript {
 				break;
 			/*跳转H5(webview)*/
 			case 3:
-				if (router.hasOwnProperty("isGps") == true) {
-					if (router.isGps == 1) {
-						location.loadCheckLocation();
-						return
-					}
+				const fn = () => {
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(router.jump_url)}`,
+						success: (res) => {
+							typeof success == 'function' && success(res);
+						},
+						fail: (err) => {
+							typeof fail == 'function' && fail(err);
+						}
+					})
 				}
-				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(router.jump_url)}`,
-					success: (res) => {
-						typeof success == 'function' && success(res);
-					},
-					fail: (err) => {
-						typeof fail == 'function' && fail(err);
-					}
-				})
+				if (router.jump_url.indexOf("isGps=1") > -1) {
+					location.loadCheckLocation().then(() => {
+						fn();
+					})
+					return
+				} else {
+					fn();
+				}
 				break;
 			default:
 				typeof success == 'function' && success();
