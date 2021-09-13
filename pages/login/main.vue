@@ -198,6 +198,9 @@
 				if (uni.canIUse("getLocation")) {
 					uni.getLocation({
 						type: 'wgs84',
+						altitude: true,
+						isHighAccuracy: true,
+						highAccuracyExpireTime: 3500,
 						success: ({
 							latitude,
 							longitude,
