@@ -86,7 +86,9 @@
 			</view>
 		</view>
 		
-		<dialog-window ref="dialog" flag="9"></dialog-window>
+		<block v-show="!default_card">
+			<dialog-window ref="dialog" flag="9"></dialog-window>
+		</block>
 
 	</view>
 </template>
@@ -395,12 +397,12 @@
 			margin: 0 auto;
 			width: 690rpx;
 			.title {
-				color: #999999;
+				color: #666666;
 				font-size: 24rpx;
 			}
 			.box {
 				margin: 16rpx 0 0 0;
-				color: #999999;
+				color: #666666;
 				font-size: 24rpx;
 			}
 		}
