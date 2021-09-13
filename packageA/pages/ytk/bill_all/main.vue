@@ -10,10 +10,7 @@
             :style="{height:winHeight+'px'}"
       >
             <!--顶部周月选择下拉框区-->
-            <selectWeekmon ref="selectWeekmon"></selectWeekmon>
-            
-            <!--绑卡banner区-->
-            <bannerbindCard ref="bannerbindCard"></bannerbindCard>
+            <selectWeekmon ref="selectWeekmon"></selectWeekmon>       
 
             <!--周月tab选项区-->
             <weekmonTab ref="weekmonTab"></weekmonTab>
@@ -32,7 +29,6 @@
 
 <script>
 import selectWeekmon from './components/select_weekmon'
-import bannerbindCard from './components/banner_bindCard'
 import weekmonTab from './components/weekmon-tab'
 import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
@@ -91,7 +87,6 @@ export default {
     },
     components:{
         selectWeekmon,
-        bannerbindCard,
         weekmonTab,
         monfreeTimer,
         billList,

@@ -1,58 +1,54 @@
 <template>
   <view class="box">
       <!--顶部周、月账单选项-->
-      <view class="box_title" @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
-          {{status == 1 ? list[1].name : list[0].name}}
+      <view :class="['box_title']" @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
+          <text class="dirtctionTitle">{{status == 1 ? list[1].label : list[0].label}}</text>
+          <view :class="[isOpen ? 'dirtctionAvterafter' : 'dirtctionAvter']"></view>
       </view>
-      <!--弹出层选项-->
-      <u-popup v-model="isOpen" mode="bottom" border-radius="12" height="600rpx">
-          <view class="picker">
-                <view class="header">
-                    <view class="cancel" @click="cancel">取消</view>
-                    <view class="enter" @click="enter">确定</view>
-                </view>
-                <!--选项区-->
-                <picker-view v-if="visible" :indicator-style="indicatorStyle" :indicator-class="'indicatorClass'" :value="value" @change="bindChange" class="picker-view">
-                    <picker-view-column>
-                        <view class="item"  v-for="(item,index) in list" :key="index">{{item.name}}</view>
-                    </picker-view-column>
-                </picker-view>
-          </view>
-      </u-popup>
+      <!--内容区域-->
+      <view class="box_content" :style="{top:(tabBoundheight+40)+'rpx'}">
+          <view class="card_title"><text class="text">粤H 86Q90</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
+          <text class="card_num">8768 7764 8997 8997</text>
+      </view>
+      <!--周、月弹出层选项-->
+      <u-select v-model="isOpen" @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select>
   </view>
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-            list:[
+    props:{
+        list:{
+            type:Array,
+            default:[
                 {
-                    id:0,
-                    name:'月账单'
+                    value:0,
+                    label:'月账单'
                 },
                 {
-                    id:1,
-                    name:'周账单'
+                    value:1,
+                    label:'周账单'
                 }
-            ], // 列表展示
-            visible:true, //是否可见
-            indicatorStyle: `height: 50px;font-size:36rpx;`,//设置选择样式
+            ]
+        }
+    },
+    data(){
+        return{
             status:0, //切换状态
             isOpen:false, //开关
+            value:-1, //选择值的确定
             btnBoundtop:uni.getMenuButtonBoundingClientRect().top - uni.getSystemInfoSync().statusBarHeight, //胶囊顶部距状态栏高度距离
             tabHeight:uni.getSystemInfoSync().statusBarHeight * 2, //状态栏高度
             menuHeight:uni.getMenuButtonBoundingClientRect().height * 2, //胶囊高度
             menu:uni.getMenuButtonBoundingClientRect(), //胶囊相关信息
-            value:-1, //选择值的确定
         }
     },
     computed: {
         /**
-         * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
+         * 计算高度（胶囊顶部距状态栏高度距离 + 状态栏高度 + 胶囊高度）
          */
         tabBoundheight(){
-            return (this.btnBoundtop*2 + this.tabHeight + this.menuHeight)
+            return (this.btnBoundtop + this.tabHeight + this.menuHeight)
         },
     },
     methods: {
@@ -65,8 +61,9 @@ export default {
         /**
          * 确认
          */
-        enter(){
+        enter(e){
             this.isOpen = false;
+            this.value = e[0].value;
             this.value == 1 ? this.status = 1 : this.status = 0;
         },
         /**
@@ -74,13 +71,6 @@ export default {
          */
         cancel(){
             this.isOpen = false;
-        },
-        /**
-         * 选择事件
-         */
-        bindChange(e){
-            console.log(e.detail.value[0])
-            this.value = e.detail.value[0]
         },
     },
     created() {
@@ -103,52 +93,82 @@ export default {
         &_title{
             position: fixed;
             transform: translateX(-50%);
+            font-size: 36rpx;
+            color: #FFFFFF;
+            font-weight: bold;
             left: 50%;
+            .dirtctionTitle{
+                vertical-align: middle;
+                display: inline-block;
+            }
+            .dirtctionAvter{
+                background:url('https://image.etcchebao.com/etc-min/bill_all/select_icon1.png')no-repeat;
+                background-size: 100% 100%;
+                width: 40rpx;
+                height: 40rpx;
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 8rpx;
+                animation: animate-down linear 0.2s forwards;
+            }
+            .dirtctionAvterafter{
+                background:url('https://image.etcchebao.com/etc-min/bill_all/select_icon1.png')no-repeat;
+                background-size: 100% 100%;
+                width: 40rpx;
+                height: 40rpx;
+                display: inline-block;
+                vertical-align: middle;
+                margin-left: 8rpx;
+                transform:rotateY(180deg) !important;
+                animation: animate-up linear 0.2s forwards;
+            }
         }
         &_content{
-            position: fixed;
-            transform: translateX(-50%);
-            left: 50%; 
-            width: 100rpx;
-            height: 50rpx;
-            border: 1rpx solid #ddd;
-            background-color: #ddd;
-            line-height: 50rpx;
+            position:absolute;
+            left:30rpx;
+            .card_title{
+                width: 300rpx;
+                .text{
+                    display: inline-block;
+                    vertical-align: middle;
+                    font-size: 40rpx;
+                    color: #FEFEFE;
+                    font-weight: bold;          
+                }
+                .image{
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-left: 20rpx;
+                    height: 36rpx;
+                    width: 36rpx;
+                    border-radius: 50%;
+                }
+            }
+            .card_num{
+                margin-top: 16rpx;
+                font-size: 30rpx;
+                color: #FFFFFF;
+                opacity: .6;
+            }
         }
-        .picker{
-            height: 600rpx;
-            background-color: #FFFFFF;
-            .header{
-                display: flex;
-                justify-content: space-between;
-                font-size: 28rpx;
-                width: 100%;
-                .cancel{
-                    color: #999999;
-                    margin: 39rpx 0 0 32rpx;
-                }
-                .enter{
-                    color:#FF5C2A;
-                    margin: 39rpx 32rpx 0 0;
-                }
+        @keyframes animate-up {
+            0% {
+                transform: rotate(0);
             }
-            .picker-view {
-                width: 750rpx;
-                height: 500rpx;
-                margin-top: 20rpx;
+            100% {
+                transform: rotate(180deg);
             }
-            .item {
-                // height: 50rpx;
-                line-height:50px;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
+        }
+        @keyframes animate-down {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(-180deg);
             }
         }
     }
- .indicatorClass{
-    font-size: 36rpx;
-    color: #222222;
-    font-weight: bold;
-}
+    /deep/ .u-drawer__scroll-view{
+        background-color: #FFFFFF !important;
+    }
 </style>
