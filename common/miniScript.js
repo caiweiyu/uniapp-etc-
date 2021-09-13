@@ -127,7 +127,7 @@ class miniScript {
 					})
 				}
 				if (router.jump_url.indexOf("isGps=1") > -1) {
-					location.loadCheckLocation().then(() => {
+					location.loadCheckLocation(true).then(() => {
 						fn();
 					})
 					return

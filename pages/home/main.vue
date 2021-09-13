@@ -274,6 +274,7 @@
 				uni.getSetting({
 					success: (res)=> {
 						if (!res.authSetting["scope.userLocation"]) {
+							this.location = false;
 							if (uni.getStorageSync("cacheData")["location"] == undefined) {
 								// 首次不弹
 								return;
@@ -329,7 +330,6 @@
 							this.location = true;
 						},
 						fail: (err) => {
-							console.log("jsadsjadlksajdsladjsjd",err)
 							this.$store.commit("user/setLocation", {
 								latitude: 23.101494,
 								longitude: 113.389287

@@ -24,7 +24,7 @@ function loadShowLocation() {
 /**
  * 检测用户是否地理位置授权
  */
-function loadCheckLocation() {
+function loadCheckLocation(showCancel=false) {
 	return new Promise((resolve, reject)=>{
 		uni.getSetting({
 			success: (res)=> {
@@ -33,7 +33,7 @@ function loadCheckLocation() {
 						// 首次不弹
 						return;
 					}
-					loadSetLocation();
+					loadSetLocation(showCancel);
 				} else {
 					// loadGetLocation();
 					resolve();
@@ -81,11 +81,11 @@ function loadGetLocation() {
 /**
  * openSetting地理位置
  */
-function loadSetLocation() {
+function loadSetLocation(showCancel=false) {
 	uni.showModal({
 		title: "提示",
 		content: "为给您提供优质的车主商家服务，请提供地理位置授权",
-		showCancel: false,
+		showCancel: showCancel,
 		success: (result)=>{
 			if (result.confirm) {
 				uni.openSetting({
