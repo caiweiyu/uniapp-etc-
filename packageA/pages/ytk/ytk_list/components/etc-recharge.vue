@@ -5,6 +5,7 @@
 			v-model="showPopup"
 		    mode="center"
 			height="auto"
+			z-index="999999"
 		>
 			<view class="recharge">
 				<image class="img" src="https://image.etcchebao.com/etc-min/etc-f/icon_28.png" mode="widthFix"></image>

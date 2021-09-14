@@ -41,7 +41,7 @@
 			<operate-banner></operate-banner>
 
 			<!--附近门店-->
-			<nearby-stores></nearby-stores>
+			<nearby-stores :location="location"></nearby-stores>
 
 			<!--热门资讯-->
 			<hot-consult @callback_msg="callback_msg" ref="hot_consult" :message_tab="message_tab" :message_article="message_article"></hot-consult>
@@ -130,7 +130,7 @@
 				strict_shop: (state) => state.home.strict_shop,
 				ytk_bill: (state) => state.home.ytk_bill,
 				fm_index: (state) => state.home.fm_index
-			}),
+			})
 		},
 		data() {
 			return {
@@ -140,7 +140,8 @@
 				sign: true, //是否能签到1否2是
 				message_tab: [], //热门资讯tab
 				message_article: {}, //热门资讯文章列表
-				type: 0, // tab栏目type_id
+				type: 0, //tab栏目type_id
+				location: false,//是否地理位置授权
 			}
 		},
 		watch:{
@@ -165,7 +166,7 @@
 			}
 		},
 		onLoad(options) {
-			this.loadToken();
+			this.loadGetLocation();
 			uni.$on("etc", (data)=>{
 				this.loadCardEtc();//粤通卡
 			});//监听粤通卡emit触发刷新
@@ -224,7 +225,6 @@
 						// 未登录
 						case 0:
 							await Promise.all([
-								this.loadGetLocation(),//地理位置授权
 								this.loadTopGuide(), //顶部运营位
 								this.loadCardEtc(),//粤通卡
 								this.loadCardPlate(),//车卡
@@ -240,7 +240,6 @@
 							// 已登录
 						case 1:
 							await Promise.all([
-								this.loadGetLocation(),//地理位置授权
 								this.loadTopGuide(), //顶部运营位
 								this.loadCardEtc(),//粤通卡
 								this.loadCardPlate(),//车卡
@@ -275,6 +274,7 @@
 				uni.getSetting({
 					success: (res)=> {
 						if (!res.authSetting["scope.userLocation"]) {
+							this.location = false;
 							if (uni.getStorageSync("cacheData")["location"] == undefined) {
 								// 首次不弹
 								return;
@@ -300,7 +300,7 @@
 								}
 							})
 						} else {
-							// this.loadGetLocation();
+							this.loadGetLocation();
 							if (uni.getStorageSync("cacheData")["location"]) {
 								miniapp.removeCacheData({key: "location"});
 							}
@@ -325,13 +325,16 @@
 								latitude,
 								longitude
 							})
+							this.loadToken();
 							this.loadCityCode(latitude,longitude);
+							this.location = true;
 						},
 						fail: (err) => {
 							this.$store.commit("user/setLocation", {
 								latitude: 23.101494,
 								longitude: 113.389287
 							})//拒绝授权地理位置获取，保存公司经纬度113.389287,23.101494
+							this.loadToken();
 							this.loadCityCode();
 							if (uni.getStorageSync("cacheData")["location"] == undefined) {
 								miniapp.setCacheData({
