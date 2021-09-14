@@ -74,14 +74,14 @@
 
                 deviceInfo: '',
                 depositCard: null,
-                orderId: '2109131344480248',
+                orderId: '2108191944520010',
                 depositState: "",
                 depositProgress: '',
 
                 balance: 0,
                 cardInfo: null,
-                cardNo:"1913222300077490",
-				//cardNo:"1812222300175505"
+                //cardNo:"1913222300077490",
+				cardNo:"1812222300175505"
 				//cardNo:"1715223209002380"
             };
         },
@@ -344,7 +344,7 @@
                     let {code, data} = res;
                     if (code == 0) {
                         if (data.result === "success") {
-                            this.sendBlueOrders(this.cmdHelper.getCmdC2())
+                            //this.sendBlueOrders(this.cmdHelper.getCmdC2())
                         }
                     }
                 })
@@ -393,7 +393,7 @@
                                         if (this.devType === 0) {
                                             that.sendBlueOrders(this.cmdHelper.getHandshakeGuomi())//握手
                                         } else if (this.devType === 1) {
-                                            that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
+                                            //that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
                                         }
                                         this.depositCard = new DepositCard(this.emitter, this.ble, this.cmdHelper, this.deviceInfo)
                                     }

@@ -141,9 +141,9 @@ class BLEHandler {
             let arrayBuffer = new Uint8Array(data[i]).buffer;
             let bytes = arrayBuffer.byteLength;
             while (bytes > 0) {
-                let tmpBuffer;
+                //let tmpBuffer;
                 if (bytes > max_wx_frame_len) {
-                    tmpBuffer = arrayBuffer.slice(pos, pos + max_wx_frame_len);
+                    let tmpBuffer = arrayBuffer.slice(pos, pos + max_wx_frame_len);
                     console.log('sendBuffer: ',tmpBuffer)
                     Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
 
@@ -156,7 +156,7 @@ class BLEHandler {
                     console.log("发送数据成功！")
                     _this.sleep(2)
                 } else {
-                    tmpBuffer = arrayBuffer.slice(pos, pos + bytes);
+                    let tmpBuffer = arrayBuffer.slice(pos, pos + bytes);
                     console.log('sendBuffer: ',tmpBuffer)
                     Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
                     pos += bytes;

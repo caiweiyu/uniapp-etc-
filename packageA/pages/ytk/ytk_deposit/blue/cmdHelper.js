@@ -25,9 +25,10 @@ class CMDHelper {
     authEncode() { //非国密登录
         this.devType = 1;
         this.frameData = []
-        this.currCmd = cmd.CMD_HANDSHAKE
+        //this.currCmd = cmd.CMD_HANDSHAKE
         Util.print('------非国密登录authEncode------');
-        let sendBuf = Util.hexString2Bytes("fe0100184e2100010a06080012024f4b1206313233313234")
+        //let sendBuf = Util.hexString2Bytes("fe0100184e2100010a06080012024f4b1206313233313234")
+        let sendBuf = Util.hexString2Bytes("FE0100124E2100010A06080012024F4B1200")
         let list = []
         list.push(sendBuf)
         return list;
@@ -42,10 +43,20 @@ class CMDHelper {
         list.push(sendBuf)
         return list;
     }
+    authEncode1() { //非国密登录
+        this.devType = 1;
+        this.frameData = []
+        //this.currCmd = cmd.CMD_HANDSHAKE
+        Util.print('------非国密登录authEncode1------');
+        let sendBuf = Util.hexString2Bytes("FE0100124E2100010A06080012024F4B1200")
+        let list = []
+        list.push(sendBuf)
+        return list;
+    }
     initEncode1() { //非国密初始化
         this.devType = 1;
         this.frameData = []
-        this.currCmd = cmd.CMD_HANDSHAKE
+        this.currCmd = cmd.CMD_CARD_BALANCE
         Util.print('------非国密初始化initEncode1------');
         let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B100018002000");
         //let sendBuf2 = Util.hexString2Bytes("2000");
@@ -54,6 +65,34 @@ class CMDHelper {
         //list.push(sendBuf2)
         return list;
     }
+    makeAuthResponse() {
+        let send = "FE0100124E2100010A06080012024F4B1200";
+        let bufferArray = new Array();
+        //前段
+        let bufferStr = send.substring(0, 36);
+        let typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
+            return parseInt(h, 16);
+        }));
+        bufferArray.push(typedArray.buffer);
+        return bufferArray;
+    }
+    makeInitResponse() {
+        let send = "FE0100164E2300020A06080012024F4B100018002000";
+        let bufferArray = new Array();
+        //前段
+        let bufferStr = send.substring(0, FRAME_LENGTH);
+        let typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
+            return parseInt(h, 16);
+        }));
+        bufferArray.push(typedArray.buffer);
+        //后段
+        bufferStr = send.substring(40);
+        typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
+            return parseInt(h, 16);
+        }));
+        bufferArray.push(typedArray.buffer);
+        return bufferArray;
+    };
     /** APP握手 A2 APP和读卡器建立握手 */
     getCmdA2() {
         Util.print('------握手------');
