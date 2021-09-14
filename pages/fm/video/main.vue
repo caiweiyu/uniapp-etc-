@@ -14,7 +14,7 @@
                 <image v-if="showStatus" @click.stop="videoPlayPuse" class='player-image' :src="puaseIcon"></image>
 				<!-- 视频组件 -->
 				<video class="video"
-					   :style="{width: winW + 'px', height: winH + 'px'}" 
+					   :style="{width: winW + 'px', height: '80%'}" 
 					   v-if="index >= curTouch.index - 1 && index <= curTouch.index + 1" 
 					   @play="dealPlay(item.id,item.frontImage,item.title)"
                        @pause="dealPause"
@@ -23,7 +23,7 @@
 					   :controls="false"
                        :loop="true"
 					   :show-center-play-btn="false"
-					   object-fit="contain"
+					   :object-fit="'cover'"
 					   :src="item.videoUrl"
 				>
 				</video>
