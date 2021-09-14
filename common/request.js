@@ -32,7 +32,7 @@ const interceptRequest = useIntercept(uni.request, {
 		//   title: "请求中",
 		// });
 		if (params.url.indexOf("/api-unitoll/v3/load/prepaid") > -1) {
-			// params.url = params.url.replace("-test",""); //测试
+			params.url = params.url.replace("-test",""); //测试
 			return params;
 		}
 		let token = store.state.user.token;
@@ -59,8 +59,8 @@ const interceptRequest = useIntercept(uni.request, {
 			params.data["network_type"] = conf.network_type;
 			params.data["version"] = conf.version;
 			params.data["etcos"] = miniapp.loadModel();
-			// params.data["token"] = "a2afed3a6eef13cea272d8460a9af670" //正式token
-			// params.url = params.url.replace("-test","");
+			params.data["token"] = "a2afed3a6eef13cea272d8460a9af670" //正式token
+			params.url = params.url.replace("-test","");
 		}
 		params.data["from_type"] = store.state.user.from_type
 		params.data["app_type"] = conf.app_type;

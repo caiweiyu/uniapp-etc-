@@ -47,31 +47,11 @@ class CMDHelper {
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
         Util.print('------非国密初始化initEncode1------');
-        let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");//安卓 电服2
-        let sendBuf2 = Util.hexString2Bytes("2000000000000000000000000000000000000000");
+        let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B100018002000");
+        //let sendBuf2 = Util.hexString2Bytes("2000");
         let list = []
         list.push(sendBuf1)
-        list.push(sendBuf2)
-        return list;
-    }
-    initEncode2() { //非国密初始化
-        this.devType = 1;
-        this.frameData = []
-        this.currCmd = cmd.CMD_HANDSHAKE
-        Util.print('------非国密初始化initEncode2------');
-        let sendBuf = Util.hexString2Bytes("FE0100124E2100010A06080012024F4B1200");//电服1
-        let list = []
-        list.push(sendBuf)
-        return list;
-    }
-    initEncode3() { //非国密初始化
-        this.devType = 1;
-        this.frameData = []
-        this.currCmd = cmd.CMD_HANDSHAKE
-        Util.print('------非国密初始化initEncode3------');
-        let sendBuf = Util.hexString2Bytes("FE010014753100000A00120633018001A2221800");//ios
-        let list = []
-        list.push(sendBuf)
+        //list.push(sendBuf2)
         return list;
     }
     /** APP握手 A2 APP和读卡器建立握手 */

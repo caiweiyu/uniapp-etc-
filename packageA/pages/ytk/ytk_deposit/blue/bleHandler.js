@@ -7,6 +7,7 @@
  * @LastEditTime: 2021-06-08 10:21:15
  */
 import * as t from "@/packageA/pages/ytk/ytk_deposit/blue/tools"
+import * as Util from "@/packageA/pages/ytk/ytk_deposit/blue/util";
 class BLEHandler {
     constructor(emitter,blename) {
         this.emitter = emitter
@@ -143,7 +144,9 @@ class BLEHandler {
                 let tmpBuffer;
                 if (bytes > max_wx_frame_len) {
                     tmpBuffer = arrayBuffer.slice(pos, pos + max_wx_frame_len);
-                    //console.log('tmpBuffer: ',tmpBuffer)
+                    console.log('sendBuffer: ',tmpBuffer)
+                    Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
+
                     pos += max_wx_frame_len;
                     bytes -= max_wx_frame_len;
                     let [err, res] = await t._writeBLECharacteristicValue.call(this, tmpBuffer)
@@ -154,7 +157,8 @@ class BLEHandler {
                     _this.sleep(2)
                 } else {
                     tmpBuffer = arrayBuffer.slice(pos, pos + bytes);
-                    //console.log('tmpBuffer: ',tmpBuffer)
+                    console.log('sendBuffer: ',tmpBuffer)
+                    Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
                     pos += bytes;
                     bytes -= bytes;
                     let [err, res] = await t._writeBLECharacteristicValue.call(this, tmpBuffer)

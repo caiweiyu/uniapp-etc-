@@ -74,7 +74,7 @@
 
                 deviceInfo: '',
                 depositCard: null,
-                orderId: '',
+                orderId: '2109131344480248',
                 depositState: "",
                 depositProgress: '',
 
@@ -224,8 +224,8 @@
 
                 //data["kcoin"] = "2";//金币抵扣
 
-                data['token'] = this.token //需要签名必须在这里加上
-                //data['token'] = "97709f4161abfcfe423a722b8d30a2c8"
+                //data['token'] = this.token //需要签名必须在这里加上
+                data['token'] = "a2afed3a6eef13cea272d8460a9af670"
 
                 data["isWifi"] = conf.isWifi;
                 data["distinct_id"] = conf.distinct_id;
@@ -425,7 +425,7 @@
                         } else if (res.type === 'initEncode') {
                             console.log('initEncode', res)
                             if (res.code === "0") {
-                                that.sendBlueOrders(this.cmdHelper.initEncode())
+                                that.sendBlueOrders(this.cmdHelper.initEncode1())
                             }
                         } else if (res.type === 'encode') {
                             console.log('encode', res)

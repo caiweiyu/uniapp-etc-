@@ -109,8 +109,8 @@ class BLEReceive {
         this.addSendData(data);
         if (this.isLastPackage()) {
             if(this.devType === 1){
-                Util.print('--------------nCmdId-----------: ' + this.nCmdId)
-                if(this.nCmdId===10001){ //需要登录
+                Util.print('--------------nCmdId-----------: ' + this.nCmdId.toString(16))
+                if(this.nCmdId===10001){ //需要登录 2711
                     this.emitter.emit("channel", {
                         type: "authEncode",
                         code: "0",
@@ -118,7 +118,7 @@ class BLEReceive {
                     })
                     this.resets();
                     return;
-                }else if(this.nCmdId===10003){//需要初始化
+                }else if(this.nCmdId===10003){//需要初始化 2713
                     this.emitter.emit("channel", {
                         type: "initEncode",
                         code: "0",
@@ -126,7 +126,7 @@ class BLEReceive {
                     })
                     this.resets();
                     return;
-                }else if(this.nCmdId===10002){
+                }else if(this.nCmdId===10002){// 2712
                     this.emitter.emit("channel", {
                         type: "packageData",
                         code: "0",
