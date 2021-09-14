@@ -10,6 +10,10 @@
           <view class="card_title"><text class="text">粤H 86Q90</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">8768 7764 8997 8997</text>
       </view>
+      <!--时间选择区-->
+      <view class="timer_packer">
+          <view v-for="(item,index) in weekmonlist" :key="index" :class="[]" @click="pickerTimer">{{item.cateName}}</view>
+      </view>
       <!--周、月弹出层选项-->
       <u-picker mode="selector" v-model="isOpen" :default-selector="defaultvalue" :range="list" range-key="cateName" @confirm="enter" @cancel="cancel" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
       <!-- <u-select v-model="isOpen" mode='single-column' @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select> -->
@@ -29,6 +33,27 @@ export default {
                 {
                     cateName: '周账单',
                     id: 2
+                }
+            ]
+        },
+        weekmonlist:{
+            type:Array,
+            default:[
+                {
+                    cateName: '第5周',
+                    id: 1
+                },
+                {
+                    cateName: '第1周',
+                    id: 2
+                },
+                {
+                    cateName: '第2周',
+                    id: 3
+                },
+                {
+                    cateName: '第3周',
+                    id: 4
                 }
             ]
         }
@@ -151,6 +176,17 @@ export default {
                 font-size: 30rpx;
                 color: #FFFFFF;
                 opacity: .6;
+            }
+        }
+        .timer_packer{
+            position: absolute;
+            bottom: 0;
+            font-size: 28rpx;
+            opacity: .4;
+            color: #FFFFFF;
+            width: 750rpx;
+            .active_color{
+
             }
         }
         @keyframes animate-up {

@@ -12,9 +12,6 @@
             <!--顶部周月选择下拉框区-->
             <selectWeekmon ref="selectWeekmon"></selectWeekmon>       
 
-            <!--周月tab选项区-->
-            <weekmonTab ref="weekmonTab"></weekmonTab>
-
             <!--本月消费通行次数-->
             <monfreeTimer ref="monfreeTimer"></monfreeTimer>
 
@@ -29,7 +26,7 @@
 
 <script>
 import selectWeekmon from './components/select_weekmon'
-import weekmonTab from './components/weekmon-tab'
+// import weekmonTab from './components/weekmon-tab'
 import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
 import bottomBtn from './components/bottom_btn'
@@ -87,7 +84,6 @@ export default {
     },
     components:{
         selectWeekmon,
-        weekmonTab,
         monfreeTimer,
         billList,
         bottomBtn
