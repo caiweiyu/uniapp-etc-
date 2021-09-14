@@ -3,12 +3,12 @@
         <!--本月消费、同行次数-->
         <view class="box">
             <view class="box1">
-              <text class="box1_text">$24.80</text>
+              ¥<text class="box1_text">{{details.sum}}</text>
               <view class="box1_view">本月消费</view>
             </view>
             <view class="box1">
-              <text class="box1_text">1</text>
-              <view class="box1_view">同行次数</view>
+              <text class="box1_text">{{details.num}}</text>
+              <view class="box1_view">通行次数</view>
             </view>
         </view>
         <!--可滑动 自动滚区-->
@@ -24,9 +24,21 @@
 export default {
     data(){
       return {
+        details:{
+          num:0,
+          sum:0
+        },
         list:[0,1,2]
       }
-    }
+    },
+    mounted() {
+      uni.$on('pickerTimermon',(data)=>{
+        this.details = data;
+      })
+    },
+    methods: {
+      
+    },
 }
 </script>
 
@@ -39,6 +51,14 @@ export default {
     .box1{
       width: 120rpx;
       text-align: center;
+      &_text{
+        color: #222222;
+        font-size: 48rpx;
+      }
+      &_view{
+        color: #999999;
+        font-size: 24rpx;
+      }
     }
   }
   .swiper{
