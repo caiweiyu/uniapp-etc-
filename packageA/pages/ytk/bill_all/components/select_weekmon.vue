@@ -2,7 +2,7 @@
   <view class="box">
       <!--顶部周、月账单选项-->
       <view :class="['box_title']" @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
-          <text class="dirtctionTitle">{{status == 1 ? list[1].label : list[0].label}}</text>
+          <text class="dirtctionTitle">{{status == 1 ? list[1].cateName : list[0].cateName}}</text>
           <view :class="[isOpen ? 'dirtctionAvterafter' : 'dirtctionAvter']"></view>
       </view>
       <!--内容区域-->
@@ -11,7 +11,8 @@
           <text class="card_num">8768 7764 8997 8997</text>
       </view>
       <!--周、月弹出层选项-->
-      <u-select v-model="isOpen" @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select>
+      <u-picker mode="selector" v-model="isOpen" :default-selector="defaultvalue" :range="list" range-key="cateName" @confirm="enter" @cancel="cancel" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
+      <!-- <u-select v-model="isOpen" mode='single-column' @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select> -->
   </view>
 </template>
 
@@ -22,12 +23,12 @@ export default {
             type:Array,
             default:[
                 {
-                    value:0,
-                    label:'月账单'
+                    cateName: '月账单',
+                    id: 1
                 },
                 {
-                    value:1,
-                    label:'周账单'
+                    cateName: '周账单',
+                    id: 2
                 }
             ]
         }
@@ -41,6 +42,7 @@ export default {
             tabHeight:uni.getSystemInfoSync().statusBarHeight * 2, //状态栏高度
             menuHeight:uni.getMenuButtonBoundingClientRect().height * 2, //胶囊高度
             menu:uni.getMenuButtonBoundingClientRect(), //胶囊相关信息
+            defaultvalue:[0]
         }
     },
     computed: {
@@ -63,7 +65,7 @@ export default {
          */
         enter(e){
             this.isOpen = false;
-            this.value = e[0].value;
+            this.value = e[0],this.defaultvalue = e;
             this.value == 1 ? this.status = 1 : this.status = 0;
         },
         /**
