@@ -200,15 +200,7 @@
 					// 中秋活动
 					host = this.webviewShareCallBack(options, host);
 				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/`) > -1) {
-					if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/index.html`) > -1) {
-						host = this.webviewShareCallBack(options, host);
-					} else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/lottery.html`) > -1) {
-						host = this.webviewShareCallBack(options, host);
-					} else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/shows.html`) > -1) {
-						host = this.webviewShareCallBack(options, host);
-					} else {
-						host = `https://user${BASE_URL}.etcchebao.com/bentley/index.html`
-					}
+					host = `https://user${BASE_URL}.etcchebao.com/bentley/index.html`;
 				}  else {
 					type = 0;
 				}
