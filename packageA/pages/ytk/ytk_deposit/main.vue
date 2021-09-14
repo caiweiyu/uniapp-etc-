@@ -446,9 +446,10 @@
 					} = res;
 					if (code == 0) {
 						if (data.res) {
-							if (this.devType === 0) {
+							console.log('this.devType',this.devType)
+							if (this.devType == 0) {
 								this.sendBlueOrders(this.cmdHelper.getCmdC2Guomi())
-							} else if (this.devType === 1) {
+							} else if (this.devType == 1) {
 								//检测设备绑定
 								this.bindDevice()
 							}
