@@ -177,7 +177,10 @@
 			color: #666666;
 			font-size: 28rpx;
 		}
-
+		.btn-primary{
+			background-color: #FF6D40;
+			color: #ffffff;
+		}
 		.plate-num {
 			background: #ffffff;
 

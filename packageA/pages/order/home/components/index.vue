@@ -184,7 +184,6 @@
 		getTopBanner,
 		getOrderList,
 		// getOrderInfo,
-		integrallData
 	} from "@/interfaces/order";
 	import {
 		mapState
@@ -327,14 +326,15 @@
 			gotoLocation(order_id){
 				uni.navigateTo({
 						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`,
-						events:{
-							getData:(data)=>{
-								this.getOrderListtarget(this.page, this.page_size,this.order_status, this.sub_order_type)
-							}
-						},
-						success:(res)=>{
-							res.eventChannel.emit('getData',{ data: 'detail' })
-						}
+						// events:{
+						// 	getData:(data)=>{
+						// 		this.page = 1,this.page_size=10,this.card_list=[];
+						// 		this.getOrderListtarget(this.page, this.page_size,this.order_status, this.sub_order_type)
+						// 	}
+						// },
+						// success:(res)=>{
+						// 	res.eventChannel.emit('getData',{ data: 'detail' })
+						// }
 				})
 			},
 			//跳h5页
@@ -452,7 +452,6 @@
 			}
 		},
 		mounted() {
-			console.log(this.fix,uni.getSystemInfoSync(),'winStatusH',this.winStatusH)
 			let {
 				index
 			} = this.$root.$mp.query;
