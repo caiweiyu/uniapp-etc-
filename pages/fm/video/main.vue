@@ -40,7 +40,7 @@
 						<view class="btn">
 							<view class="comment" @click.stop="commentsList(item)">
                                 <image class="comment_image" src="https://image.etcchebao.com/etc-min/info/info.png" mode="" />
-								<view>评论</view>
+								<view class="comment_view">{{item.comentCount}}</view>
 							</view>
 							<!-- <view class="share hideBtnParent">
 								<text>分享</text>
@@ -48,7 +48,7 @@
 							</view> -->
 							<view class="good" @click.stop="clickLike(item,index)">
 								<image class="good_image" :src="item.isLike == 1 ? 'https://image.etcchebao.com/etc-min/info/liked.png' : 'https://image.etcchebao.com/etc-min/info/like1.png'" mode="" />
-                                <view>点赞</view>
+                                <view class="good_view">{{item.likeCount}}</view>
 							</view>
 						</view>
 					</view>
@@ -270,10 +270,12 @@
 						}
 						break;
 					case 2:
+						console.log('进入1')
 						setTimeout(()=>{
 							self.videoContext = uni.createVideoContext(self.listVideo[self.curTouch.index].videoId,self);//创建视频组件
                             self.videoContext.stop();
-							setTimeout(()=>{ self.videoContext.play(); },700)//播放当前视频
+							console.log('进入2')
+							setTimeout(()=>{ self.videoContext.play();console.log('进入3') },700)//播放当前视频
 						},10)//关闭上次视频
 						break;
 				} 
@@ -285,9 +287,13 @@
 			 * 2 pre
 			 */
 			callBackTouch(num) {
+				//处理滑动太快导致的闪屏
 				if (this.curTouch.continiueScroll == false) {
 					return
 				}
+				//处理结束上一个视频音频及播放进度
+				this.videoContext = uni.createVideoContext(this.listVideo[this.curTouch.index].videoId,this);//创建视频组件
+                this.videoContext.stop();
 				switch(num) {
 					case 1:
 						if ((this.curTouch.index + 1) == this.listVideo.length && !this.curTouch.isVodeo) {//视频库没有资源返回,最后一个视频
@@ -477,6 +483,9 @@
                                     height: 48rpx;
                                     display: block;
                                 }
+								.comment_view{
+									text-align:center;
+								}
 							}
 							.share {
 								margin: 0 0 0 50rpx;
@@ -487,6 +496,9 @@
                                     height: 48rpx;
                                     display: block;
                                 }
+								.good_view{
+									text-align:center;
+								}
 								position: absolute;
 								right: 0;
 								top: 50%;
