@@ -29,10 +29,10 @@ export default {
                 "https://image.etcchebao.com/etc-min/wb/checked_icon.png",
                 "https://image.etcchebao.com/etc-min/wb/wb_submit.png"
             ],
-            isAgree:false,
-            imgs:[],
-            imgsParams:[],
-            item:{}
+            isAgree:false, //是否同意
+            imgs:[],  //首页图片
+            imgsParams:[],  //图片尺寸
+            item:{} //参数
         }
     },
     computed:{
@@ -84,7 +84,7 @@ export default {
             if(code == 0){
                 this.item = data;
                 this.item.jump_type = 2;
-                this.jump_url = data.mini_jump_url
+                this.item.jump_url = data.mini_jump_url
             }
         },
         /**
@@ -130,10 +130,35 @@ export default {
             })
         },
     },
+    onShow(){
+        /**
+         * 检查token是否过期
+         */
+        this.$token(()=>{
+            this.getwbJump()
+        })
+    },
     mounted() {
-        console.log('token=====',this.token)
+        /**
+         * 首页图片数据
+         */
         this.getwbIndex()
+        /**
+         * 微保跳转相关参数
+         */
         this.getwbJump()
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
     },
 }
 </script>
@@ -149,7 +174,7 @@ export default {
         }
         &_bottom{
             position: fixed;
-            z-index: 1;
+            z-index: 999;
             bottom: 0;
             border: 1rpx solid transparent;
             width: 100%;
