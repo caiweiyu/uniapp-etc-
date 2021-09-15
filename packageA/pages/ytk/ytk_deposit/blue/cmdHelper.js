@@ -26,7 +26,7 @@ class CMDHelper {
         this.devType = 1;
         this.frameData = []
         //this.currCmd = cmd.CMD_HANDSHAKE
-        Util.print('------非国密登录authEncode------');
+        //Util.print('------非国密登录authEncode------');
         //let sendBuf = Util.hexString2Bytes("fe0100184e2100010a06080012024f4b1206313233313234")
         let sendBuf = Util.hexString2Bytes("FE0100124E2100010A06080012024F4B1200")
         let list = []
@@ -37,18 +37,8 @@ class CMDHelper {
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_HANDSHAKE
-        Util.print('------非国密初始化initEncode------');
+        //Util.print('------非国密初始化initEncode------');
 		let sendBuf = Util.hexString2Bytes("FE010014753100000A00120633018001A2221800")
-        let list = []
-        list.push(sendBuf)
-        return list;
-    }
-    authEncode1() { //非国密登录
-        this.devType = 1;
-        this.frameData = []
-        //this.currCmd = cmd.CMD_HANDSHAKE
-        Util.print('------非国密登录authEncode1------');
-        let sendBuf = Util.hexString2Bytes("FE0100124E2100010A06080012024F4B1200")
         let list = []
         list.push(sendBuf)
         return list;
@@ -57,15 +47,31 @@ class CMDHelper {
         this.devType = 1;
         this.frameData = []
         this.currCmd = cmd.CMD_CARD_BALANCE
-        Util.print('------非国密初始化initEncode1------');
-        let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B100018002000");
-        //let sendBuf2 = Util.hexString2Bytes("2000");
-        let list = []
-        list.push(sendBuf1)
-        //list.push(sendBuf2)
-        return list;
+        //Util.print('------非国密初始化initEncode1------');
+        let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");
+        let sendBuf2 = Util.hexString2Bytes("2000");
+        //let sendBuf3 = Util.hexString2Bytes("FE010014753100050A00120633048001A2271800");
+        let list1 = []
+        list1.push(sendBuf1)
+        list1.push(sendBuf2)
+        //list1.push(sendBuf3)
+        return list1;
     }
-    makeAuthResponse() {
+    initEncode2() { //非国密初始化
+        this.devType = 1;
+        this.frameData = []
+        this.currCmd = cmd.CMD_CARD_BALANCE
+        //Util.print('------非国密初始化initEncode1------');
+        // let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");
+        // let sendBuf2 = Util.hexString2Bytes("2000");
+        let sendBuf3 = Util.hexString2Bytes("FE010014753100050A00120633048001A2271800");
+        let list1 = []
+        // list1.push(sendBuf1)
+        // list1.push(sendBuf2)
+        list1.push(sendBuf3)
+        return list1;
+    }
+/*    makeAuthResponse() {
         let send = "FE0100124E2100010A06080012024F4B1200";
         let bufferArray = new Array();
         //前段
@@ -80,7 +86,8 @@ class CMDHelper {
         let send = "FE0100164E2300020A06080012024F4B100018002000";
         let bufferArray = new Array();
         //前段
-        let bufferStr = send.substring(0, FRAME_LENGTH);
+        //let bufferStr = send.substring(0, FRAME_LENGTH);
+        let bufferStr = send.substring(0, 40);
         let typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
             return parseInt(h, 16);
         }));
@@ -92,7 +99,7 @@ class CMDHelper {
         }));
         bufferArray.push(typedArray.buffer);
         return bufferArray;
-    };
+    };*/
     /** APP握手 A2 APP和读卡器建立握手 */
     getCmdA2() {
         Util.print('------握手------');
@@ -842,6 +849,19 @@ class CMDHelper {
      * @return
      */
     isLastFrame(indata) {
+        let b = Util.bytes2HexString(indata)
+        Util.print('------待处理帧数据------b: '+ b)
+        let frameLength = 2 * parseInt(b.substring(4, 8), 16)
+        Util.print('------待处理帧数据------frameLength: '+ frameLength)
+        Util.print('------待处理帧数据------data.length: '+ b.length)
+        if (frameLength !== b.length) {
+            Util.print('isLastFrame -- 1')
+            return false;
+        }
+        b = b.substring(16)
+        b = b.substring(8, 8 + 2 * parseInt(b.substring(6, 8), 16))
+        b =b.substring(8, b.length - 2)
+        Util.print('------待处理帧数据------b1: '+ b)
         let data = indata.slice(8, indata.length);
 
         let v = data.length

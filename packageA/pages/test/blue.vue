@@ -81,8 +81,10 @@
                 balance: 0,
                 cardInfo: null,
                 //cardNo:"1913222300077490",
-				cardNo:"1812222300175505"
+				cardNo:"1812222300175505",
 				//cardNo:"1715223209002380"
+                intCount: 0,
+
             };
         },
         onLoad(options) {
@@ -352,9 +354,9 @@
 
             // 下发蓝牙指令
             sendBlueOrders(data) {
-                console.log('data : ', data)
+                //console.log('data : ', data)
                 let currCmd = this.cmdHelper.currCmd
-                console.log('currCmd : ', currCmd)
+                //console.log('currCmd : ', currCmd)
                 return new Promise((resolve, reject) => {
                     let flow = this.ble.send(data)//发送数据
                     if (flow) {
@@ -400,12 +402,12 @@
                                 }
                             }
                         } else if (res.type === 'response') { //接收
-                            console.log('response', res)
+                            //console.log('response', res)
                             if (res.code === "0") {
                                 this.bleReceive.receiveData(res.data)
                             }
                         } else if (res.type === 'depositProgress') { //圈存进度
-                            console.log('depositProgress', res)
+                            //console.log('depositProgress', res)
                             if (res.code === -1 && res.msg !== '') {
                                 wx.showModal({
                                     title: "提示",
@@ -418,17 +420,25 @@
                                 this.depositProgress = res.data //进度值
                             }
                         } else if (res.type === 'authEncode') {
-                            console.log('authEncode', res)
+                            //console.log('authEncode', res)
                             if (res.code === "0") {
                                 that.sendBlueOrders(this.cmdHelper.authEncode())
                             }
                         } else if (res.type === 'initEncode') {
-                            console.log('initEncode', res)
+                            //console.log('initEncode', res)
                             if (res.code === "0") {
-                                that.sendBlueOrders(this.cmdHelper.initEncode1())
+                                this.intCount++
+                                console.log(' this.intCount', this.intCount)
+                                if(this.intCount===1){
+                                    that.sendBlueOrders(this.cmdHelper.initEncode1())
+                                }
+                                if(this.intCount===2){
+                                    that.sendBlueOrders(this.cmdHelper.initEncode2())
+                                    this.intCount=0
+                                }
                             }
                         } else if (res.type === 'encode') {
-                            console.log('encode', res)
+                            //console.log('encode', res)
                             if (res.code === "0") {
                                 that.sendBlueOrders(this.cmdHelper.getCmdA2())
                             }

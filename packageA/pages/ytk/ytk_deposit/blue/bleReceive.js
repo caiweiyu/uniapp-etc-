@@ -75,7 +75,7 @@ class BLEReceive {
     }
 
     receiveData(data) {
-        Util.print('receiveData  data = ' + Util.bytes2HexString(data))
+        Util.print('接收数据: ' + Util.bytes2HexString(data))
         //Util.print('this.devType = ' + this.devType)
         if (this.isHeadPackage) {
             //Util.print('receiveData  1 ')
@@ -94,7 +94,7 @@ class BLEReceive {
                     FixHead.nLength = parseInt(((data[2] << 8 | data[3]) & 0xFFFF) + "", 10)
                     FixHead.nCmdId = parseInt(((data[4] << 8 | data[5]) & 0xFFFF) + "", 10)
                     FixHead.nSeq = parseInt(((data[6] << 8 | data[7]) & 0xFFFF) + "", 10)
-                    console.log('FixHead',FixHead)
+                    //console.log('FixHead',FixHead)
                     this.nCmdId = FixHead.nCmdId
                     this.packageLength = parseInt(((data[2] << 8 | data[3]) & 0xFFFF) + "", 10)
                 }

@@ -144,8 +144,8 @@ class BLEHandler {
                 //let tmpBuffer;
                 if (bytes > max_wx_frame_len) {
                     let tmpBuffer = arrayBuffer.slice(pos, pos + max_wx_frame_len);
-                    console.log('sendBuffer: ',tmpBuffer)
-                    Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
+                    //console.log('sendBuffer: ',tmpBuffer)
+                    Util.print('发送数据: '+Util.bytes2HexString(tmpBuffer));
 
                     pos += max_wx_frame_len;
                     bytes -= max_wx_frame_len;
@@ -153,19 +153,21 @@ class BLEHandler {
                     if (err != null) {
                         return false
                     }
-                    console.log("发送数据成功！")
-                    _this.sleep(2)
+                    tmpBuffer = null
+                    //console.log("发送数据成功！")
+                    //_this.sleep(2)
                 } else {
                     let tmpBuffer = arrayBuffer.slice(pos, pos + bytes);
-                    console.log('sendBuffer: ',tmpBuffer)
-                    Util.print('------sendBuffer-HexString------:'+Util.bytes2HexString(tmpBuffer));
+                    //console.log('sendBuffer: ',tmpBuffer)
+                    Util.print('发送数据: '+Util.bytes2HexString(tmpBuffer));
                     pos += bytes;
                     bytes -= bytes;
                     let [err, res] = await t._writeBLECharacteristicValue.call(this, tmpBuffer)
                     if (err != null) {
                         return false
                     }
-                    console.log("最后一帧发送数据成功！")
+                    tmpBuffer = null
+                    //console.log("最后一帧发送数据成功！")
                 }
             }
         }
