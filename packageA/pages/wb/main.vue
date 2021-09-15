@@ -1,7 +1,7 @@
 <template>
   <view class="box">
-    <block v-if="Object.keys(imgs).length > 0 && imgsParams.length > 0" v-for="(item,index) in imgs" :key="index">
-        <image :src="imgs[index]" mode="" :style="{width:imgsParams[index].width,height:imgsParams[index].height}" />
+    <block v-if="Object.keys(imgs).length > 0 && imgsParams.length > 0">
+        <image v-for="(item,index) in imgs" :class="[ index == (imgs.length-1) ? 'addAll' : '']" :key="index" :src="imgs[index]" mode="" :style="{width:imgsParams[index].width,height:imgsParams[index].height}" />
     </block>
     <view class="box_bottom">
         <image :src="allImage[2]" class="box_bottom_image" mode="" @click.stop="agreeIdea" />
@@ -144,6 +144,9 @@ export default {
         width: 100%;
         // height: 2000rpx;
         background-color: #ddd;
+        .addAll{
+            padding-bottom: 300rpx;
+        }
         &_bottom{
             position: fixed;
             z-index: 1;
