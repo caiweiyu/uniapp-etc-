@@ -132,7 +132,9 @@
                 this.depositCard = null
                 this.depositState = ''
                 this.depositProgress = ''
-                //this.orderId = ''
+                this.intCount=0
+                this.manufactory=0
+                this.maxpacklen=0
             },
             checkRandomOrder(){//检查是否有未支付订单
                 bleProxy.checkRandomOrder({
@@ -427,15 +429,20 @@
                         } else if (res.type === 'initEncode') {
                             //console.log('initEncode', res)
                             if (res.code === "0") {
-                                this.intCount++
                                 console.log(' this.intCount', this.intCount)
-                                if(this.intCount===1){
-                                    that.sendBlueOrders(this.cmdHelper.initEncode1())
+                                if(this.deviceInfo.manufactory==2){//万集
+                                    that.sendBlueOrders(this.cmdHelper.initEncode())
+                                }else if (this.deviceInfo.manufactory==4){ //金溢
+                                    this.intCount++
+                                    if(this.intCount===1){
+                                        that.sendBlueOrders(this.cmdHelper.initEncode1())
+                                    }
+                                    if(this.intCount===2){
+                                        that.sendBlueOrders(this.cmdHelper.initEncode2())
+                                        this.intCount=0
+                                    }
                                 }
-                                if(this.intCount===2){
-                                    that.sendBlueOrders(this.cmdHelper.initEncode2())
-                                    this.intCount=0
-                                }
+
                             }
                         } else if (res.type === 'encode') {
                             //console.log('encode', res)

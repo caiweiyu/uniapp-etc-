@@ -21,6 +21,17 @@ class CMDHelper {
 
         this.recvData = [];
         this.packNum = 0;
+
+        this.stephex = "";
+        this.frameLength = 0;
+        this.frameArray = [];
+        this.frameCount = 0;
+
+        // this.DATA_LENGTH = maxFrameLen;
+        // this.FRAME_LENGTH = 40;
+        // this.Protocol_Type = "genvict";
+        // this.SEQ = 3;
+        // this.SN = 1;
     }
     authEncode() { //非国密登录
         this.devType = 1;
@@ -46,7 +57,7 @@ class CMDHelper {
     initEncode1() { //非国密初始化
         this.devType = 1;
         this.frameData = []
-        this.currCmd = cmd.CMD_CARD_BALANCE
+        this.currCmd = cmd.CMD_HANDSHAKE
         //Util.print('------非国密初始化initEncode1------');
         let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");
         let sendBuf2 = Util.hexString2Bytes("2000");
@@ -60,7 +71,7 @@ class CMDHelper {
     initEncode2() { //非国密初始化
         this.devType = 1;
         this.frameData = []
-        this.currCmd = cmd.CMD_CARD_BALANCE
+        this.currCmd = cmd.CMD_HANDSHAKE
         //Util.print('------非国密初始化initEncode1------');
         // let sendBuf1 = Util.hexString2Bytes("FE0100164E2300020A06080012024F4B10001800");
         // let sendBuf2 = Util.hexString2Bytes("2000");
@@ -71,35 +82,6 @@ class CMDHelper {
         list1.push(sendBuf3)
         return list1;
     }
-/*    makeAuthResponse() {
-        let send = "FE0100124E2100010A06080012024F4B1200";
-        let bufferArray = new Array();
-        //前段
-        let bufferStr = send.substring(0, 36);
-        let typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
-            return parseInt(h, 16);
-        }));
-        bufferArray.push(typedArray.buffer);
-        return bufferArray;
-    }
-    makeInitResponse() {
-        let send = "FE0100164E2300020A06080012024F4B100018002000";
-        let bufferArray = new Array();
-        //前段
-        //let bufferStr = send.substring(0, FRAME_LENGTH);
-        let bufferStr = send.substring(0, 40);
-        let typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
-            return parseInt(h, 16);
-        }));
-        bufferArray.push(typedArray.buffer);
-        //后段
-        bufferStr = send.substring(40);
-        typedArray = new Uint8Array(bufferStr.match(/[\da-f]{2}/gi).map(function (h) {
-            return parseInt(h, 16);
-        }));
-        bufferArray.push(typedArray.buffer);
-        return bufferArray;
-    };*/
     /** APP握手 A2 APP和读卡器建立握手 */
     getCmdA2() {
         Util.print('------握手------');
@@ -737,6 +719,89 @@ class CMDHelper {
 
     }
 
+    // buildFrame2(a1) {
+    //     let a = Util.bytes2HexString(a1)
+    //     var b = "" + a, c = parseInt(b.length / this.DATA_LENGTH), d = b.length % this.DATA_LENGTH;
+    //     a = [];
+    //     for (var e = 0; e < c; e++) a.push(b.substring(e * this.DATA_LENGTH, e * this.DATA_LENGTH + this.DATA_LENGTH));
+    //     0 < d && a.push(b.substring(b.length - d));
+    //     b = [];
+    //     this.SN++;
+    //     15 < this.SN && (this.SN = 1);
+    //     for (c = 0; c < a.length; c++) {
+    //         d = "";
+    //         d = 0 == c ? this.numberToHexString(128 + a.length - 1, 1, !0) : this.numberToHexString(a.length - c - 1, 1, !0);
+    //         d = this.GVPackData(a[c], d);
+    //         d = this.wechatPackData(d);
+    //         e = parseInt(d.length / this.FRAME_LENGTH);
+    //         for (var g = d.length % this.FRAME_LENGTH, f = 0; f < e; f++) {
+    //             var h = d.substring(f * this.FRAME_LENGTH,
+    //                 f * this.FRAME_LENGTH + this.FRAME_LENGTH);
+    //             h = new Uint8Array(h.match(/[\da-f]{2}/gi).map(function (a) {
+    //                 return parseInt(a, 16)
+    //             }));
+    //             b.push(h.buffer)
+    //         }
+    //         0 < g && (d = d.substring(d.length - g), d = new Uint8Array(d.match(/[\da-f]{2}/gi).map(function (a) {
+    //             return parseInt(a, 16)
+    //         })), b.push(d.buffer))
+    //     }
+    //     return b
+    // }
+    //
+    // tlvPackData(a) {
+    //     for (var b = "", c = 0; c < a.length; c++) {
+    //         var d = 256 <= a[c].length / 2 ? "82" + this.numberToHexString(a[c].length / 2, 2, !1) + a[c] : 128 < a[c].length / 2 ? "81" + this.numberToHexString(a[c].length / 2, 1, !1) + a[c] : numberToHexString(a[c].length / 2, 1, !1) + a[c];
+    //         b = b + this.numberToHexString(c + 1, 1, !1) + d
+    //     }
+    //     a = b.length / 2;
+    //     return 256 <= a ? "82" + this.numberToHexString(a, 2, !1) + b : 128 < a ? "81" + this.numberToHexString(a, 1, !1) + b : this.numberToHexString(a, 1, !1) + b
+    // }
+    //
+    // wechatPackData(a) {
+    //     a = "0A0012" + this.numberToHexString(a.length / 2, 1, !0) + a + "1800";
+    //     var b = this.numberToHexString(a.length / 2 + 8, 2, !0), c = this.numberToHexString(this.SEQ, 2, !0);
+    //     this.SEQ++;
+    //     15 < this.SEQ && (this.SEQ = 1);
+    //     return "FE01" + b + "7531" + c + a
+    // }
+    //
+    // GVPackData(a, b) {
+    //     var c = this.numberToHexString(this.SN, 1, !0);
+    //     a = "" + a;
+    //     var d = this.numberToHexString(a.length / 2, 1, !0);
+    //     b = "33" + c + b + d + a;
+    //     c = 0;
+    //     for (a = 1; a < b.length / 2; a++) d = parseInt(b.substring(2 * a, 2 * a + 2), 16), c ^= d;
+    //     return b += this.numberToHexString(c, 1, !0)
+    // }
+    //
+    // numberToHexString(a, b, c) {
+    //     a = a.toString(16);
+    //     for (var d = a.length; d < 2 * b; d++) a = "0" + a;
+    //     a.length > 2 * b && (a = a.substring(a.length - 2 * b));
+    //     if (!c) {
+    //         b = "";
+    //         for (c = a.length - 2; 0 <= c; c -= 2) b += a.substring(c, c + 2);
+    //         a = b
+    //     }
+    //     return a
+    // }
+    //
+    // fromCharCode(a) {
+    //     for (var b = "", c = 0; c < a.length / 2; c++) {
+    //         var d = a.substring(2 * c, 2 * c + 2);
+    //         b += String.fromCharCode(parseInt(d, 16))
+    //     }
+    //     return b
+    // }
+    //
+    // stringtoHex(a) {
+    //     if ("" === a) return "";
+    //     for (var b = [], c = 0; c < a.length; c++) b.push(a.charCodeAt(c).toString(16));
+    //     return b.join("")
+    // }
+
 
     /**
      * 创建ble通道(国密)
@@ -819,7 +884,7 @@ class CMDHelper {
         if (this.devType === 0) {
             isLastFrames = this.isLastFrameGuomi(this.recvData)
         } else if (this.devType === 1) {
-            isLastFrames = this.isLastFrame(this.recvData)
+            isLastFrames = this.isLastFrame1(this.recvData)
         }
         Util.print('recvData--2  data = ' + Util.bytes2HexString(this.recvData))
         if (this.recvData.length === 0) {
@@ -860,19 +925,14 @@ class CMDHelper {
         }
         b = b.substring(16)
         b = b.substring(8, 8 + 2 * parseInt(b.substring(6, 8), 16))
-        b =b.substring(8, b.length - 2)
         Util.print('------待处理帧数据------b1: '+ b)
         let data = indata.slice(8, indata.length);
-
         let v = data.length
         if (v > 127) {
-            data = data.slice(5, data.length - 2);
+            //data = data.slice(5, data.length - 2);
+            b = b.substring(8, 8 + 2 * parseInt(b.substring(6, 8), 16))
+            data = Util.hexString2Bytes(b)
         } else {
-            // if(this.currCmd === cmd.CMD_AUTH){
-            //     data = data.slice(4, data.length - 3);
-            // }else {
-            //     data = data.slice(4, data.length - 2);
-            // }
             data = data.slice(4, data.length - 2);
         }
         //let data = indata
@@ -912,6 +972,48 @@ class CMDHelper {
         return success;
     }
 
+    isLastFrame1(indata) {
+        let b = Util.bytes2HexString(indata)
+        Util.print('------待处理帧数据------b: '+ b)
+        let frameLength = 2 * parseInt(b.substring(4, 8), 16)
+        Util.print('------待处理帧数据------frameLength: '+ frameLength)
+        Util.print('------待处理帧数据------data.length: '+ b.length)
+        if (frameLength !== b.length) {
+            Util.print('isLastFrame -- 1')
+            return false;
+        }
+        b = b.substring(16)
+        b = b.substring(8, 8 + 2 * parseInt(b.substring(6, 8), 16))
+        Util.print('------待处理帧数据------b1: '+ b)
+        let datas =  this.genvictDataResponse(b);
+        if(datas.length <= 0){
+            Util.print('isLastFrame -- 2')
+            return false;
+        }
+        this.recvData = Util.hexString2Bytes(datas);
+        Util.print('isLastFrame -- 3')
+        return true;
+
+    }
+    genvictDataResponse(a) {
+        this.stephex = "";
+        this.frameLength = 0;
+        0 == this.frameArray.length && (this.frameCount = parseInt(a.substring(4, 6), 16) - 128 + 1);
+        this.frameArray.push(a);
+        if (this.frameCount == this.frameArray.length) {
+            a = "";
+            for (let b = 0; b < this.frameArray.length; b++) {
+                let c = "" + this.frameArray[b];
+                a += c.substring(8, c.length - 2)
+            }
+            this.frameArray = [];
+            this.frameCount = 0;
+            if(150 != parseInt(a.substring(0, 2), 16)){
+                return a
+            }
+            return ''
+        }
+    }
     /**
      * 判断收到的数据是否为最后一帧数据
      *

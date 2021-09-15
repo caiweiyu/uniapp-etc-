@@ -233,6 +233,7 @@
 				bleStatus: false, //蓝牙链接状态
 				initEncodeCount: 0, //非国密初始化次数
 				authEncodeCount: 0, //非国密登录次数
+				intCount:0
 			};
 		},
 		onLoad(options) {
@@ -316,6 +317,7 @@
 				this.depositProgress = ''
 				this.initEncodeCount = 0 //非国密初始化次数
 				this.authEncodeCount = 0 //非国密登录次数
+				this.intCount=0
 			},
 			resGetDev() { //重新搜索设备先关闭蓝牙再初始化
 				this.initAll()
@@ -586,22 +588,18 @@
 							console.log('initEncode', res)
 							if (res.code === "0") {
 								this.initEncodeCount = this.initEncodeCount + 1
+								this.intCount++
 								if (this.initEncodeCount < 10) {
 									console.log('initEncodeCount-1', this.initEncodeCount)
-									that.sendBlueOrders(this.cmdHelper.initEncode())
-									// let intType = this.initEncodeCount % 4
-									// switch (intType) {
-									// 	case 0:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
-									// 	case 1:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode1())
-									// 	case 2:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode2())
-									// 	case 3:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode3())
-									// 	default:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
-									// }
+									//that.sendBlueOrders(this.cmdHelper.initEncode())
+
+									if(this.intCount===1){
+										that.sendBlueOrders(this.cmdHelper.initEncode1())
+									}
+									if(this.intCount===2){
+										that.sendBlueOrders(this.cmdHelper.initEncode2())
+										this.intCount=0
+									}
 								} else {
 									console.log('initEncodeCount-2', this.initEncodeCount)
 									this.connectStatus = "设备连接初始化失败";
