@@ -33,6 +33,7 @@ export default {
     },
     mounted() {
       uni.$on('pickerTimermon',(data)=>{
+        console.log('data===',data);
         this.details = data;
       })
     },

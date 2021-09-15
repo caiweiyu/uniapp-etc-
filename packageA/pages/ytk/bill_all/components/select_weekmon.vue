@@ -15,7 +15,14 @@
 
       <!--周时间选择区-->
       <view class="timer_packer" v-if="value == 1">
-          <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">更多</view><view v-for="(item,index) in (weekmonlist.slice(-4))" :key="index" :class="['timer_packer_item',current == index ? 'active_color' : '']" @click="pickerTimer(item,index)">{{'第'+item.week+'周'}}</view>
+          <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">
+              <text class="markMonth">{{selectweekMore.week ? ('第'+selectweekMore.week+'周') : '更多'}}</text>
+              <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
+          </view>
+          <view v-for="(item,index) in (weekmonlist.slice(0,4))" :key="index" :class="['timer_packer_item',current == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
+              <text class="markMonth">{{'第'+item.week+'周'}}</text>
+              <view class="markYear" v-if="item.nowMonth != null">{{item.nowMonth+'月'}}</view>
+          </view>
       </view>
 
       <!--6个月选择区-->
@@ -115,7 +122,8 @@ export default {
             defaultvalue:[0],
             defaultweekvalue:[0],
             current:-1,
-            currentmon:5
+            currentmon:5,
+            selectweekMore:{}
         }
     },
     computed: {
@@ -148,7 +156,8 @@ export default {
          * 周确定选择
          */
         enterweek(e){
-            console.log(e,'---e----')
+            this.selectweekMore = this.weekmonlist[e[0]];
+            console.log('this.selectweekMore',this.selectweekMore)
         },
 
         /**
@@ -163,6 +172,7 @@ export default {
          */
         pickerTimer(item,index){
             this.current = index;
+            uni.$emit('pickerTimermon',item)
         },
 
         /**

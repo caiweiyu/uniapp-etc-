@@ -149,18 +149,22 @@ export default {
                             let begin = data[i].weekRanges[j].begin.slice(5,10).replace('-','.');
                             let end = data[i].weekRanges[j].end.slice(5,10).replace('-','.');
                             let nowMonth = null;
+                            let preMonth = null;
                             if(Number(data[i].weekRanges[j].begin.split('-')[1]) < new Date().getMonth()+1){
                                 nowMonth = Number(data[i].weekRanges[j].begin.split('-')[1])
+                            }else{
+                                preMonth = Number(data[i].weekRanges[j].begin.split('-')[1])
                             }
                             arr.push({
                                 week:data[i].weekRanges[j].weekOfMonth,
                                 type:data[i].weekRanges[j].statisType[0].type,
-                                money:data[i].weekRanges[j].statisType[0].money,
-                                times:data[i].weekRanges[j].statisType[0].times,
+                                sum:data[i].weekRanges[j].statisType[0].money,
+                                num:data[i].weekRanges[j].statisType[0].times,
                                 begin:begin,
                                 end:end,
                                 describe:'第'+data[i].weekRanges[j].weekOfMonth+'周 '+'('+begin+'-'+end+')',
-                                nowMonth:nowMonth
+                                nowMonth:nowMonth,
+                                preMonth:preMonth
                             })
                         }   
                     };
