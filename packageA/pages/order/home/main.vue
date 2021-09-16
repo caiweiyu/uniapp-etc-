@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<Index @opSelectOptions="updateStatus" :name="name"></Index>
+		<Index @opSelectOptions="updateStatus" :name="name" ref="index"></Index>
 		<dialog-window ref="dialog" flag="6"></dialog-window>
 	</view>
 </template>
@@ -36,6 +36,15 @@
 		onShow() {
 			this.$store.dispatch("home/ac_share_info",6);//分享配置
 			this.$refs.dialog.loadPopup();//全局弹窗配置
+			uni.$on('loadListfn',(data)=>{
+				if(data){
+					this.$refs.index.onRestore();
+					uni.$off('loadListfn')
+				}
+			});
+			this.$token(()=>{
+				this.$refs.index.loadAllfn();
+			})
 		},
 		onHide() {
 			this.$store.commit("home/mt_share_info", "");
