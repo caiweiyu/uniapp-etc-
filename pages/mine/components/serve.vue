@@ -68,7 +68,8 @@
 			//跳etc发票
 			toEtcTicket(){
 				uni.navigateTo({
-					url: `/pages/webview/main?src=${encodeURIComponent(`${user}/etcparking/index.html?token=${this.token}`)}`,
+					// url: `/pages/webview/main?src=${encodeURIComponent(`${user}/etcparking/index.html?token=${this.token}`)}`,
+					url: `/pages/webview/main?src=${encodeURIComponent(`localhost:8083`)}`,
 				});
 			},
 			async getmyservice(){

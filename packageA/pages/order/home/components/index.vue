@@ -52,7 +52,7 @@
 						 :scroll-with-animation="true"
 						 >
 						<view :class="[index==0?'order-card-first':'order-card']" v-for="(item,index) in card_list" :key="index">
-							<view class="order-card-header" v-if="['40','11','10','140'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
+							<view class="order-card-header" v-if="['40','11','10','140','100'].indexOf(item.order_type) != -1" @click.stop="$debounce(toService,item.order_status_id,item.order_type,item.order_id,item.jump_url)">
 								<view class="header">
 									<view class="header_box_l">
 										<image class="header_box_l_img" :src="item.icon"></image>
@@ -79,7 +79,7 @@
 									<view class="order-box1"></view>
 									<view class="order-box2">
 										<view class="order_pay"
-											v-if="['10','140'].indexOf(item.order_type) > -1 && item.order_status_id == '6'">
+											v-if="['10','140','100'].indexOf(item.order_type) > -1 && item.order_status_id == '6'">
 											支付
 										</view>
 										<view class="order_pay"
@@ -94,7 +94,7 @@
 											v-if="item.order_type == '11' && item.order_status_id == '0'">
 											继续写卡
 										</view>
-										<view @click.stop="$debounce(toServicedetail,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
+										<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="(['011000','100001'].indexOf(item.sub_order_type) > -1) && (['12','13','15','19'].indexOf(item.order_status_id) > -1)">
 											退款进度
 										</view>
 									</view>
@@ -143,7 +143,7 @@
 											v-if="item.order_type == '11' && item.order_status_id == '0'">
 											继续写卡
 										</view>
-											<view @click.stop="$debounce(toServicedetail,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
+											<view @click.stop="$debounce(toServicedetail,item,item.order_type,item.order_id)" class="order_pay" v-if="item.sub_order_type=='011000' && (['13','15','19'].indexOf(item.order_status_id) > -1)">
 											退款进度
 										</view>
 									</view>
@@ -184,12 +184,12 @@
 		getTopBanner,
 		getOrderList,
 		// getOrderInfo,
-		integrallData
 	} from "@/interfaces/order";
 	import {
 		mapState
 	} from 'vuex';
 	import changeTabbar from "@/components/change-tabbar";
+	import fix from "@/config/conf";
 	export default {
 		props: {
 			name: {
@@ -202,7 +202,7 @@
 		},
 		data() {
 			return {
-				curIndex: 0,
+				curIndex: -1,
 				curIndexI: 0, //二级菜单active
 				curIndexJ: 0, //二级菜单active
 				menuName: "全部订单",
@@ -226,7 +226,8 @@
 				status:'nomore',
 				triggered:false,
 				scrollTops:-1,
-				winStatusH:uni.getSystemInfoSync().statusBarHeight * 2
+				winStatusH:uni.getSystemInfoSync().statusBarHeight * 2,
+				fix:fix.fix
 			}
 		},
 		methods: {
@@ -324,7 +325,7 @@
 			//跳小程序原生
 			gotoLocation(order_id){
 				uni.navigateTo({
-						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`,
+						url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${order_id}`
 						// events:{
 						// 	getData:(data)=>{
 						// 		this.getOrderListtarget(this.page, this.page_size,this.order_status, this.sub_order_type)
@@ -367,12 +368,20 @@
 
 				}
 			},
-			//跳转订单详情
-			toServicedetail(order_type,order_id){
-				let url = `/packageA/pages/ytk/ytk_list/order_process?order_id=${order_id}&order_type=${order_type}`
-				uni.navigateTo({
-					url: url
-				});
+			//跳转订单进度
+			toServicedetail(item,order_type,order_id){
+				if(item.sub_order_type == '100001'){
+					let fix_mode = (this.fix == 'test' ? 'test' : 'dev');
+					let url_src = `https://user-${fix_mode}.etcchebao.com/hfrecharge/refund_status.html?order_id=${order_id}`;
+					uni.navigateTo({
+						url: `/pages/webview/main?src=${encodeURIComponent(url_src)}`
+					});
+				}else{
+					let url = `/packageA/pages/ytk/ytk_list/order_process?order_id=${order_id}&order_type=${order_type}`
+					uni.navigateTo({
+						url: url
+					});
+				}
 			},
 			//获取全部菜单数据
 			async getOrderListtarget(page, page_size, order_status, sub_order_type) {
@@ -427,6 +436,13 @@
 					this.banner_list = data;
 				}
 			},
+			//加载的方法
+			loadAllfn(){
+				this.getOrderTypeTarget();
+				this.getOrderStatusList(-1, -1);
+				this.getTopBannerList();
+				this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
+			}
 		},
 		computed: {
 			...mapState({
@@ -442,28 +458,12 @@
 			}
 		},
 		mounted() {
-			console.log(uni.getSystemInfoSync(),'winStatusH',this.winStatusH)
 			let {
 				index
 			} = this.$root.$mp.query;
 			this.curIndex = index;
-			this.getOrderTypeTarget();
-			this.getOrderStatusList(-1, -1);
-			this.getTopBannerList();
-			this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
-		},
-		onShow(){
-			this.$token(()=>{
-				let {
-					index
-				} = this.$root.$mp.query;
-				this.curIndex = index;
-				this.getOrderTypeTarget();
-				this.getOrderStatusList(-1, -1);
-				this.getTopBannerList();
-				this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
-			})
-		},
+			this.loadAllfn()
+		}
 	}
 </script>
 
