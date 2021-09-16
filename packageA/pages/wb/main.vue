@@ -18,9 +18,11 @@ import {
     getwbIndex,
     getwbJump,
 } from "@/interfaces/order";
+const app = getApp()
 import miniScript from "@/common/miniScript"
 const  miniapp = miniScript.getInstance()
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 export default {
     data(){
         return{
@@ -122,6 +124,10 @@ export default {
             console.log('正在跳转第三方小程序...')
         },
         callback(item) {
+            /**
+             * 触发埋点
+             */
+            eventMonitor("insure_WBZX-WeChat_Ins_Receive_412_ConfirmButton_click",2)
             // 跳转page || miniProgram
             miniapp.miniProgramRouter(item, (res)=>{
                 
@@ -142,7 +148,11 @@ export default {
         /**
          * 首页图片数据
          */
-        this.getwbIndex()
+        this.getwbIndex();
+        /**
+         * 触发埋点
+         */
+        eventMonitor("Ins_WB-ZXpage",1)
         /**
          * 微保跳转相关参数
          */
