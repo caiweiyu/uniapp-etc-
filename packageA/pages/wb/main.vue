@@ -1,7 +1,7 @@
 <template>
   <view class="box">
-    <block v-if="Object.keys(imgs).length > 0 && imgsParams.length > 0" v-for="(item,index) in imgs" :key="index">
-        <image :src="imgs[index]" mode="" :style="{width:imgsParams[index].width,height:imgsParams[index].height}" />
+    <block v-if="Object.keys(imgs).length > 0 && imgsParams.length > 0">
+        <image v-for="(item,index) in imgs" :class="[ index == (imgs.length-1) ? 'addAll' : '']" :key="index" :src="imgs[index]" mode="" :style="{width:imgsParams[index].width,height:imgsParams[index].height}" />
     </block>
     <view class="box_bottom">
         <image :src="allImage[2]" class="box_bottom_image" mode="" @click.stop="agreeIdea" />
@@ -18,9 +18,11 @@ import {
     getwbIndex,
     getwbJump,
 } from "@/interfaces/order";
+const app = getApp()
 import miniScript from "@/common/miniScript"
 const  miniapp = miniScript.getInstance()
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 export default {
     data(){
         return{
@@ -29,10 +31,10 @@ export default {
                 "https://image.etcchebao.com/etc-min/wb/checked_icon.png",
                 "https://image.etcchebao.com/etc-min/wb/wb_submit.png"
             ],
-            isAgree:false,
-            imgs:[],
-            imgsParams:[],
-            item:{}
+            isAgree:false, //是否同意
+            imgs:[],  //首页图片
+            imgsParams:[],  //图片尺寸
+            item:{} //参数
         }
     },
     computed:{
@@ -84,7 +86,7 @@ export default {
             if(code == 0){
                 this.item = data;
                 this.item.jump_type = 2;
-                this.jump_url = data.mini_jump_url
+                this.item.jump_url = data.mini_jump_url
             }
         },
         /**
@@ -122,6 +124,10 @@ export default {
             console.log('正在跳转第三方小程序...')
         },
         callback(item) {
+            /**
+             * 触发埋点
+             */
+            eventMonitor("insure_WBZX-WeChat_Ins_Receive_412_ConfirmButton_click",2)
             // 跳转page || miniProgram
             miniapp.miniProgramRouter(item, (res)=>{
                 
@@ -130,10 +136,39 @@ export default {
             })
         },
     },
+    onShow(){
+        /**
+         * 检查token是否过期
+         */
+        this.$token(()=>{
+            this.getwbJump()
+        })
+    },
     mounted() {
-        console.log('token=====',this.token)
-        this.getwbIndex()
+        /**
+         * 首页图片数据
+         */
+        this.getwbIndex();
+        /**
+         * 触发埋点
+         */
+        eventMonitor("Ins_WB-ZXpage",1)
+        /**
+         * 微保跳转相关参数
+         */
         this.getwbJump()
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
     },
 }
 </script>
@@ -144,9 +179,12 @@ export default {
         width: 100%;
         // height: 2000rpx;
         background-color: #ddd;
+        .addAll{
+            padding-bottom: 300rpx;
+        }
         &_bottom{
             position: fixed;
-            z-index: 1;
+            z-index: 999;
             bottom: 0;
             border: 1rpx solid transparent;
             width: 100%;

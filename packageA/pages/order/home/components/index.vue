@@ -202,7 +202,7 @@
 		},
 		data() {
 			return {
-				curIndex: 0,
+				curIndex: -1,
 				curIndexI: 0, //二级菜单active
 				curIndexJ: 0, //二级菜单active
 				menuName: "全部订单",
@@ -437,6 +437,13 @@
 					this.banner_list = data;
 				}
 			},
+			//加载的方法
+			loadAllfn(){
+				this.getOrderTypeTarget();
+				this.getOrderStatusList(-1, -1);
+				this.getTopBannerList();
+				this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
+			}
 		},
 		computed: {
 			...mapState({
@@ -456,23 +463,8 @@
 				index
 			} = this.$root.$mp.query;
 			this.curIndex = index;
-			this.getOrderTypeTarget();
-			this.getOrderStatusList(-1, -1);
-			this.getTopBannerList();
-			this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
-		},
-		onShow(){
-			this.$token(()=>{
-				let {
-					index
-				} = this.$root.$mp.query;
-				this.curIndex = index;
-				this.getOrderTypeTarget();
-				this.getOrderStatusList(-1, -1);
-				this.getTopBannerList();
-				this.getOrderListtarget(this.page, this.page_size, this.curIndex, this.curIndex);
-			})
-		},
+			this.loadAllfn()
+		}
 	}
 </script>
 
