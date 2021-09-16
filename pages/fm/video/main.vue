@@ -266,7 +266,7 @@
 					case 1:
 						if (self.curTouch.numVideo == self.listVideo.length) {//首次加载成功后播放视频
 							self.videoContext = uni.createVideoContext(self.listVideo[self.curTouch.index].videoId,self);//创建视频组件
-							self.videoContext.play();
+							setTimeout(()=>{ self.videoContext.play();console.log('首次播放') },700)//播放当前视频
 						}
 						break;
 					case 2:
