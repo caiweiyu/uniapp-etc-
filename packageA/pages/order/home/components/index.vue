@@ -778,7 +778,7 @@
 									color: #FF5C2A;
 									font-size: 26rpx;
 									border-radius: 27rpx;
-									border: 1rpx solid #FF5C2A;
+									border: 2rpx solid #FF5C2A;
 								}
 							}
 							.order_time {
