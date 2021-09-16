@@ -220,6 +220,7 @@
 					// 中秋活动
 					host = this.webviewShareCallBack(options, host);
 				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/`) > -1) {
+					// 宾利馆
 					host = `https://user${BASE_URL}.etcchebao.com/bentley/index.html`;
 				}  else {
 					type = 0;

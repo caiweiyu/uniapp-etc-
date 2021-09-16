@@ -761,6 +761,9 @@
 </script>
 
 <style lang="scss">
+	page {
+		background-color: #EBECEC;
+	}
 	.space-white {
 		width: 100%;
 		height: 30rpx;
