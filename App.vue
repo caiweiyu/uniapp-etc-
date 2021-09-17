@@ -43,6 +43,10 @@
 				console.log("⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧⇧")
 			},
 			
+			myRotate(max, min) {
+				return Math.floor(Math.random() * (max - min) + min)
+			},
+			
 			/**
 			 * 分享
 			 */
@@ -60,8 +64,9 @@
 				}
 				let num = 0;
 				let share_info = store.state.home.share_info || [];
+				console.log(share_info)
 				if (share_info.length > 0) {
-					num = miniapp.myRotate(share_info.length, 0); //随机一组列表数据
+					num = this.myRotate(share_info.length, 0); //随机一组列表数据
 					app_message.title = share_info[num].title;
 					app_message.imageUrl = share_info[num].img_url;
 					
@@ -104,7 +109,7 @@
 				let num = 0;
 				let share_info = store.state.home.share_info || [];
 				if (share_info.length > 0) {
-					num = miniapp.myRotate(share_info.length, 0); //随机一组列表数据
+					num = this.myRotate(share_info.length, 0); //随机一组列表数据
 					app_message.title = share_info[num].title;
 					app_message.imageUrl = share_info[num].img_url;
 					
