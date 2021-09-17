@@ -5,8 +5,8 @@
     </block>
     <view class="box_bottom">
         <image :src="allImage[2]" class="box_bottom_image" mode="" @click.stop="agreeIdea" />
-        <view class="box_bottom_view">
-            <image class="box1" :src="isAgree ? allImage[1] : allImage[0]" mode="" @click.stop="isCheck" />
+        <view class="box_bottom_view"  @click.stop="isCheck">
+            <image class="box1" :src="isAgree ? allImage[1] : allImage[0]" mode="" />
             <text class="box2">我同意授权ETC车宝将我的车辆信息及姓名、身份证号身份信息共享给腾讯微保用于领取救援服务并投保意外险</text>
         </view>
     </view>
