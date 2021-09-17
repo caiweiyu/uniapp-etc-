@@ -222,6 +222,9 @@
 				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/`) > -1) {
 					// 宾利馆
 					host = `https://user${BASE_URL}.etcchebao.com/bentley/index.html`;
+				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/account_card_obu/`) > -1) {
+					// ETC申办
+					host = `https://user${BASE_URL}.etcchebao.com/account_card_obu/aco_intro.html`;
 				}  else {
 					type = 0;
 				}
