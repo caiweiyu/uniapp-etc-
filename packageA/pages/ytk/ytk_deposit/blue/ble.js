@@ -49,8 +49,8 @@ class BLE extends BLEHandler {
         this.onBLECharacteristicValueChange()
     }
     // 发送指令
-    async send(mudata, cmd) {
-        let flow = await this.sentOrder(mudata, cmd)
+    async send(mudata) {
+        let flow = await this.sentOrder(mudata)
         return flow
     }
     async close() {

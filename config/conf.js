@@ -5,7 +5,7 @@
 //wxf4ef0551541359b3 vipcard
 //wx36d40eda67858b1b etccb_test
 export default {
-	miniversion : '2.0.10', //小程序版本
+	miniversion : '2.0.11', //小程序版本
 	hash : 'etccb', // etccb_test 测试小程序 正式小程序 etccb  vipcard 会员卡小程序
 	fix: '' ,// dev local test
 	app_type:2,//应用类型 1 app 2 小程序
