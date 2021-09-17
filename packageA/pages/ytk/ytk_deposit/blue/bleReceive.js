@@ -35,14 +35,6 @@ class BLEReceive {
             return (this.len === this.packageLength + 5);
         } else if (this.devType === 1) {
             if(this.len === this.packageLength){
-                // let data = this.sendData.slice(8, this.sendData.length);
-                // let v = data.length
-                // if (v > 127) {
-                //     data = data.slice(5, data.length - 2);
-                // } else {
-                //     data = data.slice(4, data.length - 2);
-                // }
-                // this.sendData = data
                 return true
             }
             return false
@@ -75,7 +67,7 @@ class BLEReceive {
     }
 
     receiveData(data) {
-        Util.print('receiveData  data = ' + Util.bytes2HexString(data))
+        Util.print('接收数据: ' + Util.bytes2HexString(data))
         //Util.print('this.devType = ' + this.devType)
         if (this.isHeadPackage) {
             //Util.print('receiveData  1 ')
@@ -94,7 +86,7 @@ class BLEReceive {
                     FixHead.nLength = parseInt(((data[2] << 8 | data[3]) & 0xFFFF) + "", 10)
                     FixHead.nCmdId = parseInt(((data[4] << 8 | data[5]) & 0xFFFF) + "", 10)
                     FixHead.nSeq = parseInt(((data[6] << 8 | data[7]) & 0xFFFF) + "", 10)
-                    console.log('FixHead',FixHead)
+                    //console.log('FixHead',FixHead)
                     this.nCmdId = FixHead.nCmdId
                     this.packageLength = parseInt(((data[2] << 8 | data[3]) & 0xFFFF) + "", 10)
                 }
@@ -109,8 +101,8 @@ class BLEReceive {
         this.addSendData(data);
         if (this.isLastPackage()) {
             if(this.devType === 1){
-                Util.print('--------------nCmdId-----------: ' + this.nCmdId)
-                if(this.nCmdId===10001){ //需要登录
+                Util.print('--------------nCmdId-----------: ' + this.nCmdId.toString(16))
+                if(this.nCmdId===10001){ //需要登录 2711
                     this.emitter.emit("channel", {
                         type: "authEncode",
                         code: "0",
@@ -118,7 +110,7 @@ class BLEReceive {
                     })
                     this.resets();
                     return;
-                }else if(this.nCmdId===10003){//需要初始化
+                }else if(this.nCmdId===10003){//需要初始化 2713
                     this.emitter.emit("channel", {
                         type: "initEncode",
                         code: "0",
@@ -126,7 +118,7 @@ class BLEReceive {
                     })
                     this.resets();
                     return;
-                }else if(this.nCmdId===10002){
+                }else if(this.nCmdId===10002){// 2712
                     this.emitter.emit("channel", {
                         type: "packageData",
                         code: "0",

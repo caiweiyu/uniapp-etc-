@@ -325,6 +325,13 @@ export function prepaidV3(data){
     data
   });
 }
+export function prepaidV(data){
+  return request({
+    url: `${G}/api-unitoll/v3/load/prepaid`,
+    method: "post",
+    data
+  });
+}
 /**
  * 检测圈存未支付订单
  * 参数cardNo

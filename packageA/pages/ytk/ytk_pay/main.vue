@@ -524,7 +524,7 @@
 			        dataobj[item] = data[item]
 			    }
 			    bleProxy.prepaidV3(dataobj).then(res => {
-			        let {code, data} = res;
+			        let {code, data, msg} = res;
 					let trade_platform = 1;
 			        if (code == 0) {
 			            let trade_id = data.trade_id || ''
@@ -538,7 +538,7 @@
 						this.curLock = true;
 						this.loadReflash();
 						uni.showToast({
-							title: data.msg,
+							title: msg,
 							mask: true,
 							duration: 1500,
 							icon: "none"

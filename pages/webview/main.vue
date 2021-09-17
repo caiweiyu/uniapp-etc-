@@ -9,6 +9,7 @@
 	const miniapp = miniScript.getInstance()
 	const app = getApp();
 	import config from "@/config/conf"
+	import location from "@/common/location"
 	import {
 		mapState
 	} from "vuex"
@@ -30,29 +31,48 @@
 				share_id: (state) => state.user.share_id
 			}),
 		},
-		async onShow() {
-			let {
-				src,
-				isNeedLogin = 1,
-				isGps = 1
-			} = this.$root.$mp.query;
-			this.src = src;
-			let jumpUrl = decodeURIComponent(src);
-			try {
-				await this.loadIsNeedLogin(jumpUrl, isNeedLogin);
-				await this.loadIsGps(this.jumpUrl, isGps);
-				await this.loadVerson(this.jumpUrl, 1);
-				this.loadUrl = this.jumpUrl;
-				this.show = true;
-				console.log('this.loadUrl',this.loadUrl)
-			} catch(err) {
-
+		onLoad() {
+			
+		},
+		onShow() {
+			/**
+			 * 检测用户是否地理位置授权，强制要求用户地理位授权，否则无法使用对应功能
+			 */
+			let jumpUrl = decodeURIComponent(this.$root.$mp.query.src);
+			if (jumpUrl.indexOf("isGps=1") > -1) {
+				location.loadCheckLocation().then(()=>{
+					location.loadGetLocation().then(()=>{
+						this.loadInit();
+					})
+				})
+			} else {
+				this.loadInit();
 			}
 		},
-		onLoad() {
-
-		},
 		methods: {
+			/**
+			 * 初始化
+			 */
+			async loadInit() {
+				let {
+					src,
+					isNeedLogin = 1,
+					isGps = 1
+				} = this.$root.$mp.query;
+				this.src = src;
+				let jumpUrl = decodeURIComponent(src);
+				try {
+					await this.loadIsNeedLogin(jumpUrl, isNeedLogin);
+					await this.loadIsGps(this.jumpUrl, isGps);
+					await this.loadVerson(this.jumpUrl, 1);
+					this.loadUrl = this.jumpUrl;
+					this.show = true;
+					console.log('this.loadUrl',this.loadUrl)
+				} catch(err) {
+				
+				}
+			},
+			
 			/**
 			 * token 授权
 			 */
@@ -189,10 +209,23 @@
 				} else if (host.indexOf(`https://chewu${BASE_URL}.etcchebao.com/vip/dist`) > -1) {
 					// 会员卡
 					host = `https://chewu${BASE_URL}.etcchebao.com/vip/dist/#/index`;
-				}else if (host.indexOf(`https://zt${BASE_URL}.etcchebao.com/mid/index.html`) > -1) {
+				} else if(host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge`) > -1){
+					//话费充值
+					if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html`) > -1) {
+						host = this.webviewShareCallBack(options, host);
+					}else{
+						host = `https://user${BASE_URL}.etcchebao.com/hfrecharge/index.html?setShareBtn=2`;
+					}
+				} else if (host.indexOf(`https://zt${BASE_URL}.etcchebao.com/mid/index.html`) > -1) {
 					// 中秋活动
 					host = this.webviewShareCallBack(options, host);
-				}else {
+				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/bentley/`) > -1) {
+					// 宾利馆
+					host = `https://user${BASE_URL}.etcchebao.com/bentley/index.html`;
+				}  else if (host.indexOf(`https://user${BASE_URL}.etcchebao.com/account_card_obu/`) > -1) {
+					// ETC申办
+					host = `https://user${BASE_URL}.etcchebao.com/account_card_obu/aco_intro.html`;
+				}  else {
 					type = 0;
 				}
 

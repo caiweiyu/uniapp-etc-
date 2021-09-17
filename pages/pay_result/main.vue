@@ -41,6 +41,7 @@
 				backMarkImg: "",
 				detailMarkImg: "",
 				describe: "",
+				status:true
 			};
 		},
 		computed: {},
@@ -71,6 +72,7 @@
 		},
 		methods: {
 			toBackHome() {
+				this.status = false
 				if (this.backUrl) {
 					uni.redirectTo({
 						url: "/pages/webview/main?src=" + encodeURIComponent(this.backUrl)
@@ -83,11 +85,21 @@
 
 			},
 			toOrderDetail() {
+				this.status = false
 				uni.navigateTo({
 					url: "/pages/webview/main?src=" + encodeURIComponent(this.detailUrl)
 				});
 			}
 		},
+		onUnload(){
+			//返回订单刷新列表
+			if(this.status){
+				uni.$emit('loadListfn',true);
+				uni.redirectTo({
+                    url:`/packageA/pages/order/home/main`
+                })
+			}
+		}
 	};
 </script>
 <style lang="scss">

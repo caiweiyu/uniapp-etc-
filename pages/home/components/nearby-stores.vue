@@ -44,7 +44,7 @@
 		<!-- ************************** -->
 		<!-- 门店列表 -->
 		<!-- ************************** -->
-		<view class="stores-list">
+		<view class="stores-list" v-if="location">
 			<view class="box" @click="bindNav">
 				<view class="minbox">
 					<view class="min u-line-1">{{nearby_store.lists[curIndex].rows[0].name}}</view>
@@ -77,7 +77,19 @@
 		<!-- ************************** -->
 		<!-- 更多门店 -->
 		<!-- ************************** -->
-		<view class="stores-more" @click="bindMore">{{nearby_store.lists[curIndex].m_title}}</view>
+		<view class="stores-more" v-if="location" @click="bindMore">{{nearby_store.lists[curIndex].m_title}}</view>
+		
+		<!-- ************************** -->
+		<!-- 未授权地理位置信息 -->
+		<!-- ************************** -->
+		<view class="stores-none" v-if="!location">
+			<view class="box-1">
+				<image src="https://image.etcchebao.com/etc-min/etc-f/icon_65.png"></image>
+			</view>
+			<view class="box-2">现在在那个位置？</view>
+			<view class="box-3">开启位置定位，为您推荐附近的加油优惠信息</view>
+			<view class="box-4" @click="bindLocation">立即开启</view>
+		</view>
 		
 	</view>
 </template>
@@ -89,7 +101,10 @@
 	import { mapState } from "vuex"
 	export default {
 		props: {
-
+			location: {
+				type: Boolean,
+				default: false
+			},//是否地理位置授权
 		},
 		computed: {
 			...mapState({
@@ -147,6 +162,13 @@
 				}, (err)=> {
 					
 				})
+			},
+			
+			/**
+			 * 立即开启地理位置授权
+			 */
+			bindLocation() {
+				uni.openSetting({})
 			}
 		}
 	}
@@ -155,7 +177,7 @@
 <style lang="scss" scoped>
 	.zs-content {
 		margin: 30rpx 28rpx 0 28rpx;
-		padding: 20rpx;
+		padding: 20rpx 20rpx 25rpx 20rpx;
 		background-color: rgba(255, 255, 255, 1);
 		color: #222222;
 		border-radius: 20rpx;
@@ -324,6 +346,36 @@
 			color: #999999;
 			text-align: center;
 			line-height: 68rpx;
+		}
+		.stores-none {
+			text-align: center;
+			.box-1 {
+				margin: 22rpx auto 0 auto;
+				width: 200rpx;
+				height: 144rpx;
+			}
+			.box-2 {
+				margin: 20rpx 0 0 0;
+				font-size: 24rpx;
+				line-height: 33rpx;
+				color: #999999;
+			}
+			.box-3 {
+				margin: 10rpx 0 0 0;
+				font-size: 24rpx;
+				line-height: 33rpx;
+				color: #222222;
+			}
+			.box-4 {
+				margin:  30rpx auto 0 auto;
+				width: 200rpx;
+				height: 68rpx;
+				color: #FFFFFF;
+				background-color: #FF5C2A;
+				font-size: 24rpx;
+				line-height: 68rpx;
+				border-radius: 100rpx;
+			}
 		}
 	}
 </style>

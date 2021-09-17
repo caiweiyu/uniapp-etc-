@@ -316,6 +316,7 @@
 				this.depositProgress = ''
 				this.initEncodeCount = 0 //非国密初始化次数
 				this.authEncodeCount = 0 //非国密登录次数
+				this.intCount=0
 			},
 			resGetDev() { //重新搜索设备先关闭蓝牙再初始化
 				this.initAll()
@@ -446,9 +447,10 @@
 					} = res;
 					if (code == 0) {
 						if (data.res) {
-							if (this.devType === 0) {
+							console.log('this.devType',this.devType)
+							if (this.devType == 0) {
 								this.sendBlueOrders(this.cmdHelper.getCmdC2Guomi())
-							} else if (this.devType === 1) {
+							} else if (this.devType == 1) {
 								//检测设备绑定
 								this.bindDevice()
 							}
@@ -470,7 +472,7 @@
 					} = res;
 					if (code == 0) {
 						if (data.result === "success") {
-							this.sendBlueOrders(this.cmdHelper.getCmdC2())
+							// this.sendBlueOrders(this.cmdHelper.getCmdC2())
 						}
 					}
 				})
@@ -534,7 +536,6 @@
 											that.sendBlueOrders(this.cmdHelper.getHandshakeGuomi()) //握手
 										} else if (this.devType === 1) {
 											that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
-											//that.sendBlueOrders(this.cmdHelper.getCmdA2()) //握手
 										}
 										this.depositCard = new DepositCard(this.emitter, this.ble, this.cmdHelper,
 											this.deviceInfo)
@@ -585,23 +586,9 @@
 						} else if (res.type === 'initEncode') {
 							console.log('initEncode', res)
 							if (res.code === "0") {
-								this.initEncodeCount = this.initEncodeCount + 1
+								this.initEncodeCount++
 								if (this.initEncodeCount < 10) {
-									console.log('initEncodeCount-1', this.initEncodeCount)
 									that.sendBlueOrders(this.cmdHelper.initEncode())
-									// let intType = this.initEncodeCount % 4
-									// switch (intType) {
-									// 	case 0:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
-									// 	case 1:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode1())
-									// 	case 2:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode2())
-									// 	case 3:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode3())
-									// 	default:
-									// 		that.sendBlueOrders(this.cmdHelper.initEncode())
-									// }
 								} else {
 									console.log('initEncodeCount-2', this.initEncodeCount)
 									this.connectStatus = "设备连接初始化失败";
@@ -657,6 +644,9 @@
 									})
 								} else {
 									this.checkCardno()
+									if(this.devType === 1){
+										this.sendBlueOrders(this.cmdHelper.getCmdC2())
+									}
 								}
 							}
 						}

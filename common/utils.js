@@ -11,6 +11,7 @@ import {
 } from "@/interfaces/base";
 import conf from '@/config/conf.js'
 import store from "@/store/index"
+import md5 from "@/packageA/pages/ytk/ytk_deposit/blue/md5Util"
 /**
  * 获取js_code
  */
@@ -72,7 +73,7 @@ export function eventMonitor(event_name, event_type, extra = {}) {
 		url,
 		event_name,
 		ua: `(platform:${platform})(model:${model})(system:${system})(SDKVersion:${SDKVersion})`,
-		distinct_id: "unkown",
+		distinct_id: md5.hex_md5(store.state.user.info.openid) || "unkown",
 		nfc_type: "",
 		source: 6, //1：安卓，2：ios，3：H5（站内），4：H5（站外）5：后端，6：微信小程序，7：支付宝小程序
 		extra: JSON.stringify(extend)

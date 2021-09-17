@@ -74,15 +74,19 @@
 
                 deviceInfo: '',
                 depositCard: null,
-                orderId: '',
+                //orderId: '2108191944520010',
+                orderId: '2109171646300256',
+
                 depositState: "",
                 depositProgress: '',
 
                 balance: 0,
                 cardInfo: null,
                 cardNo:"1913222300077490",
-				//cardNo:"1812222300175505"
+				//cardNo:"1812222300175505",
 				//cardNo:"1715223209002380"
+                intCount: 0,
+
             };
         },
         onLoad(options) {
@@ -130,7 +134,9 @@
                 this.depositCard = null
                 this.depositState = ''
                 this.depositProgress = ''
-                //this.orderId = ''
+                this.intCount=0
+                this.manufactory=0
+                this.maxpacklen=0
             },
             checkRandomOrder(){//检查是否有未支付订单
                 bleProxy.checkRandomOrder({
@@ -155,7 +161,7 @@
                     trade_mode:3,
                     trade_id:trade_id,
                     //openid:this.openid,
-                    //openid:"o1GrO4tlzDxCyV7gZM9Mvog9VnMQ",
+                    openid:"o1GrO4tlzDxCyV7gZM9Mvog9VnMQ",
                     token:this.token,
                     //source_channel:2,
                     //sourceChannel:2
@@ -210,7 +216,7 @@
             },
             ApiPrepaid() { //下单接口
                 let data = []
-                data["trade_num"] = "0.1";
+                data["trade_num"] = "0.01";
                 data["card_no"] = this.cardNo;
                 data["load_type"] = "0";
                 data["order_type"] = "11";
@@ -224,8 +230,8 @@
 
                 //data["kcoin"] = "2";//金币抵扣
 
-                data['token'] = this.token //需要签名必须在这里加上
-                //data['token'] = "97709f4161abfcfe423a722b8d30a2c8"
+                //data['token'] = this.token //需要签名必须在这里加上
+                data['token'] = "a2afed3a6eef13cea272d8460a9af670"
 
                 data["isWifi"] = conf.isWifi;
                 data["distinct_id"] = conf.distinct_id;
@@ -239,7 +245,7 @@
                 for(let item in data){
                     dataobj[item] = data[item]
                 }
-                bleProxy.prepaidV3(dataobj).then(res => {
+                bleProxy.prepaidV(dataobj).then(res => {
                     let {code, data} = res;
                     if (code == 0) {
                         let trade_id = data.trade_id || ''
@@ -344,7 +350,7 @@
                     let {code, data} = res;
                     if (code == 0) {
                         if (data.result === "success") {
-                            this.sendBlueOrders(this.cmdHelper.getCmdC2())
+                            // this.sendBlueOrders(this.cmdHelper.getCmdC2())
                         }
                     }
                 })
@@ -352,9 +358,9 @@
 
             // 下发蓝牙指令
             sendBlueOrders(data) {
-                console.log('data : ', data)
+                //console.log('data : ', data)
                 let currCmd = this.cmdHelper.currCmd
-                console.log('currCmd : ', currCmd)
+                //console.log('currCmd : ', currCmd)
                 return new Promise((resolve, reject) => {
                     let flow = this.ble.send(data)//发送数据
                     if (flow) {
@@ -363,6 +369,12 @@
                         reject()
                     }
                 })
+            },
+            sleep(delay) {
+                var start = (new Date()).getTime();
+                while((new Date()).getTime() - start < delay) {
+                    continue;
+                }
             },
             watchBLE() {
                 let that = this
@@ -393,19 +405,19 @@
                                         if (this.devType === 0) {
                                             that.sendBlueOrders(this.cmdHelper.getHandshakeGuomi())//握手
                                         } else if (this.devType === 1) {
-                                            that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
+                                            //that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
                                         }
                                         this.depositCard = new DepositCard(this.emitter, this.ble, this.cmdHelper, this.deviceInfo)
                                     }
                                 }
                             }
                         } else if (res.type === 'response') { //接收
-                            console.log('response', res)
+                            //console.log('response', res)
                             if (res.code === "0") {
                                 this.bleReceive.receiveData(res.data)
                             }
                         } else if (res.type === 'depositProgress') { //圈存进度
-                            console.log('depositProgress', res)
+                            //console.log('depositProgress', res)
                             if (res.code === -1 && res.msg !== '') {
                                 wx.showModal({
                                     title: "提示",
@@ -418,17 +430,17 @@
                                 this.depositProgress = res.data //进度值
                             }
                         } else if (res.type === 'authEncode') {
-                            console.log('authEncode', res)
+                            //console.log('authEncode', res)
                             if (res.code === "0") {
                                 that.sendBlueOrders(this.cmdHelper.authEncode())
                             }
                         } else if (res.type === 'initEncode') {
-                            console.log('initEncode', res)
+                            //console.log('initEncode', res)
                             if (res.code === "0") {
                                 that.sendBlueOrders(this.cmdHelper.initEncode())
                             }
                         } else if (res.type === 'encode') {
-                            console.log('encode', res)
+                            //console.log('encode', res)
                             if (res.code === "0") {
                                 that.sendBlueOrders(this.cmdHelper.getCmdA2())
                             }
@@ -465,6 +477,9 @@
                                     this.ble.close()
                                 } else {
                                     this.checkCardno()
+                                    if(this.devType === 1){
+                                        this.sendBlueOrders(this.cmdHelper.getCmdC2())
+                                    }
                                 }
                             }
                         } else if (res.type === 'depositCardData') { //圈存逻辑
