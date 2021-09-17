@@ -35,14 +35,6 @@ class BLEReceive {
             return (this.len === this.packageLength + 5);
         } else if (this.devType === 1) {
             if(this.len === this.packageLength){
-                // let data = this.sendData.slice(8, this.sendData.length);
-                // let v = data.length
-                // if (v > 127) {
-                //     data = data.slice(5, data.length - 2);
-                // } else {
-                //     data = data.slice(4, data.length - 2);
-                // }
-                // this.sendData = data
                 return true
             }
             return false

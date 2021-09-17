@@ -233,7 +233,6 @@
 				bleStatus: false, //蓝牙链接状态
 				initEncodeCount: 0, //非国密初始化次数
 				authEncodeCount: 0, //非国密登录次数
-				intCount:0
 			};
 		},
 		onLoad(options) {
@@ -472,7 +471,7 @@
 					} = res;
 					if (code == 0) {
 						if (data.result === "success") {
-							this.sendBlueOrders(this.cmdHelper.getCmdC2())
+							// this.sendBlueOrders(this.cmdHelper.getCmdC2())
 						}
 					}
 				})
@@ -536,7 +535,6 @@
 											that.sendBlueOrders(this.cmdHelper.getHandshakeGuomi()) //握手
 										} else if (this.devType === 1) {
 											that.sendBlueOrders(this.cmdHelper.authEncode()) //登录
-											//that.sendBlueOrders(this.cmdHelper.getCmdA2()) //握手
 										}
 										this.depositCard = new DepositCard(this.emitter, this.ble, this.cmdHelper,
 											this.deviceInfo)
@@ -587,19 +585,9 @@
 						} else if (res.type === 'initEncode') {
 							console.log('initEncode', res)
 							if (res.code === "0") {
-								this.initEncodeCount = this.initEncodeCount + 1
-								this.intCount++
+								this.initEncodeCount++
 								if (this.initEncodeCount < 10) {
-									console.log('initEncodeCount-1', this.initEncodeCount)
-									//that.sendBlueOrders(this.cmdHelper.initEncode())
-
-									if(this.intCount===1){
-										that.sendBlueOrders(this.cmdHelper.initEncode1())
-									}
-									if(this.intCount===2){
-										that.sendBlueOrders(this.cmdHelper.initEncode2())
-										this.intCount=0
-									}
+									that.sendBlueOrders(this.cmdHelper.initEncode())
 								} else {
 									console.log('initEncodeCount-2', this.initEncodeCount)
 									this.connectStatus = "设备连接初始化失败";
@@ -655,6 +643,9 @@
 									})
 								} else {
 									this.checkCardno()
+									if(this.devType === 1){
+										this.sendBlueOrders(this.cmdHelper.getCmdC2())
+									}
 								}
 							}
 						}

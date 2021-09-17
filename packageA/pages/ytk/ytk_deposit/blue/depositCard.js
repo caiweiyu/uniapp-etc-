@@ -425,7 +425,7 @@ class DepositCard extends CMDRes {
     }
 
     processRecvData(currCmd, res) {
-        if (Util.byte2Integer255(res.data[1]) !== 0x00) {
+        if (Util.byte2Integer255(res.data[1]) != 0x00) {
             Util.print('------设备发送给手机返回的数据错误------,currCmd:' + currCmd + ";data=" + Util.bytes2HexString(res.data));
             this.emitter.emit("channel", {
                 type: "depositProgress",

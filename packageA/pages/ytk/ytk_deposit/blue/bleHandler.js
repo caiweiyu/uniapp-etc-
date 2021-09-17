@@ -27,6 +27,9 @@ class BLEHandler {
         this.characteristics_uuid_1_0= '0000FEC8-0000-1000-8000-00805F9B34FB';//indicate
         this.characteristics_uuid_1_1= '0000FEC7-0000-1000-8000-00805F9B34FB';//write read
         this.devType = -1
+
+        this.sendBuffer = [];
+        this.sendIndex = 0;
     }
     async openAdapter() {
         let [err, res] = await t._openAdapter.call(this);
@@ -50,7 +53,6 @@ class BLEHandler {
             code: "0",
             data: "开始搜索设备"
         })
-
     }
     async onBluetoothFound() {
         let [err, res] = await t._onBluetoothFound.call(this);
@@ -133,7 +135,31 @@ class BLEHandler {
             continue;
         }
     }
-    async sentOrder(data, cmd) {
+     initData() {
+        this.sendBuffer = [];
+        this.sendIndex = 0;
+    }
+     sendData(sendBuffer) {
+        this.sendBuffer = sendBuffer;
+        this.sendIndex = 0;
+        this.startSendData()
+    }
+
+     startSendData() {
+        let tmpBuffer = this.sendBuffer[this.sendIndex]
+        Util.print('发送数据: '+Util.bytes2HexString(tmpBuffer));
+        t._writeBLECharacteristicValue.call(this, tmpBuffer).then((res)=>{
+            let [err, msg] = res
+            if(err === null){
+                this.sendIndex++;
+                if(this.sendIndex < this.sendBuffer.length){
+                    this.startSendData()
+                }
+            }
+        })
+    }
+    sentOrder(data) {
+        let sendBuffer =[]
         for (let i=0;i<data.length;i++) {
             let _this = this;
             let max_wx_frame_len =20
@@ -144,34 +170,23 @@ class BLEHandler {
                 //let tmpBuffer;
                 if (bytes > max_wx_frame_len) {
                     let tmpBuffer = arrayBuffer.slice(pos, pos + max_wx_frame_len);
-                    //console.log('sendBuffer: ',tmpBuffer)
-                    Util.print('发送数据: '+Util.bytes2HexString(tmpBuffer));
+                    sendBuffer.push(tmpBuffer)
 
                     pos += max_wx_frame_len;
                     bytes -= max_wx_frame_len;
-                    let [err, res] = await t._writeBLECharacteristicValue.call(this, tmpBuffer)
-                    if (err != null) {
-                        return false
-                    }
                     tmpBuffer = null
-                    //console.log("发送数据成功！")
-                    //_this.sleep(2)
                 } else {
                     let tmpBuffer = arrayBuffer.slice(pos, pos + bytes);
-                    //console.log('sendBuffer: ',tmpBuffer)
-                    Util.print('发送数据: '+Util.bytes2HexString(tmpBuffer));
+                    sendBuffer.push(tmpBuffer)
+
                     pos += bytes;
                     bytes -= bytes;
-                    let [err, res] = await t._writeBLECharacteristicValue.call(this, tmpBuffer)
-                    if (err != null) {
-                        return false
-                    }
                     tmpBuffer = null
-                    //console.log("最后一帧发送数据成功！")
                 }
             }
         }
-        return true
+        this.initData()
+        this.sendData(sendBuffer)
     }
 
     // 打开蓝牙适配器状态监听

@@ -74,14 +74,16 @@
 
                 deviceInfo: '',
                 depositCard: null,
-                orderId: '2108191944520010',
+                //orderId: '2108191944520010',
+                orderId: '2109171646300256',
+
                 depositState: "",
                 depositProgress: '',
 
                 balance: 0,
                 cardInfo: null,
-                //cardNo:"1913222300077490",
-				cardNo:"1812222300175505",
+                cardNo:"1913222300077490",
+				//cardNo:"1812222300175505",
 				//cardNo:"1715223209002380"
                 intCount: 0,
 
@@ -159,7 +161,7 @@
                     trade_mode:3,
                     trade_id:trade_id,
                     //openid:this.openid,
-                    //openid:"o1GrO4tlzDxCyV7gZM9Mvog9VnMQ",
+                    openid:"o1GrO4tlzDxCyV7gZM9Mvog9VnMQ",
                     token:this.token,
                     //source_channel:2,
                     //sourceChannel:2
@@ -214,7 +216,7 @@
             },
             ApiPrepaid() { //下单接口
                 let data = []
-                data["trade_num"] = "0.1";
+                data["trade_num"] = "0.01";
                 data["card_no"] = this.cardNo;
                 data["load_type"] = "0";
                 data["order_type"] = "11";
@@ -243,7 +245,7 @@
                 for(let item in data){
                     dataobj[item] = data[item]
                 }
-                bleProxy.prepaidV3(dataobj).then(res => {
+                bleProxy.prepaidV(dataobj).then(res => {
                     let {code, data} = res;
                     if (code == 0) {
                         let trade_id = data.trade_id || ''
@@ -348,7 +350,7 @@
                     let {code, data} = res;
                     if (code == 0) {
                         if (data.result === "success") {
-                            //this.sendBlueOrders(this.cmdHelper.getCmdC2())
+                            // this.sendBlueOrders(this.cmdHelper.getCmdC2())
                         }
                     }
                 })
@@ -367,6 +369,12 @@
                         reject()
                     }
                 })
+            },
+            sleep(delay) {
+                var start = (new Date()).getTime();
+                while((new Date()).getTime() - start < delay) {
+                    continue;
+                }
             },
             watchBLE() {
                 let that = this
@@ -429,20 +437,7 @@
                         } else if (res.type === 'initEncode') {
                             //console.log('initEncode', res)
                             if (res.code === "0") {
-                                console.log(' this.intCount', this.intCount)
-                                if(this.deviceInfo.manufactory==2){//万集
-                                    that.sendBlueOrders(this.cmdHelper.initEncode())
-                                }else if (this.deviceInfo.manufactory==4){ //金溢
-                                    this.intCount++
-                                    if(this.intCount===1){
-                                        that.sendBlueOrders(this.cmdHelper.initEncode1())
-                                    }
-                                    if(this.intCount===2){
-                                        that.sendBlueOrders(this.cmdHelper.initEncode2())
-                                        this.intCount=0
-                                    }
-                                }
-
+                                that.sendBlueOrders(this.cmdHelper.initEncode())
                             }
                         } else if (res.type === 'encode') {
                             //console.log('encode', res)
@@ -482,6 +477,9 @@
                                     this.ble.close()
                                 } else {
                                     this.checkCardno()
+                                    if(this.devType === 1){
+                                        this.sendBlueOrders(this.cmdHelper.getCmdC2())
+                                    }
                                 }
                             }
                         } else if (res.type === 'depositCardData') { //圈存逻辑
