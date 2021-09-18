@@ -165,10 +165,19 @@
 		onLoad(options) {
 			this.options = options;
 			if (this.options.hasOwnProperty("comeForm") == true) {
-				uni.setNavigationBarTitle({
-					title: "选择默认粤通卡"
-				})
-				this.default_card = true;
+				switch(Number(this.options.comeForm)) {
+					case 1:
+						uni.setNavigationBarTitle({
+							title: "选择默认粤通卡"
+						})
+						this.default_card = true;
+						break;
+					case 2:
+						uni.setNavigationBarTitle({
+							title: "选择账单粤通卡"
+						});
+						break;
+				}
 			} else {
 				uni.setNavigationBarTitle({
 					title: "粤通卡充值"
@@ -186,25 +195,34 @@
 			 */
 			async toConfirm(item) {
 				if (this.options.hasOwnProperty("comeForm") == true) {//首页进入，选择切换卡片
-					let res = await API.ytk_default({
-						os: miniapp.loadModel(),
-						cardno: item.cardno
-					})
-					if (res.data) {
-						let eventChannel = this.getOpenerEventChannel();
-						eventChannel.on("getData", function(data) {
-							data.comeForm = "ytk";
-							eventChannel.emit("getData", data);
-						})
-						uni.navigateBack({});
-					} else {
-						uni.showToast({
-							title: "设置默认粤通卡失败",
-							mask: true,
-							duration: 1500,
-							icon: "none"
-						})
+					switch(Number(this.options.comeForm)){
+						case 1:
+							let res = await API.ytk_default({
+								os: miniapp.loadModel(),
+								cardno: item.cardno
+							})
+							if (res.data) {
+								let eventChannel = this.getOpenerEventChannel();
+								eventChannel.on("getData", function(data) {
+									data.comeForm = "ytk";
+									eventChannel.emit("getData", data);
+								})
+								uni.navigateBack({});
+							} else {
+								uni.showToast({
+									title: "设置默认粤通卡失败",
+									mask: true,
+									duration: 1500,
+									icon: "none"
+								})
+							}
+							break;
+						case 2:
+							uni.navigateBack({})
+							uni.$emit("chooseCard",item)
+							break;
 					}
+
 				} else {
 					eventMonitor("CardList_Card_YTK_YTKRecharge_109_Card_click", 2);
 					let res = await API.isBindCard({
@@ -275,26 +293,28 @@
 			 */
 			async get_ytk_pay_order_error(){
 				if (this.$root.$mp.query.hasOwnProperty("comeForm") == false) {
-					let res = await API.ytk_pay_order_error({});
-					let {code,msg,data} = res;
-					if(code==0){
-						if(data.order_id != ''){
-							uni.showModal({
-								title:"您有订单异常",
-								content:data.message,
-								showCancel: true,
-								confirmText:'立即处理',
-								success:(res=>{
-									if(res.confirm) {
-										uni.navigateTo({
-											url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${data.order_id}`
-										})
-									}
-								}),
-								fail:(res=>{
-					
+					if(Number(this.$root.$mp.query.comeForm) == 1){
+						let res = await API.ytk_pay_order_error({});
+						let {code,msg,data} = res;
+						if(code==0){
+							if(data.order_id != ''){
+								uni.showModal({
+									title:"您有订单异常",
+									content:data.message,
+									showCancel: true,
+									confirmText:'立即处理',
+									success:(res=>{
+										if(res.confirm) {
+											uni.navigateTo({
+												url: `/packageA/pages/ytk/ytk_list/order_detail?orderId=${data.order_id}`
+											})
+										}
+									}),
+									fail:(res=>{
+						
+									})
 								})
-							})
+							}
 						}
 					}
 				}

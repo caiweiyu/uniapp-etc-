@@ -44,6 +44,20 @@ export function getsumMonthBill(data) {
 export function getCardList(data) {
 	return request({
 		url: `${G}/api-unitoll/v3/card-bill/cardList`,
+		method: "get",
+		data
+	});
+}
+
+/**
+ * 获取运营位
+ * @param {*} data 
+ * @returns 
+ */
+ export function getOperaList(data) {
+	return request({
+		// url:'http://172.16.9.10:9090/mock/16/mini-program/v2/wx-applets/get-opera-list',
+		url: `${G}/mini-program/v2/wx-applets/get-opera-list`,
 		method: "post",
 		data
 	});

@@ -1,5 +1,5 @@
 <template>
-  <view class="box">
+  <view class="box" :style="{background: `url(${type_card==2 ? banner[0] : banner[1]})no-repeat;background-size: 100% 100%;`}">
 
       <!--顶部周、月账单选项-->
       <view :class="['box_title']" @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
@@ -9,7 +9,7 @@
 
       <!--内容区域-->
       <view class="box_content" :style="{top:(tabBoundheight+40)+'rpx'}">
-          <view class="card_title"><text class="text">{{cardList.plateNum}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
+          <view class="card_title"><text class="text">{{cardList.plateNum}}</text><image @click="toytkList" class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{cardList.shareCardNum}}</text>
       </view>
 
@@ -17,8 +17,8 @@
       <view class="timer_packer" v-if="value == 1">
           <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">
               <text class="markMonth">{{selectweekMore.week ? ('第'+selectweekMore.week+'周') : '更多'}}</text>
-              <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
               <view class="avter_down"></view>
+              <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
           </view>
           <view v-for="(item,index) in (weekmonlist.slice(0,4))" :key="index" :class="['timer_packer_item',current == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
@@ -124,7 +124,12 @@ export default {
             defaultweekvalue:[0],
             current:-1,
             currentmon:5,
-            selectweekMore:{}
+            selectweekMore:{},
+            type_card:2,
+            banner:[
+                'https://image.etcchebao.com/etc-min/bill_all/banner1.png',  //type_card=2
+                'https://image.etcchebao.com/etc-min/bill_all/banner2.png'  //type_card=1
+            ]
         }
     },
     computed: {
@@ -150,6 +155,7 @@ export default {
         enter(e){
             this.isOpen = false;
             this.value = e[0],this.defaultvalue = e;
+            console.log(1111,e)
             this.value == 1 ? this.status = 1 : this.status = 0;
         },
 
@@ -157,8 +163,9 @@ export default {
          * 周确定选择
          */
         enterweek(e){
-            this.selectweekMore = this.weekmonlist[e[0]];
-            console.log('this.selectweekMore',this.selectweekMore)
+            this.selectweekMore = this.weekmonlist[e[0]],this.defaultweekvalue = e;
+            uni.$emit('pickerTimermon',this.selectweekMore)
+            console.log('this.selectweekMore',this.selectweekMore,2222,e)
         },
 
         /**
@@ -188,16 +195,36 @@ export default {
          * 更多
          */
         pickerMore(item,index){
-            this.isOpenWeek = !this.isOpenWeek;
             this.current = index;
-        }
+            this.isOpenWeek = !this.isOpenWeek;
+        },
 
+        /**
+         * 去粤通卡列表
+         */
+        toytkList(){
+            uni.navigateTo({
+                 url: '/packageA/pages/ytk/ytk_list/main?comeForm=2'
+            });
+        },
+
+    },
+    onShow(){
+        
     },
     created() {
         
     },
+    destroyed() {
+        uni.$off("chooseCard")
+    },
     mounted() {
-        
+        uni.$on("chooseCard",(data)=>{
+            this.type_card = data.type_card; //判断卡类型
+            uni.$emit('pickerTimermon',data)
+            this.$emit("pickCard",data)
+            console.log('data=',data)
+        })
     },
 }
 </script>
@@ -205,8 +232,6 @@ export default {
 <style scoped lang="scss">
     .box{
         position: relative;
-        background: url("https://image.etcchebao.com/etc-min/bill_all/banner1.png")no-repeat;
-        background-size: 100% 100%;
         height: 406rpx;
         width: 750rpx;
         z-index: 1;
@@ -315,8 +340,9 @@ export default {
             .avter_down{
                 background:url('https://image.etcchebao.com/etc-min/bill_all/foucs.png')no-repeat;
                 background-size: 100% 100%;
-                width: 12rpx;
-                height: 6rpx;
+                width: 18rpx;
+                height: 9rpx;
+                margin-left: 15rpx;
                 display: inline-block;
                 vertical-align: middle;
                 transform: rotate(180deg);

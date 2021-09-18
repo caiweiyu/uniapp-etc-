@@ -10,18 +10,19 @@
             :style="{height:winHeight+'px'}"
       >
             <!--顶部周月选择下拉框区-->
-            <selectWeekmon ref="selectWeekmon" :monlist="monthsumBillsList" :cardList="cardList" :weekmonlist="weeklist"></selectWeekmon>       
+            <selectWeekmon ref="selectWeekmon" :monlist="monthsumBillsList" :cardList="cardList" :weekmonlist="weeklist" @pickCard="pickCardfn"></selectWeekmon>       
 
             <!--本月消费通行次数-->
-            <monfreeTimer ref="monfreeTimer"></monfreeTimer>
+            <monfreeTimer ref="monfreeTimer" :getoperalist="operalist"></monfreeTimer>
 
             <!--账单列表区-->
             <billList ref="billList"></billList>
 
-            <!--底部一键领取-->
-            <bottomBtn ref="bottomBtn"></bottomBtn>
-
       </scroll-view>
+      <!--底部一键领取-->
+        <view class="bottom_class" :style="{top:topValue,zIndex}">
+            <bottomBtn ref="bottomBtn"></bottomBtn>
+        </view>
   </view>
 </template>
 
@@ -47,7 +48,8 @@ export default {
             winHeight:uni.getSystemInfoSync().windowHeight, //系统屏幕宽度
             monthsumBillsList:[],  //月总账单列表
             cardList:{},  //卡信息
-            weeklist:[]
+            weeklist:[],  //周列表
+            operalist:[]  //运营位相关信息
         }
     },
     computed: {
@@ -62,17 +64,25 @@ export default {
          */
         scrollViewHeight(){
             return (this.btnBoundtop + this.tabHeight + this.menuHeight)
+        },
+        /**
+         * top值
+         */
+        topValue(){
+            return (this.winHeight*2-208)+'rpx'
         }
+    },
+    created() {
+        console.log('winHeight',this.winHeight)
     },
     methods: {
         /**
          * 获取月账单
          */
-        async getMonthBill2(){
+        async getMonthBill2(cardNo,startDate){
             let res = await API.getMonthBill2({
-                cardNo:'1913222300077490',
-                token:'60d640aa0c8609064a74a48d29420c38',
-                startDate:'202109'
+                cardNo:cardNo,
+                startDate:startDate || '202109'
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -82,10 +92,9 @@ export default {
         /**
          * 获取总月账单
          */
-        async getsumMonthBill(){
+        async getsumMonthBill(cardNo){
             let res = await API.getsumMonthBill({
-                cardNo:'1913222300077490',
-                token:'60d640aa0c8609064a74a48d29420c38'
+                cardNo:cardNo,
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -111,19 +120,31 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('卡片列表=',data)  
+                console.log('卡片列表=',data);
+                return data.info[0].card_num;
             }
 
         },
         /**
+         * 获取运营位
+         */
+        async getoperaList(location){
+            let res = await API.getOperaList({
+                location:location
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                console.log('运营位=',data)
+                 this.operalist = data.type_1;
+            }
+        },
+        /**
          * 获取用户卡相关信息
          */
-        async getbillInfoByApp(){
+        async getbillInfoByApp(cardNum){
             let res = await API.getbillInfoByApp({
-                cardNum:'1913222300077490',
-                page:1,
-                token:'60d640aa0c8609064a74a48d29420c38'
-
+                cardNum:cardNum,
+                page:1
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -134,10 +155,9 @@ export default {
         /**
          * 获取近半年周列表
          */
-        async getstatisWeekData(){
+        async getstatisWeekData(cardNo){
             let res = await API.getstatisWeekData({
-                cardNo:'1913222300077490',
-                token:'60d640aa0c8609064a74a48d29420c38'
+                cardNo:cardNo
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -173,7 +193,16 @@ export default {
                 }
             }
         },
-
+        /**
+         * 选择卡片触发的事件
+         */
+        pickCardfn(item){
+            console.log('选择卡片触发的事件',item.cardno);
+            this.getMonthBill2(item.cardno,null);
+            this.getsumMonthBill(item.cardno);
+            this.getbillInfoByApp(item.cardno);
+            this.getstatisWeekData(item.cardno);
+        },
         /**
          * 下拉事件
          */
@@ -198,11 +227,17 @@ export default {
         }
     },
     mounted(){
-        this.getMonthBill2()
-        this.getsumMonthBill()
-        this.getCardList()
-        this.getbillInfoByApp()
-        this.getstatisWeekData()
+        new Promise((resolve,reject)=>{
+            resolve( this.getCardList() )
+        }).then(res=>{
+            if(res){
+                this.getMonthBill2(res,null);
+                this.getsumMonthBill(res);
+                this.getbillInfoByApp(res);
+                this.getstatisWeekData(res);
+                this.getoperaList(2); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            }
+        })
     },
     components:{
         selectWeekmon,
@@ -216,9 +251,14 @@ export default {
 <style scoped lang="scss">
     .box{
         width: 100%;
-        height: 100%;
+        height: 100vh;
     }
     .scroll-class{
-        height:100vh;
+        height:100%;
+    }
+    .bottom_class{
+        position: fixed;
+        transform: translateX(-50%);
+        left: 50%;
     }
 </style>
