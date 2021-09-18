@@ -18,6 +18,7 @@
           <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">
               <text class="markMonth">{{selectweekMore.week ? ('第'+selectweekMore.week+'周') : '更多'}}</text>
               <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
+              <view class="avter_down"></view>
           </view>
           <view v-for="(item,index) in (weekmonlist.slice(0,4))" :key="index" :class="['timer_packer_item',current == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
@@ -310,6 +311,15 @@ export default {
                 bottom: 0;
                 left: 50%;
                 transform: translateX(-50%);
+            }
+            .avter_down{
+                background:url('https://image.etcchebao.com/etc-min/bill_all/foucs.png')no-repeat;
+                background-size: 100% 100%;
+                width: 12rpx;
+                height: 6rpx;
+                display: inline-block;
+                vertical-align: middle;
+                transform: rotate(180deg);
             }
         }
         @keyframes animate-up {
