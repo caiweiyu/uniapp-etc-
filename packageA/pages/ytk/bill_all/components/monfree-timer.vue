@@ -51,7 +51,7 @@ export default {
       uni.$on('pickerTimermon',(data)=>{
         console.log('data===',data);
         this.details = data;
-        uni.$off("pickerTimermon")
+        //uni.$off("pickerTimermon")
       })
     },
     methods: {

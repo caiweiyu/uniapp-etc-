@@ -1,26 +1,33 @@
 <template>
-  <view class="box">
+  <view class="box" :style="{height:winHeight+'px'}">
+      <!--下拉滚动头部更换-->
+      <selectWeekmon ref="selectWeekmon" 
+            :style="{position:scroll_val}" 
+            :monlist="monthsumBillsList" 
+            :cardList="cardList" 
+            :weekmonlist="weeklist" v-if="isScrollOver" @pickCard="pickCardfn" @changZindex="changZindex">
+      </selectWeekmon>   
       <!--下拉刷新区-->
       <scroll-view :refresher-enabled="true" :scroll-y="true"
             :refresher-triggered="triggered" :refresher-threshold="80"
-			refresher-background="#dddddd" @refresherrefresh="onRefresh"
+			:refresher-background="type_card" @refresherrefresh="onRefresh"
 			@refresherrestore="onRestore" @refresherabort="onAbort"
 			:scroll-with-animation="true"
             class="scroll-class"
-            :style="{height:winHeight+'px'}"
-      >
+            @scroll="scrollHandler"
+            :style="{height:winHeight+'px'}">
             <!--顶部周月选择下拉框区-->
-            <selectWeekmon ref="selectWeekmon" :monlist="monthsumBillsList" :cardList="cardList" :weekmonlist="weeklist" @pickCard="pickCardfn"></selectWeekmon>       
+            <selectWeekmon ref="selectWeekmon" v-if="!isScrollOver" :style="{position:scroll_val}" :monlist="monthsumBillsList" :cardList="cardList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex"></selectWeekmon>       
 
             <!--本月消费通行次数-->
             <monfreeTimer ref="monfreeTimer" :getoperalist="operalist"></monfreeTimer>
 
             <!--账单列表区-->
-            <billList ref="billList"></billList>
+            <billList ref="billList" :cardList_info="cardList_info"></billList>
 
       </scroll-view>
       <!--底部一键领取-->
-        <view class="bottom_class" :style="{top:topValue,zIndex}">
+        <view class="bottom_class" :style="{top:topValue,zIndex:zindex}">
             <bottomBtn ref="bottomBtn"></bottomBtn>
         </view>
   </view>
@@ -33,7 +40,6 @@ const app = getApp()
 import { mapState } from "vuex"
 import * as API from "@/interfaces/bill"
 import selectWeekmon from './components/select_weekmon'
-// import weekmonTab from './components/weekmon-tab'
 import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
 import bottomBtn from './components/bottom_btn'
@@ -48,8 +54,13 @@ export default {
             winHeight:uni.getSystemInfoSync().windowHeight, //系统屏幕宽度
             monthsumBillsList:[],  //月总账单列表
             cardList:{},  //卡信息
+            cardList_info:[],
             weeklist:[],  //周列表
-            operalist:[]  //运营位相关信息
+            operalist:[],  //运营位相关信息
+            zindex:1,  //浮窗层级
+            type_card:"#28BC93",
+            scroll_val:'relative',
+            isScrollOver:false
         }
     },
     computed: {
@@ -150,6 +161,7 @@ export default {
             if(code == 0){
                 console.log('用户卡相关信息=',data)
                 this.cardList = data;
+                this.cardList_info = data.billInfo;
             }
         },
         /**
@@ -194,6 +206,12 @@ export default {
             }
         },
         /**
+         * 改变浮窗的层级
+         */
+        changZindex(data){
+            this.zindex = data;
+        },
+        /**
          * 选择卡片触发的事件
          */
         pickCardfn(item){
@@ -224,9 +242,23 @@ export default {
          */
         onAbort() {
             console.log('无效下拉')
-        }
+        },
+        /**
+         * scrollview滚动事件
+         */
+        scrollHandler(e){
+            //e.detail.scrollTop > 206 ? this.scroll_val='fixed' : this.scroll_val='relative';
+            console.log('滚动值=',e)
+            e.detail.scrollTop > 224 ? this.isScrollOver = true : this.isScrollOver = false;
+        },
+    },
+    destroyed() {
+        uni.$off('chooseCard')
     },
     mounted(){
+        uni.$on('chooseCard',(data)=>{
+            data.type_card == 2 ? this.type_card = "#28BC93" : this.type_card = "#F07365";
+        })
         new Promise((resolve,reject)=>{
             resolve( this.getCardList() )
         }).then(res=>{
@@ -252,6 +284,7 @@ export default {
     .box{
         width: 100%;
         height: 100vh;
+        background-color: #F6F6F6;
     }
     .scroll-class{
         height:100%;

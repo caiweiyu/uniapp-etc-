@@ -103,6 +103,32 @@ export function sendWeekBillCoins(data) {
 }
 
 /**
+ * 领取金币
+ * @param {*} data 
+ * @returns 
+ */
+ export function sendBillCoins(data) {
+	return request({
+		url: `${G}/unitoll-new/unitoll/sendBillCoins`,
+		method: "post",
+		data
+	});
+}
+
+/**
+ * 一键领取
+ * @param {*} data 
+ * @returns 
+ */
+ export function sendMonthBillCoins(data) {
+	return request({
+		url: `${G}/unitoll-new/unitoll/sendMonthBillCoins`,
+		method: "post",
+		data
+	});
+}
+
+/**
  * 获取用户等级
  * @param {*} data 
  * @returns 

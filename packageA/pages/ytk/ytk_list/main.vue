@@ -176,6 +176,7 @@
 						uni.setNavigationBarTitle({
 							title: "选择账单粤通卡"
 						});
+						this.default_card = true;
 						break;
 				}
 			} else {

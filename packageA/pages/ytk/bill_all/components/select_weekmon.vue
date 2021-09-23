@@ -1,18 +1,18 @@
 <template>
-  <view class="box" :style="{background: `url(${type_card==2 ? banner[0] : banner[1]})no-repeat;background-size: 100% 100%;`}">
+  <view class="box" :style="{height: topHeight.height,background: bannerPic,backgroundSize: '100% 100%'}">
 
       <!--顶部周、月账单选项-->
-      <view :class="['box_title']" @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
+      <view :class="['box_title']" @click="openTarget" :style="{paddingTop:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx',lineHeight:menu.height*2+'rpx'}">
           <text class="dirtctionTitle">{{status == 1 ? list[1].cateName : list[0].cateName}}</text>
           <view :class="[isOpen ? 'dirtctionAvterafter' : 'dirtctionAvter']"></view>
       </view>
 
       <!--内容区域-->
-      <view class="box_content" :style="{top:(tabBoundheight+40)+'rpx'}">
+      <view class="box_content" :style="{marginTop:50+'rpx'}">
           <view class="card_title"><text class="text">{{cardList.plateNum}}</text><image @click="toytkList" class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{cardList.shareCardNum}}</text>
       </view>
-
+      
       <!--周时间选择区-->
       <view class="timer_packer" v-if="value == 1">
           <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">
@@ -26,7 +26,7 @@
           </view>
       </view>
 
-      <!--6个月选择区-->
+      <!--六个月选择区-->
       <view class="timer_packer" v-else>
           <view :class="['timer_packer_item',currentmon == index ? 'active_color' : '']" v-for="(item,index) in monlist" :key="index" @click="pickerTimermon(item,index)">
               <text class="markMonth">{{item.markMonth + '月'}}</text>
@@ -47,6 +47,12 @@
 <script>
 export default {
     props:{
+        topHeight:{
+            type:Object,
+            default:{
+                height:'406rpx'
+            }
+        },
         /**
          * 周、月选择
          */
@@ -75,32 +81,7 @@ export default {
          */
         monlist:{
             type:Array,
-            default:[
-                {
-                    cateName: '12月',
-                    id: 1
-                },
-                {
-                    cateName: '1月',
-                    id: 2
-                },
-                {
-                    cateName: '2月',
-                    id: 3
-                },
-                {
-                    cateName: '3月',
-                    id: 4
-                },
-                 {
-                    cateName: '4月',
-                    id: 5
-                },
-                {
-                    cateName: '5月',
-                    id: 6
-                }
-            ]
+            default:[]
         },
         /**
          * 卡信息
@@ -129,7 +110,7 @@ export default {
             banner:[
                 'https://image.etcchebao.com/etc-min/bill_all/banner1.png',  //type_card=2
                 'https://image.etcchebao.com/etc-min/bill_all/banner2.png'  //type_card=1
-            ]
+            ],
         }
     },
     computed: {
@@ -139,6 +120,28 @@ export default {
         tabBoundheight(){
             return (this.btnBoundtop + this.tabHeight + this.menuHeight)
         },
+        /**
+         * 是否打开的 Model 层
+         */
+        isOpenModel(){
+            if(this.isOpen || this.isOpenWeek){
+               return true
+            }
+        },
+        /**
+         * 判断头部背景色
+         */
+        bannerPic(){
+            return `url(${this.type_card==2 ? this.banner[0] : this.banner[1]})no-repeat;`
+        }
+    },
+    watch:{
+        isOpenModel(o,n){
+          o==true ? this.$emit("changZindex",-1) : this.$emit("changZindex",1)
+        }
+    },
+    onReachBottom(e){
+        console.log('头部滚动=',e)
     },
     methods: {
 
@@ -146,7 +149,7 @@ export default {
          * 头部下拉开关
          */
         openTarget(){
-            this.isOpen = !this.isOpen;
+            this.isOpen = true;
         },
 
         /**
@@ -155,7 +158,8 @@ export default {
         enter(e){
             this.isOpen = false;
             this.value = e[0],this.defaultvalue = e;
-            console.log(1111,e)
+            console.log(1111,e,this.monlist[e[0]])
+            uni.$emit('pickerTimermon',this.monlist[e[0]])
             this.value == 1 ? this.status = 1 : this.status = 0;
         },
 
@@ -219,6 +223,7 @@ export default {
         uni.$off("chooseCard")
     },
     mounted() {
+        console.log('===',this.tabHeight + this.btnBoundtop)
         uni.$on("chooseCard",(data)=>{
             this.type_card = data.type_card; //判断卡类型
             uni.$emit('pickerTimermon',data)
@@ -232,16 +237,16 @@ export default {
 <style scoped lang="scss">
     .box{
         position: relative;
-        height: 406rpx;
         width: 750rpx;
         z-index: 1;
         &_title{
-            position: fixed;
-            transform: translateX(-50%);
+            //position: absolute;
+            //transform: translateX(-50%);
             font-size: 36rpx;
             color: #FFFFFF;
             font-weight: bold;
-            left: 50%;
+            text-align: center;
+            //left: 50%;
             .dirtctionTitle{
                 vertical-align: middle;
                 display: inline-block;
@@ -270,7 +275,7 @@ export default {
         }
         &_content{
             position:absolute;
-            left:30rpx;
+            margin-left:30rpx;
             .card_title{
                 width: 300rpx;
                 .text{
