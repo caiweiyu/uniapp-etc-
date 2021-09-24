@@ -1,35 +1,33 @@
 <template>
   <view class="box" :style="{height:winHeight+'px'}">
       <!--下拉滚动头部更换-->
-      <selectWeekmon ref="selectWeekmon" 
-            :style="{position:scroll_val}" 
-            :monlist="monthsumBillsList" 
-            :cardList="cardList" 
-            :weekmonlist="weeklist" v-if="isScrollOver" @pickCard="pickCardfn" @changZindex="changZindex">
-      </selectWeekmon>   
+      <selectWeekmonheader :monlist="monthsumBillsList" @changZindex="changZindex"></selectWeekmonheader>  
+      <!-- <selectWeekmonbottom class="selectWeekmonbottom" :monlist="monthsumBillsList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex"></selectWeekmonbottom>  -->
       <!--下拉刷新区-->
-      <scroll-view :refresher-enabled="true" :scroll-y="true"
+      <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
             :refresher-triggered="triggered" :refresher-threshold="80"
-			:refresher-background="type_card" @refresherrefresh="onRefresh"
+			:refresher-background="datacolor" @refresherrefresh="onRefresh"
 			@refresherrestore="onRestore" @refresherabort="onAbort"
 			:scroll-with-animation="true"
             class="scroll-class"
             @scroll="scrollHandler"
-            :style="{height:winHeight+'px'}">
-            <!--顶部周月选择下拉框区-->
-            <selectWeekmon ref="selectWeekmon" v-if="!isScrollOver" :style="{position:scroll_val}" :monlist="monthsumBillsList" :cardList="cardList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex"></selectWeekmon>       
+            :style="{height:(winHeight*2-tabBoundheight)+'rpx'}">     
 
+            <!--顶部周月选择下拉框区-->
+             <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
+            
             <!--本月消费通行次数-->
             <monfreeTimer ref="monfreeTimer" :getoperalist="operalist"></monfreeTimer>
 
             <!--账单列表区-->
-            <billList ref="billList" :cardList_info="cardList_info"></billList>
+            <billList ref="billList" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
 
       </scroll-view>
       <!--底部一键领取-->
-        <view class="bottom_class" :style="{top:topValue,zIndex:zindex}">
-            <bottomBtn ref="bottomBtn"></bottomBtn>
-        </view>
+      <view class="bottom_class" :style="{top:topValue,zIndex:zindex}" v-if="isweekmon==0">
+          <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc"></bottomBtn>
+      </view>
+      <canvas id="canvas" v-if="show_add_coin" type="2d"  style="width: 750rpx; height: 750rpx;" class="canves"></canvas>
   </view>
 </template>
 
@@ -39,10 +37,13 @@ const miniapp = miniScript.getInstance()
 const app = getApp()
 import { mapState } from "vuex"
 import * as API from "@/interfaces/bill"
+import selectWeekmonheader from './components/select_weekmon_header'
+// import selectWeekmonbottom from './components/select_weekmon_bottom'
 import selectWeekmon from './components/select_weekmon'
 import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
 import bottomBtn from './components/bottom_btn'
+import lottie from 'lottie-miniprogram'
 
 export default {
     data(){
@@ -54,16 +55,28 @@ export default {
             winHeight:uni.getSystemInfoSync().windowHeight, //系统屏幕宽度
             monthsumBillsList:[],  //月总账单列表
             cardList:{},  //卡信息
-            cardList_info:[],
+            week_cardList_info:[],  //周账单列表
+            cardList_info:[],  //月账单列表
             weeklist:[],  //周列表
             operalist:[],  //运营位相关信息
             zindex:1,  //浮窗层级
-            type_card:"#28BC93",
-            scroll_val:'relative',
-            isScrollOver:false
+            bottombillobj:{},  //金币相关
+            isScrollOver:false,  //是否超过滚动区域
+            datacolor:'#28BC93',    //下拉区域的颜色
+            show_add_coin:false,   //金币canvas开启与否
+            isScroll:true  //是否禁止滚动
         }
     },
     computed: {
+        ...mapState({
+			isweekmon: (state) => state.home.new_bill_all.isweekmon,
+            bgColor:(state) => state.home.new_bill_all.bgColor,
+            entrue:(state) => state.home.new_bill_all.entrue,
+            selectweek:(state) => state.home.new_bill_all.selectweek,
+            selectmon:(state) => state.home.new_bill_all.selectmon,
+            cardinfo:(state) => state.home.new_bill_all.cardinfo,
+            cardusenum:(state) => state.home.new_bill_all.cardusenum
+		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
          */
@@ -80,24 +93,76 @@ export default {
          * top值
          */
         topValue(){
-            return (this.winHeight*2-208)+'rpx'
-        }
+            return (this.winHeight*2-this.tabBoundheight)+'rpx'
+        },
     },
-    created() {
-        console.log('winHeight',this.winHeight)
+    onShow(){
+        this.$store.commit("home/mt_new_bill_all_en", true);
+        this.datacolor = this.bgColor;
+        setTimeout(()=>{
+            wx.createSelectorQuery().select('#canvas').node(res => {
+                console.log('res=',res)
+                const canvas = res.node
+                const context = canvas.getContext('2d')
+                canvas.width = 750
+                canvas.height = 750
+                lottie.setup(canvas)
+                lottie.loadAnimation({
+                loop: true,
+                autoplay: true,
+                path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                // animationData: require('./components/lottie.json'),
+                rendererSettings: {
+                    context,
+                },
+                });
+                //this.show_add_coin = true;
+            }).exec();
+        },500) 
+        console.log(this.isweekmon,'周月====')
     },
     methods: {
+        /**
+         * 获取格式  202009
+         */
+        getyymm(){
+            let date=new Date();
+            let yy=date.getFullYear();
+            let mm=date.getMonth()+1;
+            mm=(mm<10 ? "0"+mm:mm);
+            return (yy.toString()+mm.toString());
+        },
+        /**
+         * 获取周账单
+         */
+        async getbillInfoByApp(cardNum,startDay,endDay){
+            let res = await API.getbillInfoByApp({
+                cardNum:cardNum,
+                startDay:startDay || '',
+                endDay:endDay || '',
+                page:1
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                console.log('用户卡相关信息=',data)
+                this.cardList = data;
+                this.week_cardList_info = data.billInfo;
+            }
+        },
         /**
          * 获取月账单
          */
         async getMonthBill2(cardNo,startDate){
+            console.log(cardNo,startDate)
             let res = await API.getMonthBill2({
                 cardNo:cardNo,
-                startDate:startDate || '202109'
+                startDate:startDate || this.getyymm()
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('月账单=',data)
+                console.log('获取月账单=',data);
+                this.bottombillobj = data;
+                this.cardList_info = data.passDetail
             }
         },
         /**
@@ -117,6 +182,8 @@ export default {
                         data.monthBills[i].markMonth = Number(data.monthBills[i].month.slice(4,6))
                     }
                     this.monthsumBillsList = (data.monthBills).reverse();
+                    this.$store.commit("home/mt_new_bill_all_monthsumBillsList", this.monthsumBillsList);
+                    console.log('获取六个月账单',this.monthsumBillsList)
                 }
             }
         },
@@ -131,8 +198,22 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('卡片列表=',data);
-                return data.info[0].card_num;
+                console.log('卡里',data)
+                if(data.info.length > 0){
+                    for(let i=0;i<data.info.length;i++){
+                        if(data.info[i].comm_card){
+                            console.log('常用卡号是=',data.info[i].card_num,data.info[i].plate);
+                            this.$store.commit("home/mt_new_bill_all_cardusenum", data.info[i].card_num);
+                            this.$store.commit("home/mt_new_bill_all_ytkCard", data.info[i].plate);
+                            return data.info[0].card_num;
+                        }
+                    }
+                }else{
+                    this.$store.commit("home/mt_new_bill_all_en", false);
+                    uni.navigateTo({
+                        url: '/packageA/pages/ytk/ytk_list/main?comeForm=2'
+                    });
+                }
             }
 
         },
@@ -150,21 +231,6 @@ export default {
             }
         },
         /**
-         * 获取用户卡相关信息
-         */
-        async getbillInfoByApp(cardNum){
-            let res = await API.getbillInfoByApp({
-                cardNum:cardNum,
-                page:1
-            });
-            let {code,msg,data} = res;
-            if(code == 0){
-                console.log('用户卡相关信息=',data)
-                this.cardList = data;
-                this.cardList_info = data.billInfo;
-            }
-        },
-        /**
          * 获取近半年周列表
          */
         async getstatisWeekData(cardNo){
@@ -173,7 +239,6 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('近半年周',data);
                 if(data.length > 0){
                     let arr = [];
                     for(let i=0;i<data.length;i++){
@@ -196,7 +261,9 @@ export default {
                                 end:end,
                                 describe:'第'+data[i].weekRanges[j].weekOfMonth+'周 '+'('+begin+'-'+end+')',
                                 nowMonth:nowMonth,
-                                preMonth:preMonth
+                                preMonth:preMonth,
+                                startDay:data[i].weekRanges[j].begin,
+                                endDay:data[i].weekRanges[j].end
                             })
                         }   
                     };
@@ -209,17 +276,41 @@ export default {
          * 改变浮窗的层级
          */
         changZindex(data){
+            data == -1 ? this.isScroll = false : this.isScroll = true;
             this.zindex = data;
+        },
+        /**
+         * 选择月份改变数据
+         */
+        selectMonBill(item){
+            console.log('月份改变数据=',item);
+            console.log(this.cardinfo)
+            this.getMonthBill2(this.cardusenum,item)
+        },
+        /**
+         * 选择周改变数据
+         */
+        selectWeekBill(item){
+            console.log('周份改变数据=',item);
+            this.getbillInfoByApp(this.cardusenum,item.startDay,item.endDay)
         },
         /**
          * 选择卡片触发的事件
          */
         pickCardfn(item){
-            console.log('选择卡片触发的事件',item.cardno);
-            this.getMonthBill2(item.cardno,null);
+            this.getMonthBill2(item.cardno,this.selectmon.month);
             this.getsumMonthBill(item.cardno);
             this.getbillInfoByApp(item.cardno);
             this.getstatisWeekData(item.cardno);
+            let data = this.isweekmon == 1 ? 4 : 3;
+            this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+        },
+        /**
+         * 一键领取/单独领取
+         */
+        selectCoinfunc(item){
+            console.log('名称=',item)
+            this.loadallHandler()
         },
         /**
          * 下拉事件
@@ -247,31 +338,36 @@ export default {
          * scrollview滚动事件
          */
         scrollHandler(e){
-            //e.detail.scrollTop > 206 ? this.scroll_val='fixed' : this.scroll_val='relative';
-            console.log('滚动值=',e)
+            //console.log('滚动值=',e)
             e.detail.scrollTop > 224 ? this.isScrollOver = true : this.isScrollOver = false;
         },
+        /**
+         * 加载所有事件
+         */
+        loadallHandler(){
+            new Promise((resolve,reject)=>{
+                resolve( this.getCardList() )
+            }).then(res=>{
+                if(res){
+                    this.getMonthBill2(res,this.selectmon.month);
+                    this.getsumMonthBill(res);
+                    this.getbillInfoByApp(res);
+                    this.getstatisWeekData(res);
+                    let data = this.isweekmon == 1 ? 4 : 3;
+                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+                }
+            })
+        }
     },
     destroyed() {
-        uni.$off('chooseCard')
+        //uni.$off('chooseCard')
     },
     mounted(){
-        uni.$on('chooseCard',(data)=>{
-            data.type_card == 2 ? this.type_card = "#28BC93" : this.type_card = "#F07365";
-        })
-        new Promise((resolve,reject)=>{
-            resolve( this.getCardList() )
-        }).then(res=>{
-            if(res){
-                this.getMonthBill2(res,null);
-                this.getsumMonthBill(res);
-                this.getbillInfoByApp(res);
-                this.getstatisWeekData(res);
-                this.getoperaList(2); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
-            }
-        })
+        this.loadallHandler()
     },
     components:{
+        selectWeekmonheader,
+        // selectWeekmonbottom,
         selectWeekmon,
         monfreeTimer,
         billList,
@@ -283,15 +379,22 @@ export default {
 <style scoped lang="scss">
     .box{
         width: 100%;
-        height: 100vh;
         background-color: #F6F6F6;
-    }
-    .scroll-class{
-        height:100%;
     }
     .bottom_class{
         position: fixed;
         transform: translateX(-50%);
         left: 50%;
+    }
+    .selectWeekmonbottom{
+        position: absolute;
+        top: 130rpx;
+    }
+    .canves{
+        position: absolute;
+        left: 50%;
+        z-index: 9999;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 </style>

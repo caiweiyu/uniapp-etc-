@@ -258,7 +258,6 @@
 					"style": {
 						"navigationBarTitleText": "我的新账单",
 						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
 						"navigationStyle": "custom"
 					}
 				},

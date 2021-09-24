@@ -1,26 +1,55 @@
 <template>
   <view class="box">
       <view class="box_title">
-        <block v-if="mark==1">
-            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/antion.png"></image><text class="text">本月账单仅供参考</text>
+        <block v-if="bottombillobj.billType==2">
+            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/antion.png"></image><text class="text">{{bottombillobj.notice}}</text>
         </block>
-        <block v-else>
-            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">本月账单已核准</text>
+        <block v-else-if="bottombillobj.billType==1">
+            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">{{bottombillobj.notice}}</text>
         </block>
       </view>
-      <scroll-view :scroll-y="true" class="scroll-page" v-if="list.length > 0" >
+      <!--月账单列表-->
+      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==0 && list.length > 0">
         <view class="box" v-for="(item,index) in list" :key="index">
             <view class="box1">
               <view class="box1_l">
                 <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
               </view>
               <view class="box1_r">
-                <image class="box1_r_img1" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
-                <text class="box1_r_text1">{{item.integral}}</text>
-                <view class="box1_r_btn1" v-if="item.status==0" @click="getCoin(item)">领取</view>
-                <view class="box1_r_btn1" v-else-if="item.status==1">已领取</view>
-                <view class="box1_r_btn1" v-else>已过期</view>
+                    <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
+                    <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
+                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-if="item.status==0" @click="getCoin(item,index)">领取</view>
+                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-else-if="item.status==1">已领取</view>
+                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-else>已过期</view>
               </view>
+            </view>
+            <view class="box2">
+              <view class="box2_l">
+                  <view class="title">
+                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
+                    <text class="title_text">{{item.enStation}}</text>
+                  </view>
+                  <text class="timer">{{item.enTime}}</text>
+                  <view class="title title2">
+                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
+                    <text class="title_text">{{item.exitStation}}</text>
+                  </view>
+                  <text class="timer">{{item.exitTime}}</text>
+              </view>
+              <view class="box2_r">
+                  ¥<text class="box2_r_text">{{item.amount}}</text>
+              </view>
+            </view>
+        </view>
+      </scroll-view>
+      <!--周账单列表-->
+      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==1 && weeklist.length > 0">
+        <view class="box" v-for="(item,index) in weeklist" :key="index">
+            <view class="box1">
+              <view class="box1_l">
+                <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
+              </view>
+              <view class="box1_r"></view>
             </view>
             <view class="box2">
               <view class="box2_l">
@@ -52,30 +81,69 @@ import { mapState } from "vuex"
 import * as API from "@/interfaces/bill"
 export default {
     props:{
+      //月列表
        cardList_info:{
          type:Array,
          default:[]
-       } 
+       },
+       //周列表
+       week_cardList_info:{
+         type:Array,
+         default:[]
+       },
+       //卡信息
+       bottombillobj:{
+         type:Object,
+         default:{}
+       }
     },
     watch:{
       cardList_info(o,n){
-        console.log(o,'新旧',n);
         this.list = o;
+      },
+      week_cardList_info(o,n){
+        console.log('周账单',o)
+        this.weeklist = o;
       }
     },
+    computed: {
+          ...mapState({
+                isweekmon: (state) => state.home.new_bill_all.isweekmon,
+                selectweek: (state) => state.home.new_bill_all.selectweek,
+                selectmon: (state) => state.home.new_bill_all.selectmon,
+                selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
+                selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
+                monthsumBillsList: (state) => state.home.new_bill_all.monthsumBillsList,
+          }),
+    },
     methods: {
-      async getsendBillCoins(){
-        let res = await API.sendBillCoins({
-
-        })
+      /**
+       * 获取格式  202009
+      */
+      getyymm(){
+          let date=new Date();
+          let yy=date.getFullYear();
+          let mm=date.getMonth()+1;
+          mm=(mm<10 ? "0"+mm:mm);
+          return (yy.toString()+mm.toString());
       },
-      getCoin(item){
-        console.log(item)
+      async getCoin(item,index){
+        console.log(item,index,this.selectmon,this.selectweek,this.selectweekindex,this.selectmonindex);
+        let res = await API.sendBillCoins({
+          month:this.selectmon.month || this.getyymm(),
+          source:1,
+          orderId:item.serialNo
+        })
+        let {code,msg,data} = res;
+        if(code ==0){
+            this.$emit("selectCoinfunc",data)
+        }
       }
     },
     data(){
       return {
-        list:[],
+        list:[], //月
+        weeklist:[],  //周
         mark:2
       }
     },

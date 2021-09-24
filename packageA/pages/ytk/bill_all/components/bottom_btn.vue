@@ -2,19 +2,68 @@
   <view class="box">
       <view class="box1">
             <img class="box1_1" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" alt="">
-            <text class="box1_2">本月已领: 1000</text>
-            <text class="box1_3">未领: 40</text>
+            <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint}}</text>
+            <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint}}</text>
       </view>
-      <view class="box2">
+      <view class="box2" v-if="bottombillobj.canSend==1" @click="selectMonCoin(cardusenum,1,selectmon.month)">
           一键领取
       </view>
   </view>
 </template>
 
 <script>
+import { mapState } from "vuex"
+import * as API from "@/interfaces/bill"
 export default {
+    props:{
+        bottombillobj:{
+            type:Object,
+            default:{}
+        }
+    },
     data(){
         return {}
+    },
+    computed: {
+        ...mapState({
+			isweekmon: (state) => state.home.new_bill_all.isweekmon,
+            bgColor:(state) => state.home.new_bill_all.bgColor,
+            entrue:(state) => state.home.new_bill_all.entrue,
+            selectweek:(state) => state.home.new_bill_all.selectweek,
+            selectmon:(state) => state.home.new_bill_all.selectmon,
+            cardinfo:(state) => state.home.new_bill_all.cardinfo,
+            cardusenum:(state) => state.home.new_bill_all.cardusenum
+		}),
+    },
+    methods: {
+        /**
+         * 获取格式  202009
+        */
+        getyymm(){
+            let date=new Date();
+            let yy=date.getFullYear();
+            let mm=date.getMonth()+1;
+            mm=(mm<10 ? "0"+mm:mm);
+            return (yy.toString()+mm.toString());
+        },
+        async selectMonCoin(cardNo,source,month){
+            let res = await API.sendMonthBillCoins({
+                cardNo:cardNo,
+                source:source,
+                month:month || this.getyymm()
+            });
+            let {
+                code,
+                msg,
+                data
+            } = res;
+            if(code == 0){
+                this.$emit("selectCoinfunc",msg)
+                if(data != null){
+                    this.$emit("selectCoinfunc",msg)
+                }
+            }
+        }
     },
 }
 </script>

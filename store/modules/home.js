@@ -19,7 +19,22 @@ const home = {
 		fm_index: 0,//资讯tab导航index
 
 		ytk_bill: "",//粤通卡账单
-		info_item:{}
+		info_item:{},
+
+		new_bill_all:{ //新账单模块
+			isweekmon:0,  //周月
+			bgColor:'#28BC93', //#F07365 卡片颜色控制
+			entrue:true,  //控制下拉开关
+			selectweek:{},  //点击单周存放的数据
+			selectmon:{},  //点击单月存放的数据
+			selectweekindex:-1,  //点击单周的下标
+			selectmonindex:5,   //点击单月的下标
+			monthsumBillsList:[],  //月总账单
+			cardinfo:{},  //卡列表信息
+			cardusenum:"",  //常用卡号
+			ytkCard:"",   //粤通卡号
+
+		}, 
 	},
 	mutations: {
 		mt_item: (state, n) => {
@@ -69,7 +84,40 @@ const home = {
 		},
 		mt_info_item: (state, n)=> {
 			state.info_item = n;
-		}
+		},
+		mt_new_bill_all: (state, n)=> {
+			state.new_bill_all.isweekmon = n;
+		},
+		mt_new_bill_all_bg: (state, n)=> {
+			state.new_bill_all.bgColor = n;
+		},
+		mt_new_bill_all_en: (state, n)=> {
+			state.new_bill_all.entrue = n;
+		},
+		mt_new_bill_all_selectweekindex: (state, n)=> {
+			state.new_bill_all.selectweekindex = n;
+		},
+		mt_new_bill_all_selectmonindex: (state, n)=> {
+			state.new_bill_all.selectmonindex = n;
+		},
+		mt_new_bill_all_selectweek: (state, n)=> {
+			state.new_bill_all.selectweek = n;
+		},
+		mt_new_bill_all_selectmon: (state, n)=> {
+			state.new_bill_all.selectmon = n;
+		},
+		mt_new_bill_all_monthsumBillsList: (state, n)=> {
+			state.new_bill_all.monthsumBillsList = n;
+		},
+		mt_new_bill_all_cardinfo: (state, n)=> {
+			state.new_bill_all.cardinfo = n;
+		},
+		mt_new_bill_all_cardusenum: (state, n)=> {
+			state.new_bill_all.cardusenum = n;
+		},	
+		mt_new_bill_all_ytkCard: (state, n)=> {
+			state.new_bill_all.ytkCard = n;
+		},
 	},
 	actions: {
 		ac_item: (context, obj)=> {

@@ -3,14 +3,26 @@
         <!--本月消费、同行次数-->
         <view class="container">
             <view class="box">
-              <view class="box1">
-                ¥<text class="box1_text">{{details.sum}}</text>
-                <view class="box1_view">本月消费</view>
-              </view>
-              <view class="box1">
-                <text class="box1_text">{{details.num}}</text>
-                <view class="box1_view">通行次数</view>
-              </view>
+              <block v-if="isweekmon==1">
+                  <view class="box1">
+                      ¥<text class="box1_text">{{selectweek.sum || 0}}</text>
+                      <view class="box1_view">本周消费</view>
+                    </view>
+                    <view class="box1">
+                      <text class="box1_text">{{selectweek.num || 0}}</text>
+                      <view class="box1_view">通行次数</view>
+                  </view>
+              </block>
+              <block v-else>
+                  <view class="box1">
+                    ¥<text class="box1_text">{{monthsumBillsList[selectmonindex].sum}}</text>
+                    <view class="box1_view">本月消费</view>
+                  </view>
+                  <view class="box1">
+                    <text class="box1_text">{{monthsumBillsList[selectmonindex].num}}</text>
+                    <view class="box1_view">通行次数</view>
+                  </view>
+              </block>
             </view>
         </view>
         <!--可滑动 自动滚区-->
@@ -23,6 +35,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex"
 export default {
     props:{
         getoperalist:{
@@ -38,21 +51,24 @@ export default {
         }
       }
     },
+    watch:{
+      monthsumBillsList(o,n){
+        console.log(o,'====',n)
+      }
+    },
+    computed: {
+          ...mapState({
+                isweekmon: (state) => state.home.new_bill_all.isweekmon,
+                selectweek: (state) => state.home.new_bill_all.selectweek,
+                selectmon: (state) => state.home.new_bill_all.selectmon,
+                selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
+                selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
+                monthsumBillsList: (state) => state.home.new_bill_all.monthsumBillsList,
+          }),
+    },
     mounted() {
-     // setTimeout(()=>{
-       this.$nextTick(()=>{
-         console.log('1operalist=',this.getoperalist)
-       })
-        
-      //},50)
-      setTimeout(()=>{
-        console.log('2operalist=',this.getoperalist)
-      },1500)
-      uni.$on('pickerTimermon',(data)=>{
-        console.log('data===',data);
-        this.details = data;
-        //uni.$off("pickerTimermon")
-      })
+      console.log(this.isweekmon)
+      console.log('this.getoperalist=',this.getoperalist)
     },
     methods: {
       openArea(item){

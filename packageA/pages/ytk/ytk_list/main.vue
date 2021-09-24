@@ -221,6 +221,7 @@
 						case 2:
 							uni.navigateBack({})
 							uni.$emit("chooseCard",item)
+							this.$store.commit("home/mt_new_bill_all_cardusenum", item.cardno);
 							break;
 					}
 
