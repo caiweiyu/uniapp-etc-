@@ -114,6 +114,7 @@ export default {
                 selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
                 selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
                 monthsumBillsList: (state) => state.home.new_bill_all.monthsumBillsList,
+                show_add_coin:(state) => state.home.new_bill_all.show_add_coin
           }),
     },
     methods: {

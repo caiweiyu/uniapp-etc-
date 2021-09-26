@@ -32,7 +32,8 @@ export default {
             selectweek:(state) => state.home.new_bill_all.selectweek,
             selectmon:(state) => state.home.new_bill_all.selectmon,
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
-            cardusenum:(state) => state.home.new_bill_all.cardusenum
+            cardusenum:(state) => state.home.new_bill_all.cardusenum,
+            show_add_coin:(state) => state.home.new_bill_all.show_add_coin
 		}),
     },
     methods: {
@@ -47,6 +48,8 @@ export default {
             return (yy.toString()+mm.toString());
         },
         async selectMonCoin(cardNo,source,month){
+            if(this.show_add_coin) return;
+            console.log('触发====')
             let res = await API.sendMonthBillCoins({
                 cardNo:cardNo,
                 source:source,
@@ -58,7 +61,7 @@ export default {
                 data
             } = res;
             if(code == 0){
-                this.$emit("selectCoinfunc",msg)
+                this.$emit("isTouchCoin",msg)
                 if(data != null){
                     this.$emit("selectCoinfunc",msg)
                 }

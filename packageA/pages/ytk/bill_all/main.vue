@@ -25,9 +25,11 @@
       </scroll-view>
       <!--底部一键领取-->
       <view class="bottom_class" :style="{top:topValue,zIndex:zindex}" v-if="isweekmon==0">
-          <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc"></bottomBtn>
+          <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
       </view>
-      <canvas id="canvas" v-if="show_add_coin" type="2d"  style="width: 750rpx; height: 750rpx;" class="canves"></canvas>
+      <canvas v-show="show_add_coin" id="canvas" type="2d" style="width: 750rpx; height: 750rpx;z-index:1" class="canves"></canvas>
+      <!-- <view class="canves_view">你好啊所大所大所大所多多多多多多多</view>  -->
+      <!-- <lottie id="lottie" path="https://image.etcchebao.com/etc-min/new-bill-all/coin.json" width="300" height="300" /> -->
   </view>
 </template>
 
@@ -63,8 +65,9 @@ export default {
             bottombillobj:{},  //金币相关
             isScrollOver:false,  //是否超过滚动区域
             datacolor:'#28BC93',    //下拉区域的颜色
-            show_add_coin:false,   //金币canvas开启与否
-            isScroll:true  //是否禁止滚动
+            isScroll:true,  //是否禁止滚动
+            msg:'返回结果返回结果',
+            go:'none'
         }
     },
     computed: {
@@ -75,7 +78,8 @@ export default {
             selectweek:(state) => state.home.new_bill_all.selectweek,
             selectmon:(state) => state.home.new_bill_all.selectmon,
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
-            cardusenum:(state) => state.home.new_bill_all.cardusenum
+            cardusenum:(state) => state.home.new_bill_all.cardusenum,
+            show_add_coin:(state) => state.home.new_bill_all.show_add_coin
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
@@ -99,26 +103,6 @@ export default {
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
         this.datacolor = this.bgColor;
-        setTimeout(()=>{
-            wx.createSelectorQuery().select('#canvas').node(res => {
-                console.log('res=',res)
-                const canvas = res.node
-                const context = canvas.getContext('2d')
-                canvas.width = 750
-                canvas.height = 750
-                lottie.setup(canvas)
-                lottie.loadAnimation({
-                loop: true,
-                autoplay: true,
-                path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
-                // animationData: require('./components/lottie.json'),
-                rendererSettings: {
-                    context,
-                },
-                });
-                //this.show_add_coin = true;
-            }).exec();
-        },500) 
         console.log(this.isweekmon,'周月====')
     },
     methods: {
@@ -198,7 +182,6 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('卡里',data)
                 if(data.info.length > 0){
                     for(let i=0;i<data.info.length;i++){
                         if(data.info[i].comm_card){
@@ -216,6 +199,38 @@ export default {
                 }
             }
 
+        },
+        /**
+         * 触发领取金币
+         */
+        isTouchCoin(){
+            console.log('领取');
+            this.$store.commit("home/mt_new_bill_all_show_add_coin", true);
+            wx.createSelectorQuery().select('#canvas').node(res => {
+                const canvas = res.node
+                const context = canvas.getContext('2d')
+                canvas.width = 750
+                canvas.height = 750
+                lottie.setup(canvas)
+                let anim  = lottie.loadAnimation({
+                    loop: false,
+                    autoplay: true,
+                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                    rendererSettings: {
+                        context,
+                        clearCanvas: true
+                    },
+                });
+                anim.addEventListener('DOMLoaded',()=>{
+                    this.go="block"        
+                })
+                
+            }).exec();            
+                setTimeout(()=>{
+                    this.$store.commit("home/mt_new_bill_all_show_add_coin", false);
+                    this.go="none"
+                },3500)
+                    
         },
         /**
          * 获取运营位
@@ -395,6 +410,20 @@ export default {
         left: 50%;
         z-index: 9999;
         top: 50%;
+        transform: translate(-50%, -50%);
+
+    }
+    .canves_view{
+        position: absolute;
+        width: 750rpx;
+        height: 200rpx;
+        text-align: center;
+        color: red;
+        font-size: 45rpx;
+        font-weight: bold;
+        top: 60%;
+        left: 50%;
+        z-index:9999999;
         transform: translate(-50%, -50%);
     }
 </style>

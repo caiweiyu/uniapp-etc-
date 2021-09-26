@@ -33,6 +33,7 @@ const home = {
 			cardinfo:{},  //卡列表信息
 			cardusenum:"",  //常用卡号
 			ytkCard:"",   //粤通卡号
+			show_add_coin:false,  //是否禁用点击
 
 		}, 
 	},
@@ -117,6 +118,9 @@ const home = {
 		},	
 		mt_new_bill_all_ytkCard: (state, n)=> {
 			state.new_bill_all.ytkCard = n;
+		},
+		mt_new_bill_all_show_add_coin: (state, n)=> {
+			state.new_bill_all.show_add_coin = n;
 		},
 	},
 	actions: {

@@ -140,3 +140,14 @@ export function getUserLevel(data) {
 		data
 	});
 }
+
+/**
+ * 获取json文件
+ */
+ export function getJson(data) {
+	return request({
+		url: `https://image.etcchebao.com/etc-min/new-bill-all/coin.json`,
+		method: "post",
+		data
+	});
+}
