@@ -5,7 +5,7 @@
             <view class="box">
               <block v-if="isweekmon==1">
                   <view class="box1">
-                      ¥<text class="box1_text">{{selectweek.sum || 0}}</text>
+                      ¥<text class="box1_text">{{weeksum || 0}}</text>
                       <view class="box1_view">本周消费</view>
                     </view>
                     <view class="box1">
@@ -15,7 +15,7 @@
               </block>
               <block v-else>
                   <view class="box1">
-                    ¥<text class="box1_text">{{monthsumBillsList[selectmonindex].sum}}</text>
+                    ¥<text class="box1_text">{{monsum}}</text>
                     <view class="box1_view">本月消费</view>
                   </view>
                   <view class="box1">
@@ -26,21 +26,42 @@
             </view>
         </view>
         <!--可滑动 自动滚区-->
-        <swiper class="swiper" v-if="getoperalist.length > 0" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true">
-            <swiper-item class="swiper-item" v-for="(item,index) in getoperalist" :key="index" @click.stop="openArea(item)">
+        <swiper class="swiper" v-if="getoperalist.location==4 && getoperalist.type_1.length > 0" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true">
+            <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_1" :key="index" @click.stop="openArea(item)">
                 <image :src="item.pic_url" class="swiper-item-view" mode="" />
             </swiper-item>
         </swiper>
+        <block v-if="getoperalist.location==3">
+            <swiper class="swiper" v-if="getoperalist.type_3.length > 0" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true">
+              <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_3" :key="index" @click.stop="openArea(item)">
+                  <image :src="item.pic_url" class="swiper-item-view" mode="" />
+              </swiper-item>
+            </swiper>
+            <view class="swiper" v-else-if="getoperalist.type_2.length > 0">
+              <view class="swiper-item swiper-ac">
+                  <view class="box2">
+                      <block v-if="discount_amount != ''">¥
+                        <text class="box2_1">{{discount_amount}}</text>
+                      </block>
+                      <text class="box2_2">{{getoperalist.type_2[0].extend.explain_tips}}</text>
+                      <view class="box2_3">{{getoperalist.type_2[0].title}}</view>
+                  </view>
+                  <view class="box3" @click.stop="openArea2(getoperalist.type_2[0].extend)">{{getoperalist.type_2[0].extend.jump_tips}}</view>
+              </view>
+            </view>
+        </block>
     </view>
 </template>
 
 <script>
+import miniScript from "@/common/miniScript"
+const  miniapp = miniScript.getInstance()
 import { mapState } from "vuex"
 export default {
     props:{
         getoperalist:{
-          type:Array,
-          default:[]
+          type:Object,
+          default:{}
         }
     },
     data(){
@@ -51,11 +72,6 @@ export default {
         }
       }
     },
-    watch:{
-      monthsumBillsList(o,n){
-        console.log(o,'====',n)
-      }
-    },
     computed: {
           ...mapState({
                 isweekmon: (state) => state.home.new_bill_all.isweekmon,
@@ -64,15 +80,66 @@ export default {
                 selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
                 selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
                 monthsumBillsList: (state) => state.home.new_bill_all.monthsumBillsList,
+                discount_amount: (state) => state.home.new_bill_all.discount_amount,
           }),
+          weeksum(){
+            if(this.selectweek.sum > 0){
+                return Number(this.selectweek.sum/100).toFixed(2)
+            }
+          },
+          monsum(){
+            if(this.monthsumBillsList.length > 0){
+                return Number(this.monthsumBillsList[this.selectmonindex].sum/100).toFixed(2)
+            }
+          }
     },
     mounted() {
-      console.log(this.isweekmon)
-      console.log('this.getoperalist=',this.getoperalist)
+      // console.log(this.isweekmon)
+      // setTimeout(()=>{
+      //   console.log('this.getoperalist====',this.getoperalist,this.getoperalist.location==4,this.getoperalist.type_1.length > 0)
+      // },2000)
+      
     },
     methods: {
       openArea(item){
-        console.log('参数=',item)
+        if (typeof(item.subs_template_id) == "string") {
+					// 消息订阅
+					let arr = [];
+					arr.push(item.subs_template_id);
+					miniapp.subscribe(arr, (res)=>{
+						this.callback(item);
+					}, (err)=> {
+						this.callback(item);
+					})
+				} else {
+					// 直接跳转
+					this.callback(item);
+				}
+        console.log(item)
+      },
+      callback(item) {
+				// 跳转page || miniProgram
+				miniapp.miniProgramRouter(item, (res)=>{
+					
+				}, (err)=> {
+					
+				})
+			},
+      openArea2(item){
+        console.log('自定义',item);
+        if (typeof(item.subs_template_id) == "string") {
+					// 消息订阅
+					let arr = [];
+					arr.push(item.subs_template_id);
+					miniapp.subscribe(arr, (res)=>{
+						this.callback(item);
+					}, (err)=> {
+						this.callback(item);
+					})
+				} else {
+					// 直接跳转
+					this.callback(item);
+				}
       }
     },
 }
@@ -95,7 +162,7 @@ export default {
         border-radius: 16rpx;
         background-color: #FFFFFF;
         .box1{
-            width: 120rpx;
+            width: 345rpx;
             text-align: center;
             &_text{
               color: #222222;
@@ -122,6 +189,44 @@ export default {
           transform: translateX(-50%) !important;
           width: 690rpx !important;
           height: 108rpx !important;
+      }
+    }
+    .swiper-ac{
+      height: 108rpx;
+      margin: auto;
+      align-items: center;
+      width: 690rpx;
+      position: relative;
+      background:url("https://image.etcchebao.com/etc-min/bill_all/yunying.png")no-repeat;
+      background-size: 100% 100%;
+      display: flex;
+      justify-content: space-between;
+      .box2{
+        color: #8E523F;
+        font-size: 24rpx;
+        margin-left: 29rpx;
+        .box2_1{
+            font-weight: bold;
+            font-size: 40rpx;
+        }
+        .box2_2{
+            font-size: 26rpx;
+        }
+        .box2_3{
+          font-size: 24rpx;
+        }
+      }
+      .box3{
+        margin-right: 20rpx;
+        width: 144rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+        text-align: center;
+        border-radius: 120rpx;
+        border: 2rpx solid #8E523F;
+        font-weight: bold;
+        font-size: 24rpx;
+        color: #8E523F;
       }
     }
   }

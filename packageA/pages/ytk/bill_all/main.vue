@@ -11,7 +11,7 @@
 			:scroll-with-animation="true"
             class="scroll-class"
             @scroll="scrollHandler"
-            :style="{height:(winHeight*2-tabBoundheight)+'rpx'}">     
+            :style="{height:'100vh',paddingTop:tabBoundheight+'rpx'}">     
 
             <!--顶部周月选择下拉框区-->
              <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
@@ -20,16 +20,15 @@
             <monfreeTimer ref="monfreeTimer" :getoperalist="operalist"></monfreeTimer>
 
             <!--账单列表区-->
-            <billList ref="billList" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
+            <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
 
       </scroll-view>
       <!--底部一键领取-->
-      <view class="bottom_class" :style="{top:topValue,zIndex:zindex}" v-if="isweekmon==0">
+      <view class="bottom_class" :style="{bottom:'128rpx',zIndex:zindex}" v-if="isweekmon==0">
           <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
       </view>
-      <canvas v-show="show_add_coin" id="canvas" type="2d" style="width: 750rpx; height: 750rpx;z-index:1" class="canves"></canvas>
-      <!-- <view class="canves_view">你好啊所大所大所大所多多多多多多多</view>  -->
-      <!-- <lottie id="lottie" path="https://image.etcchebao.com/etc-min/new-bill-all/coin.json" width="300" height="300" /> -->
+      <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
+      <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
   </view>
 </template>
 
@@ -60,14 +59,13 @@ export default {
             week_cardList_info:[],  //周账单列表
             cardList_info:[],  //月账单列表
             weeklist:[],  //周列表
-            operalist:[],  //运营位相关信息
+            operalist:{},  //运营位相关信息
             zindex:1,  //浮窗层级
             bottombillobj:{},  //金币相关
             isScrollOver:false,  //是否超过滚动区域
             datacolor:'#28BC93',    //下拉区域的颜色
             isScroll:true,  //是否禁止滚动
             msg:'返回结果返回结果',
-            go:'none'
         }
     },
     computed: {
@@ -79,7 +77,8 @@ export default {
             selectmon:(state) => state.home.new_bill_all.selectmon,
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
-            show_add_coin:(state) => state.home.new_bill_all.show_add_coin
+            show_add_coin:(state) => state.home.new_bill_all.show_add_coin,
+            isNeeddisCount:(state) => state.home.new_bill_all.isNeeddisCount
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
@@ -97,13 +96,13 @@ export default {
          * top值
          */
         topValue(){
-            return (this.winHeight*2-this.tabBoundheight)+'rpx'
+            return (this.winHeight-this.tabBoundheight)+'rpx'
         },
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
         this.datacolor = this.bgColor;
-        console.log(this.isweekmon,'周月====')
+        console.log(this.isweekmon,'周月====',this.winHeight,this.tabBoundheight)
     },
     methods: {
         /**
@@ -146,7 +145,10 @@ export default {
             if(code == 0){
                 console.log('获取月账单=',data);
                 this.bottombillobj = data;
-                this.cardList_info = data.passDetail
+                this.cardList_info = data.passDetail;
+                if(this.isNeeddisCount){
+                    this.getUserLevel(cardNo,data.passTotalMoney)
+                }
             }
         },
         /**
@@ -203,8 +205,7 @@ export default {
         /**
          * 触发领取金币
          */
-        isTouchCoin(){
-            console.log('领取');
+        isTouchCoin(data){
             this.$store.commit("home/mt_new_bill_all_show_add_coin", true);
             wx.createSelectorQuery().select('#canvas').node(res => {
                 const canvas = res.node
@@ -216,20 +217,28 @@ export default {
                     loop: false,
                     autoplay: true,
                     path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                    //animationData:require("./components/data.js"),
                     rendererSettings: {
                         context,
-                        clearCanvas: true
                     },
                 });
-                anim.addEventListener('DOMLoaded',()=>{
-                    this.go="block"        
-                })
-                
-            }).exec();            
+            }).exec();    
+            wx.createSelectorQuery().select('#canvas2').node(res => {
+                const canvas = res.node
+                const context = canvas.getContext('2d')
+                canvas.width = 750
+                canvas.height = 750
+                context.font = '28px 微软雅黑'
+                context.fillStyle="#FFFFFF"
+                context.textAlign = 'center'
+                context.fillText(data, 375, 425)
                 setTimeout(()=>{
-                    this.$store.commit("home/mt_new_bill_all_show_add_coin", false);
-                    this.go="none"
-                },3500)
+                     context.clearRect(0,0,750,750)
+                },3000)
+            }).exec();
+            setTimeout(()=>{
+                this.$store.commit("home/mt_new_bill_all_show_add_coin", false);
+            },3500)
                     
         },
         /**
@@ -241,8 +250,27 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('运营位=',data)
-                 this.operalist = data.type_1;
+                 console.log('运营位=',data)
+                 this.operalist = data;
+                 if(this.operalist.type_2){
+                     this.$store.commit("home/mt_new_bill_all_isNeeddisCount", true);
+                 }
+                 this.operalist.location = location;
+            }
+        },
+        /**
+         * 获取用户vip等级信息
+         */
+        async getUserLevel(cardNo,amount){
+            let res = await API.getUserLevel({
+                cardNo:cardNo,
+                amount:amount
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                if(Number(data.discount_amount) > 0){
+                    this.$store.commit("home/mt_new_bill_all_discount_amount", data.discount_amount);
+                }
             }
         },
         /**
@@ -262,10 +290,10 @@ export default {
                             let end = data[i].weekRanges[j].end.slice(5,10).replace('-','.');
                             let nowMonth = null;
                             let preMonth = null;
-                            if(Number(data[i].weekRanges[j].begin.split('-')[1]) < new Date().getMonth()+1){
-                                nowMonth = Number(data[i].weekRanges[j].begin.split('-')[1])
+                            if(Number(data[i].weekRanges[j].end.split('-')[1]) < new Date().getMonth()+1){
+                                nowMonth = Number(data[i].weekRanges[j].end.split('-')[1])
                             }else{
-                                preMonth = Number(data[i].weekRanges[j].begin.split('-')[1])
+                                preMonth = Number(data[i].weekRanges[j].end.split('-')[1])
                             }
                             arr.push({
                                 week:data[i].weekRanges[j].weekOfMonth,
@@ -325,7 +353,7 @@ export default {
          */
         selectCoinfunc(item){
             console.log('名称=',item)
-            this.loadallHandler()
+            this.loadallHandlerhasCard()
         },
         /**
          * 下拉事件
@@ -357,7 +385,7 @@ export default {
             e.detail.scrollTop > 224 ? this.isScrollOver = true : this.isScrollOver = false;
         },
         /**
-         * 加载所有事件
+         * 加载所有事件，卡号还没有的情况
          */
         loadallHandler(){
             new Promise((resolve,reject)=>{
@@ -372,6 +400,17 @@ export default {
                     this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
                 }
             })
+        },
+        /**
+         * 加载所有事件，卡号有的情况
+         */
+        loadallHandlerhasCard(){
+            this.getMonthBill2(this.cardusenum,this.selectmon.month);
+            this.getsumMonthBill(this.cardusenum);
+            this.getbillInfoByApp(this.cardusenum);
+            this.getstatisWeekData(this.cardusenum);
+            let data = this.isweekmon == 1 ? 4 : 3;
+            this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
         }
     },
     destroyed() {
@@ -411,19 +450,21 @@ export default {
         z-index: 9999;
         top: 50%;
         transform: translate(-50%, -50%);
-
-    }
-    .canves_view{
-        position: absolute;
         width: 750rpx;
-        height: 200rpx;
-        text-align: center;
-        color: red;
-        font-size: 45rpx;
-        font-weight: bold;
-        top: 60%;
-        left: 50%;
-        z-index:9999999;
-        transform: translate(-50%, -50%);
+        height: 750rpx;
     }
+    .select_list{
+        width:750rpx;
+        background-color: #000000;
+        z-index: 999;
+            &_bg{
+                height: calc(100vh - 600rpx);
+                opacity: .7;
+            }
+            &_picker{
+                border-radius: 12rpx 12rpx 0 0;
+                background-color: #FFFFFF;
+                height: 600rpx;
+            }
+        }
 </style>

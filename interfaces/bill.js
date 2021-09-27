@@ -57,7 +57,8 @@ export function getCardList(data) {
  export function getOperaList(data) {
 	return request({
 		// url:'http://172.16.9.10:9090/mock/16/mini-program/v2/wx-applets/get-opera-list',
-		url: `${G}/mini-program/v2/wx-applets/get-opera-list`,
+		// url: `${G}/mini-program/v2/wx-applets/get-opera-list`,
+		url:'https://g-test-test.etcchebao.com/mini-program/v2/wx-applets/get-opera-list',
 		method: "post",
 		data
 	});
@@ -142,11 +143,12 @@ export function getUserLevel(data) {
 }
 
 /**
- * 获取json文件
+ * 获取showToast文案
  */
- export function getJson(data) {
+
+ export function getparaList(data) {
 	return request({
-		url: `https://image.etcchebao.com/etc-min/new-bill-all/coin.json`,
+		url: `${G}/api-unitoll/recharge/paraList`,
 		method: "post",
 		data
 	});

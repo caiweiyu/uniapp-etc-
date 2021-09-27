@@ -2,10 +2,10 @@
   <view class="box">
       <view class="box_title">
         <block v-if="bottombillobj.billType==2">
-            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/antion.png"></image><text class="text">{{bottombillobj.notice}}</text>
+            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">{{bottombillobj.notice}}</text>
         </block>
         <block v-else-if="bottombillobj.billType==1">
-            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">{{bottombillobj.notice}}</text>
+            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/antion.png" @click.stop="showParaList"></image><text class="text" @click.stop="showParaList">{{bottombillobj.notice}}</text>
         </block>
       </view>
       <!--月账单列表-->
@@ -15,7 +15,7 @@
               <view class="box1_l">
                 <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
               </view>
-              <view class="box1_r">
+              <view class="box1_r" v-if="item.integral !=0 ">
                     <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
                     <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
                     <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-if="item.status==0" @click="getCoin(item,index)">领取</view>
@@ -29,12 +29,12 @@
                     <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
                     <text class="title_text">{{item.enStation}}</text>
                   </view>
-                  <text class="timer">{{item.enTime}}</text>
-                  <view class="title title2">
+                  <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
+                  <view class="title title2" v-if="item.type==1">
                     <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
                     <text class="title_text">{{item.exitStation}}</text>
                   </view>
-                  <text class="timer">{{item.exitTime}}</text>
+                  <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
               </view>
               <view class="box2_r">
                   ¥<text class="box2_r_text">{{item.amount}}</text>
@@ -57,12 +57,12 @@
                     <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
                     <text class="title_text">{{item.enStation}}</text>
                   </view>
-                  <text class="timer">{{item.enTime}}</text>
-                  <view class="title title2">
+                  <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
+                  <view class="title title2" v-if="item.type==1">
                     <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
                     <text class="title_text">{{item.exitStation}}</text>
                   </view>
-                  <text class="timer">{{item.exitTime}}</text>
+                  <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
               </view>
               <view class="box2_r">
                   ¥<text class="box2_r_text">{{item.amount}}</text>
@@ -137,18 +137,55 @@ export default {
         })
         let {code,msg,data} = res;
         if(code ==0){
-            this.$emit("selectCoinfunc",data)
+            if(data != null){
+              this.$emit("selectCoinfunc",msg)
+            }
+            
         }
-      }
+      },
+      async getparaList(){
+        let res = await API.getparaList({
+          type:"['bill_notes']"
+        });
+        let {
+          code,
+          msg,
+          data
+        } = res;
+        if(code == 0){
+          if(data.bill_notes){
+            this.showToast = data.bill_notes;
+          }
+        }
+      },
+      /**
+       * 显示提示文案
+       */
+      showParaList(){
+        uni.showModal({
+          title: '提示',
+          icon: 'none',
+          content:this.showToast || "2020年5月6日零时起，全国高速恢复正常收费！\r\n1.车主当次高速通行全程只扣费一次；\r\n2.费显屏显示当次高速全程的扣费金额；\r\n高速账单也更加清晰易读！\r\n跑高速就上【ETC车宝】查实时账单",
+          mask: true,
+          showCancel:false,
+          confirmColor:"#FF5C2A",
+          confirmText:"知道了",
+          success:res=>{
+            console.log('关闭')
+          }
+        })
+      },
     },
     data(){
       return {
         list:[], //月
         weeklist:[],  //周
-        mark:2
+        showToast:""
       }
     },
-    mounted() {},
+    mounted() {
+      this.getparaList()
+    },
 }
 </script>
 
@@ -156,7 +193,6 @@ export default {
   .box{
       position: relative;
       &_title{
-        width: 100%;
         height: 53rpx;
         line-height: 73rpx;
         padding-left: 34rpx;
@@ -180,6 +216,7 @@ export default {
           display: flex;
           flex-direction: column;
           background-color: #F6F6F6;
+          padding-bottom: 199rpx;
           .box{
             background-color: #FFFFFF;
             margin: 20rpx auto;

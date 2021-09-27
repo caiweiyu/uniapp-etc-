@@ -2,8 +2,8 @@
   <view class="box" :style="{height: topHeight.height,background: bannerPic,backgroundSize: '100% 100%'}">
       
       <!--内容区域-->
-      <view class="box_content" :style="{top:'26rpx'}">
-          <view class="card_title"><text class="text">{{ytkCard}}</text><image @click="toytkList" class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
+      <view class="box_content" :style="{top:'26rpx'}" @click.stop="toytkList">
+          <view class="card_title"><text class="text">{{ytkCard}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{cardusenum}}</text>
       </view>
       
@@ -14,7 +14,7 @@
               <view class="avter_down"></view>
               <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
           </view>
-          <view v-for="(item,index) in (weekmonlist.slice(0,4))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
+          <view v-for="(item,index) in ((weekmonlist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
               <view class="markYear" v-if="item.nowMonth != null">{{item.nowMonth+'月'}}</view>
           </view>
@@ -31,7 +31,19 @@
       
       <!--周选择详情弹出层选项-->
       <u-picker mode="selector" v-model="isOpenWeek" :default-selector="defaultweekvalue" :range="weekmonlist" range-key="describe" @confirm="enterweek" @cancel="(()=>{this.isOpenWeek = false;})" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
-  
+      
+      <!-- <view :class="['select_list',isOpenWeeklist == true ? 'select_list_active' : 'select_list_off']" @touchmove.stop="()=>{return true}">
+          <view @click="cancelSelect" :class="['select_list_bg',isOpenWeeklist == true ? 'select_list_bg_active' : 'select_list_bg_off']"></view>
+          <view :class="['select_list_picker',isOpenWeeklist == true ? 'select_list_picker_active':'select_list_picker_off']">
+              <view class="select_list_picker_header" v-if="isOpenWeeklist">
+                  <view class="box1" @click="cancelSelect">取消</view>
+                  <view class="box2" @click="enterweek">确定</view>
+              </view>
+              <scroll-view :scroll-y="true" :class="['scroll_page']" v-if="isOpenWeeklist" :scroll-into-view="scrollRight" :scroll-with-animation="true">
+                  <view v-for="(item,index) in weekmonlist" :id="'into_right'+index" :key="index" :class="['scroll_page_list',weekIndex==index?'scroll_page_list_active':'']" @click="handClick(item,index)">{{item.describe}}</view>
+              </scroll-view>
+          </view>
+      </view> -->
   </view>
 </template>
 
@@ -86,6 +98,8 @@ export default {
                 'https://image.etcchebao.com/etc-min/bill_all/banner1_2.png',  //type_card=2
                 'https://image.etcchebao.com/etc-min/bill_all/banner2_2.png'  //type_card=1
             ],
+            weekIndex:-1,
+            scrollRight:""
         }
     },
     computed: {
@@ -97,7 +111,8 @@ export default {
             selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
-            ytkCard:(state) => state.home.new_bill_all.ytkCard
+            ytkCard:(state) => state.home.new_bill_all.ytkCard,
+            isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离 + 状态栏高度 + 胶囊高度）
@@ -131,19 +146,22 @@ export default {
          * 周确定选择
          */
         enterweek(e){
+            // this.$store.commit("home/mt_new_bill_all_en", true);
             this.selectweekMore = this.weekmonlist[e[0]],this.defaultweekvalue = e;
             this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
             this.$emit("selectWeekBill",this.selectweekMore)
+            this.$emit("changZindex",1)
             console.log('this.selectweekMore',this.selectweekMore,2222,e)
+            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
         },
-
         /**
-         * 取消
+         * 取消周选中
          */
-        cancel(){
-            this.isOpen = false;
+        cancelSelect(){
+            this.$store.commit("home/mt_new_bill_all_en", true);
+            this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
+            this.$emit("changZindex",1)
         },
-
         /**
          * 选择月tab
          */
@@ -151,7 +169,7 @@ export default {
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
             this.$store.commit("home/mt_new_bill_all_selectmon", item);
             this.$emit("selectMonBill",item.month)
-            console.log('月',item)
+            console.log('月',item);
         },
         
         /**
@@ -161,15 +179,18 @@ export default {
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             this.$store.commit("home/mt_new_bill_all_selectweek", item);
             this.$emit("selectWeekBill",item)
-            console.log('周',item)
+            console.log('周',item,index)
         },
 
         /**
          * 更多
          */
         pickerMore(index){
+            // this.$store.commit("home/mt_new_bill_all_en", false);
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             this.isOpenWeek = !this.isOpenWeek;
+            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", true);
+            this.$emit("changZindex",-1)
         },
 
         /**
@@ -181,6 +202,18 @@ export default {
                  url: '/packageA/pages/ytk/ytk_list/main?comeForm=2'
             });
         },
+        /***
+         * 点击周
+         */
+        handClick(item,index){
+            this.weekIndex = index;
+            this.selectweekMore = item;
+            this.$nextTick(()=>{
+               this.scrollRight = 'into_right'+ index
+            });
+            this.scrollRight = '';
+            console.log(item)
+        }
 
     },
     destroyed() {
@@ -286,6 +319,77 @@ export default {
                 transform: rotate(180deg);
             }
         }
+        // .select_list{
+        //     width:750rpx;
+        //     position: fixed;
+        //     top: 0;
+        //     z-index: 999;
+        //     &_bg{
+                
+        //         opacity: .7;
+        //         background-color: #000000;
+        //     }
+        //     &_bg_active{
+        //         height: calc(100vh - 600rpx);
+        //         transition: height linear 0.2s;
+        //     }
+        //     &_bg_off{
+        //         height: 0;
+        //         transition: height linear 0.2s;
+        //     }
+        //     &_picker{
+        //         border-radius: 12rpx 12rpx 0 0;
+        //         background-color: #FFFFFF;
+        //         &_header{
+        //             display: flex;
+        //             justify-content: space-between;
+        //             font-size: 28rpx;
+        //             .box1{
+        //                 margin: 39rpx 0 0 32rpx;
+        //                 color: #999999;
+        //             }
+        //             .box2{
+        //                 margin: 39rpx 32rpx 0 0;
+        //                 color: #FF5C2A;
+        //             }
+        //         }
+        //         .scroll_page{
+        //             height: 480rpx;
+        //             margin-top: 50rpx;
+        //             &_list{
+        //                 width: 100%;
+        //                 text-align: center;
+        //                 color: #CCCCCC;
+        //                 font-size: 28rpx;
+        //                 margin: 40rpx 0;
+        //                 &_active{
+        //                     height: 112rpx;
+        //                     line-height: 112rpx;
+        //                     border-top: 1rpx solid #EBEBEB;
+        //                     border-bottom:1rpx solid #EBEBEB;
+        //                     color: #222222;
+        //                     font-size: 36rpx;
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     &_picker_active{
+        //         height: 600rpx;
+        //         transition: height linear 0.2s;
+        //     }
+        //     &_picker_off{
+        //         height: 0;
+        //         transition: height linear 0.2s;
+        //      }
+        // }
+        // .select_list_active{
+        //     height: 100vh;
+        //     transition: height linear 0.2s;
+        // }
+        // .select_list_off{
+        //     height: 0;
+        //     transition: height linear 0.2s;
+        // }
         @keyframes animate-up {
             0% {
                 transform: rotate(0);
@@ -304,6 +408,9 @@ export default {
         }
     }
     /deep/ .u-drawer__scroll-view{
+        background-color: #FFFFFF !important;
+    }
+    /deep/.u-select{
         background-color: #FFFFFF !important;
     }
 </style>

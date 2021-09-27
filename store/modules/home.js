@@ -34,6 +34,10 @@ const home = {
 			cardusenum:"",  //常用卡号
 			ytkCard:"",   //粤通卡号
 			show_add_coin:false,  //是否禁用点击
+			isOpenWeeklist:false,  //周是否开启
+			isOpenWeekorMoon:false,  //周月选择否开启
+			discount_amount:"",  //节约金额
+			isNeeddisCount:false  //是否自定义banner
 
 		}, 
 	},
@@ -122,6 +126,19 @@ const home = {
 		mt_new_bill_all_show_add_coin: (state, n)=> {
 			state.new_bill_all.show_add_coin = n;
 		},
+		mt_new_bill_all_isOpenWeeklist: (state, n)=> {
+			state.new_bill_all.isOpenWeeklist = n;
+		},
+		mt_new_bill_all_isOpenWeekorMoon: (state, n)=> {
+			state.new_bill_all.isOpenWeekorMoon = n;
+		},
+		mt_new_bill_all_discount_amount: (state, n)=> {
+			state.new_bill_all.discount_amount = n;
+		},
+		mt_new_bill_all_isNeeddisCount: (state, n)=> {
+			state.new_bill_all.isNeeddisCount = n;
+		}
+		
 	},
 	actions: {
 		ac_item: (context, obj)=> {

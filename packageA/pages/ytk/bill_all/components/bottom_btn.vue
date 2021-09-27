@@ -1,9 +1,9 @@
 <template>
-  <view class="box">
+  <view class="box" v-if="bottombillobj.integralDetail.unGetPoint != 0">
       <view class="box1">
             <img class="box1_1" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" alt="">
-            <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint}}</text>
-            <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint}}</text>
+            <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint || ''}}</text>
+            <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || ''}}</text>
       </view>
       <view class="box2" v-if="bottombillobj.canSend==1" @click="selectMonCoin(cardusenum,1,selectmon.month)">
           一键领取
@@ -49,7 +49,6 @@ export default {
         },
         async selectMonCoin(cardNo,source,month){
             if(this.show_add_coin) return;
-            console.log('触发====')
             let res = await API.sendMonthBillCoins({
                 cardNo:cardNo,
                 source:source,
@@ -61,7 +60,7 @@ export default {
                 data
             } = res;
             if(code == 0){
-                this.$emit("isTouchCoin",msg)
+                //this.$emit("isTouchCoin",msg)
                 if(data != null){
                     this.$emit("selectCoinfunc",msg)
                 }
