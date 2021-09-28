@@ -426,7 +426,7 @@ export default {
                 if(res){
                     this.getMonthBill2(res,this.selectmon.month);
                     this.getsumMonthBill(res);
-                    this.getbillInfoByApp(res);
+                    this.getbillInfoByApp(res,this.selectweek.startDay,this.selectweek.endDay);
                     this.getstatisWeekData(res);
                     let data = this.isweekmon == 1 ? 4 : 3;
                     this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
@@ -439,7 +439,7 @@ export default {
         loadallHandlerhasCard(){
             this.getMonthBill2(this.cardusenum,this.selectmon.month);
             this.getsumMonthBill(this.cardusenum);
-            this.getbillInfoByApp(this.cardusenum);
+            this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay);
             this.getstatisWeekData(this.cardusenum);
             let data = this.isweekmon == 1 ? 4 : 3;
             this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块

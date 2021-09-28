@@ -9,7 +9,7 @@
         </block>
       </view>
       <!--月账单列表-->
-      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==0 && cardList_info.length > 0">
+      <scroll-view :scroll-y="false" class="scroll-page" v-if="isweekmon==0 && cardList_info.length > 0">
         <view class="box" v-for="(item,index) in cardList_info" :key="index">
             <view class="box1">
               <view class="box1_l">
@@ -43,7 +43,7 @@
         </view>
       </scroll-view>
       <!--周账单列表-->
-      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==1 && week_cardList_info.length > 0">
+      <scroll-view :scroll-y="false" class="scroll-page" v-if="isweekmon==1 && week_cardList_info.length > 0">
         <view class="box" v-for="(item,index) in week_cardList_info" :key="index">
             <view class="box1">
               <view class="box1_l">
