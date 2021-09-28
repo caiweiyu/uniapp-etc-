@@ -215,7 +215,8 @@ export default {
           display: flex;
           flex-direction: column;
           background-color: #F6F6F6;
-          padding-bottom: 199rpx;
+          // padding-bottom: 199rpx;
+          padding-bottom: 266rpx;
           .box{
             background-color: #FFFFFF;
             margin: 20rpx auto;
