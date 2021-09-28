@@ -2,7 +2,7 @@
   <view class="box" :style="{height:winHeight+'px'}">
       <!--下拉滚动头部更换-->
       <selectWeekmonheader :monlist="monthsumBillsList" @changZindex="changZindex"></selectWeekmonheader>  
-      <!-- <selectWeekmonbottom class="selectWeekmonbottom" :monlist="monthsumBillsList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex"></selectWeekmonbottom>  -->
+      <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
       <!--下拉刷新区-->
       <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
             :refresher-triggered="triggered" :refresher-threshold="80"
@@ -11,13 +11,13 @@
 			:scroll-with-animation="true"
             class="scroll-class"
             @scroll="scrollHandler"
-            :style="{height:'100vh',paddingTop:tabBoundheight+'rpx'}">     
+            :style="{height:topValue,top:tabBoundheight+'rpx'}">     
 
             <!--顶部周月选择下拉框区-->
-             <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" :weekmonlist="weeklist" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
+             <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
             
             <!--本月消费通行次数-->
-            <monfreeTimer ref="monfreeTimer" :getoperalist="operalist"></monfreeTimer>
+            <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
             <!--账单列表区-->
             <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
@@ -29,6 +29,10 @@
       </view>
       <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
       <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
+       <!--周选择详情弹出层选项-->
+      <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
+       <!-- 全局弹窗 -->
+	   <dialog-window ref="dialog" :flag="isweekmon==1 ? '12' : '11'"></dialog-window>
   </view>
 </template>
 
@@ -39,11 +43,12 @@ const app = getApp()
 import { mapState } from "vuex"
 import * as API from "@/interfaces/bill"
 import selectWeekmonheader from './components/select_weekmon_header'
-// import selectWeekmonbottom from './components/select_weekmon_bottom'
+import selectWeekmonbottom from './components/select_weekmon_bottom'
 import selectWeekmon from './components/select_weekmon'
 import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
 import bottomBtn from './components/bottom_btn'
+import DialogWindow from "@/components/dialog-window"
 import lottie from 'lottie-miniprogram'
 
 export default {
@@ -58,14 +63,13 @@ export default {
             cardList:{},  //卡信息
             week_cardList_info:[],  //周账单列表
             cardList_info:[],  //月账单列表
-            weeklist:[],  //周列表
             operalist:{},  //运营位相关信息
             zindex:1,  //浮窗层级
             bottombillobj:{},  //金币相关
             isScrollOver:false,  //是否超过滚动区域
             datacolor:'#28BC93',    //下拉区域的颜色
             isScroll:true,  //是否禁止滚动
-            msg:'返回结果返回结果',
+            isOpenWeekVal:false,  //周开关
         }
     },
     computed: {
@@ -78,7 +82,11 @@ export default {
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
             show_add_coin:(state) => state.home.new_bill_all.show_add_coin,
-            isNeeddisCount:(state) => state.home.new_bill_all.isNeeddisCount
+            isNeeddisCount:(state) => state.home.new_bill_all.isNeeddisCount,
+            isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
+            defaultweekvalue:(state) => state.home.new_bill_all.defaultweekvalue,
+            selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
+            weeklist:(state) => state.home.new_bill_all.weeklist
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
@@ -96,13 +104,22 @@ export default {
          * top值
          */
         topValue(){
-            return (this.winHeight-this.tabBoundheight)+'rpx'
+            return (this.winHeight*2-this.tabBoundheight)+'rpx'
         },
+    },
+    watch:{
+        isOpenWeek(o,n){
+            this.isOpenWeekVal = o
+        }
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
         this.datacolor = this.bgColor;
-        console.log(this.isweekmon,'周月====',this.winHeight,this.tabBoundheight)
+        this.$refs.dialog.loadPopup();
+        this.$token(()=>{
+            this.loadallHandler();
+            this.$refs.dialog.loadPopup();
+        })
     },
     methods: {
         /**
@@ -127,7 +144,7 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                console.log('用户卡相关信息=',data)
+                console.log('获取周账单=',data)
                 this.cardList = data;
                 this.week_cardList_info = data.billInfo;
             }
@@ -136,7 +153,6 @@ export default {
          * 获取月账单
          */
         async getMonthBill2(cardNo,startDate){
-            console.log(cardNo,startDate)
             let res = await API.getMonthBill2({
                 cardNo:cardNo,
                 startDate:startDate || this.getyymm()
@@ -187,7 +203,7 @@ export default {
                 if(data.info.length > 0){
                     for(let i=0;i<data.info.length;i++){
                         if(data.info[i].comm_card){
-                            console.log('常用卡号是=',data.info[i].card_num,data.info[i].plate);
+                            console.log('常用粤通卡卡号/车牌号是=',data.info[i].card_num,data.info[i].plate);
                             this.$store.commit("home/mt_new_bill_all_cardusenum", data.info[i].card_num);
                             this.$store.commit("home/mt_new_bill_all_ytkCard", data.info[i].plate);
                             return data.info[0].card_num;
@@ -310,8 +326,7 @@ export default {
                             })
                         }   
                     };
-                    console.log('arr=',arr)
-                    this.weeklist = arr.reverse();
+                    this.$store.commit("home/mt_new_bill_all_weeklist", arr.reverse());
                 }
             }
         },
@@ -327,7 +342,6 @@ export default {
          */
         selectMonBill(item){
             console.log('月份改变数据=',item);
-            console.log(this.cardinfo)
             this.getMonthBill2(this.cardusenum,item)
         },
         /**
@@ -341,9 +355,10 @@ export default {
          * 选择卡片触发的事件
          */
         pickCardfn(item){
+            console.log('选择卡片相关的信息=',item)
             this.getMonthBill2(item.cardno,this.selectmon.month);
             this.getsumMonthBill(item.cardno);
-            this.getbillInfoByApp(item.cardno);
+            this.getbillInfoByApp(item.cardno,this.selectweek.startDay,this.selectweek.endDay);
             this.getstatisWeekData(item.cardno);
             let data = this.isweekmon == 1 ? 4 : 3;
             this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
@@ -352,8 +367,24 @@ export default {
          * 一键领取/单独领取
          */
         selectCoinfunc(item){
-            console.log('名称=',item)
+            console.log(item)
             this.loadallHandlerhasCard()
+        },
+        /**
+         * 选择周确定
+         */
+        enterweek(e){
+            this.$store.commit("home/mt_new_bill_all_selectweekMore", this.weeklist[e[0]]);
+            this.$store.commit("home/mt_new_bill_all_defaultweekvalue", e);
+            this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
+            this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
+            this.selectWeekBill(this.selectweekMore)
+        },
+        /**
+         * 取消周选择
+         */
+        cancelWeekPicker(){
+            this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
         },
         /**
          * 下拉事件
@@ -369,7 +400,8 @@ export default {
          * 下拉被复位
          */
         onRestore() {
-            console.log('事件刷新~')
+            console.log('事件刷新~');
+            this.loadallHandlerhasCard()
         },
         /**
          * 下拉被中止，没下拉完就松手就会触发
@@ -381,8 +413,8 @@ export default {
          * scrollview滚动事件
          */
         scrollHandler(e){
-            //console.log('滚动值=',e)
-            e.detail.scrollTop > 224 ? this.isScrollOver = true : this.isScrollOver = false;
+            console.log('滚动区域',e.detail.scrollTop)
+            e.detail.scrollTop > 153 ? this.isScrollOver = true : this.isScrollOver = false;
         },
         /**
          * 加载所有事件，卡号还没有的情况
@@ -421,11 +453,12 @@ export default {
     },
     components:{
         selectWeekmonheader,
-        // selectWeekmonbottom,
+        selectWeekmonbottom,
         selectWeekmon,
         monfreeTimer,
         billList,
-        bottomBtn
+        bottomBtn,
+        DialogWindow
     }
 }
 </script>
@@ -441,8 +474,7 @@ export default {
         left: 50%;
     }
     .selectWeekmonbottom{
-        position: absolute;
-        top: 130rpx;
+        
     }
     .canves{
         position: absolute;
@@ -452,6 +484,9 @@ export default {
         transform: translate(-50%, -50%);
         width: 750rpx;
         height: 750rpx;
+    }
+    .scroll-class{
+        position: fixed;
     }
     .select_list{
         width:750rpx;

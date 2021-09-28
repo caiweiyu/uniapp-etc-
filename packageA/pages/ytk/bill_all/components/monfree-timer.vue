@@ -5,11 +5,11 @@
             <view class="box">
               <block v-if="isweekmon==1">
                   <view class="box1">
-                      ¥<text class="box1_text">{{weeksum || 0}}</text>
-                      <view class="box1_view">本周消费</view>
+                      ¥<text class="box1_text">{{cardList.consumeAmount}}</text>
+                      <view class="box1_view">本周消费{{weekselectdetail}}</view>
                     </view>
                     <view class="box1">
-                      <text class="box1_text">{{selectweek.num || 0}}</text>
+                      <text class="box1_text">{{cardList.consumeTimes}}</text>
                       <view class="box1_view">通行次数</view>
                   </view>
               </block>
@@ -62,6 +62,10 @@ export default {
         getoperalist:{
           type:Object,
           default:{}
+        },
+        cardList:{
+          type:Object,
+          default:{}
         }
     },
     data(){
@@ -81,20 +85,30 @@ export default {
                 selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
                 monthsumBillsList: (state) => state.home.new_bill_all.monthsumBillsList,
                 discount_amount: (state) => state.home.new_bill_all.discount_amount,
+                weeklist:(state) => state.home.new_bill_all.weeklist
           }),
-          weeksum(){
-            if(this.selectweek.sum > 0){
-                return Number(this.selectweek.sum/100).toFixed(2)
-            }
-          },
+          /**
+           * 计算月消费额
+           */
           monsum(){
             if(this.monthsumBillsList.length > 0){
                 return Number(this.monthsumBillsList[this.selectmonindex].sum/100).toFixed(2)
+            }else{
+                return 0
             }
-          }
+          },
+          /**
+           * 计算周详细时间
+           */
+          weekselectdetail(){
+            if(Object.keys(this.selectweek).length > 0){
+                  return '('+this.selectweek.begin+"-"+this.selectweek.end+')'
+            }else{
+                  return ''
+            }
+          },
     },
     mounted() {
-      // console.log(this.isweekmon)
       // setTimeout(()=>{
       //   console.log('this.getoperalist====',this.getoperalist,this.getoperalist.location==4,this.getoperalist.type_1.length > 0)
       // },2000)
@@ -148,7 +162,8 @@ export default {
 <style scoped lang="scss">
   .container{
       width: 750rpx;
-      height: 207rpx;
+      // height: 207rpx;
+      height: 181rpx;
       padding-top: 30rpx;
       background-color: #F6F6F6;
       .box{

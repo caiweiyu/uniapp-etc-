@@ -14,9 +14,9 @@
               <view class="avter_down"></view>
               <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
           </view>
-          <view v-for="(item,index) in ((weekmonlist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
+          <view v-for="(item,index) in ((weeklist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
-              <view class="markYear" v-if="item.nowMonth != null">{{item.nowMonth+'月'}}</view>
+              <view class="markYear" v-if="item.preMonth != null">{{item.preMonth+'月'}}</view>
           </view>
       </view>
 
@@ -27,23 +27,6 @@
               <view class="markYear">{{item.markYear}}</view>
           </view>
       </view>
-      <!-- <u-select v-model="isOpen" mode='single-column' @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select> -->
-      
-      <!--周选择详情弹出层选项-->
-      <u-picker mode="selector" v-model="isOpenWeek" :default-selector="defaultweekvalue" :range="weekmonlist" range-key="describe" @confirm="enterweek" @cancel="(()=>{this.isOpenWeek = false;})" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
-      
-      <!-- <view :class="['select_list',isOpenWeeklist == true ? 'select_list_active' : 'select_list_off']" @touchmove.stop="()=>{return true}">
-          <view @click="cancelSelect" :class="['select_list_bg',isOpenWeeklist == true ? 'select_list_bg_active' : 'select_list_bg_off']"></view>
-          <view :class="['select_list_picker',isOpenWeeklist == true ? 'select_list_picker_active':'select_list_picker_off']">
-              <view class="select_list_picker_header" v-if="isOpenWeeklist">
-                  <view class="box1" @click="cancelSelect">取消</view>
-                  <view class="box2" @click="enterweek">确定</view>
-              </view>
-              <scroll-view :scroll-y="true" :class="['scroll_page']" v-if="isOpenWeeklist" :scroll-into-view="scrollRight" :scroll-with-animation="true">
-                  <view v-for="(item,index) in weekmonlist" :id="'into_right'+index" :key="index" :class="['scroll_page_list',weekIndex==index?'scroll_page_list_active':'']" @click="handClick(item,index)">{{item.describe}}</view>
-              </scroll-view>
-          </view>
-      </view> -->
   </view>
 </template>
 
@@ -59,13 +42,6 @@ export default {
             default:{
                 height:'278rpx'
             }
-        },
-        /**
-         * 周
-         */
-        weekmonlist:{
-            type:Array,
-            default:[]
         },
         /**
          * 月
@@ -84,22 +60,16 @@ export default {
     },
     data(){
         return{
-            status:0, //切换状态
-            isOpen:false, //周月开关
-            isOpenWeek:false,
             btnBoundtop:(uni.getMenuButtonBoundingClientRect().top - uni.getSystemInfoSync().statusBarHeight)*2, //胶囊顶部距状态栏高度距离
             tabHeight:uni.getSystemInfoSync().statusBarHeight * 2, //状态栏高度
             menuHeight:uni.getMenuButtonBoundingClientRect().height * 2, //胶囊高度
             menu:uni.getMenuButtonBoundingClientRect(), //胶囊相关信息
             defaultweekvalue:[0],
-            selectweekMore:{},
             type_card:2,
             banner:[
                 'https://image.etcchebao.com/etc-min/bill_all/banner1_2.png',  //type_card=2
                 'https://image.etcchebao.com/etc-min/bill_all/banner2_2.png'  //type_card=1
             ],
-            weekIndex:-1,
-            scrollRight:""
         }
     },
     computed: {
@@ -112,7 +82,10 @@ export default {
             cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
             ytkCard:(state) => state.home.new_bill_all.ytkCard,
-            isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist
+            isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist,
+            isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
+            selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
+            weeklist:(state) => state.home.new_bill_all.weeklist
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离 + 状态栏高度 + 胶囊高度）
@@ -121,23 +94,10 @@ export default {
             return (this.btnBoundtop + this.tabHeight + this.menuHeight)
         },
         /**
-         * 是否打开的 Model 层
-         */
-        isOpenModel(){
-            if(this.isOpenWeek){
-               return true
-            }
-        },
-        /**
          * 判断头部背景色
          */
         bannerPic(){
             return `url(${this.type_card==2 ? this.banner[0] : this.banner[1]})no-repeat;`
-        }
-    },
-    watch:{
-        isOpenModel(o,n){
-          o==true ? this.$emit("changZindex",-1) : this.$emit("changZindex",1)
         }
     },
     methods: {
@@ -147,11 +107,10 @@ export default {
          */
         enterweek(e){
             // this.$store.commit("home/mt_new_bill_all_en", true);
-            this.selectweekMore = this.weekmonlist[e[0]],this.defaultweekvalue = e;
+            this.selectweekMore = this.weeklist[e[0]],this.defaultweekvalue = e;
             this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
             this.$emit("selectWeekBill",this.selectweekMore)
             this.$emit("changZindex",1)
-            console.log('this.selectweekMore',this.selectweekMore,2222,e)
             // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
         },
         /**
@@ -186,11 +145,15 @@ export default {
          * 更多
          */
         pickerMore(index){
-            // this.$store.commit("home/mt_new_bill_all_en", false);
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
-            this.isOpenWeek = !this.isOpenWeek;
-            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", true);
-            this.$emit("changZindex",-1)
+            if(this.isOpenWeek){
+                this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
+                setTimeout(()=>{
+                    this.$store.commit("home/mt_new_bill_all_isOpenWeek", true);
+                },50);
+            }else{
+                this.$store.commit("home/mt_new_bill_all_isOpenWeek", true);
+            };
         },
 
         /**
@@ -202,18 +165,6 @@ export default {
                  url: '/packageA/pages/ytk/ytk_list/main?comeForm=2'
             });
         },
-        /***
-         * 点击周
-         */
-        handClick(item,index){
-            this.weekIndex = index;
-            this.selectweekMore = item;
-            this.$nextTick(()=>{
-               this.scrollRight = 'into_right'+ index
-            });
-            this.scrollRight = '';
-            console.log(item)
-        }
 
     },
     destroyed() {
@@ -282,6 +233,8 @@ export default {
                 font-size: 28rpx;
                 opacity: .4;
                 color: #FFFFFF;
+                width: 125rpx;
+                text-align: center;
             }
             .markMonth,.markYear{
                 text-align: center;
@@ -319,77 +272,6 @@ export default {
                 transform: rotate(180deg);
             }
         }
-        // .select_list{
-        //     width:750rpx;
-        //     position: fixed;
-        //     top: 0;
-        //     z-index: 999;
-        //     &_bg{
-                
-        //         opacity: .7;
-        //         background-color: #000000;
-        //     }
-        //     &_bg_active{
-        //         height: calc(100vh - 600rpx);
-        //         transition: height linear 0.2s;
-        //     }
-        //     &_bg_off{
-        //         height: 0;
-        //         transition: height linear 0.2s;
-        //     }
-        //     &_picker{
-        //         border-radius: 12rpx 12rpx 0 0;
-        //         background-color: #FFFFFF;
-        //         &_header{
-        //             display: flex;
-        //             justify-content: space-between;
-        //             font-size: 28rpx;
-        //             .box1{
-        //                 margin: 39rpx 0 0 32rpx;
-        //                 color: #999999;
-        //             }
-        //             .box2{
-        //                 margin: 39rpx 32rpx 0 0;
-        //                 color: #FF5C2A;
-        //             }
-        //         }
-        //         .scroll_page{
-        //             height: 480rpx;
-        //             margin-top: 50rpx;
-        //             &_list{
-        //                 width: 100%;
-        //                 text-align: center;
-        //                 color: #CCCCCC;
-        //                 font-size: 28rpx;
-        //                 margin: 40rpx 0;
-        //                 &_active{
-        //                     height: 112rpx;
-        //                     line-height: 112rpx;
-        //                     border-top: 1rpx solid #EBEBEB;
-        //                     border-bottom:1rpx solid #EBEBEB;
-        //                     color: #222222;
-        //                     font-size: 36rpx;
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     &_picker_active{
-        //         height: 600rpx;
-        //         transition: height linear 0.2s;
-        //     }
-        //     &_picker_off{
-        //         height: 0;
-        //         transition: height linear 0.2s;
-        //      }
-        // }
-        // .select_list_active{
-        //     height: 100vh;
-        //     transition: height linear 0.2s;
-        // }
-        // .select_list_off{
-        //     height: 0;
-        //     transition: height linear 0.2s;
-        // }
         @keyframes animate-up {
             0% {
                 transform: rotate(0);

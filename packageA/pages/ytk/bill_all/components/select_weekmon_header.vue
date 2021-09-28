@@ -160,6 +160,7 @@ export default {
         position: fixed;
         width: 750rpx;
         z-index: 1;
+        top: 0;
         transition: all ease-in 0.5s;
         &_title{
                 position: absolute;

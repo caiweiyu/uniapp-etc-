@@ -1,70 +1,89 @@
 <template>
-  <view class="box">
-            
+  <view class="box" :style="{height: topHeight.height,backgroundColor:bgColor}">
       <!--周时间选择区-->
-      <view class="timer_packer" v-if="value == 1">
-          <view :class="['timer_packer_item',current == -1 ? 'active_color' : '']" @click="pickerMore('more',-1)">
+      <view class="timer_packer" v-if="isweekmon == 1">
+          <view :class="['timer_packer_item',selectweekindex == -1 ? 'active_color' : '']" @click="pickerMore(-1)">
               <text class="markMonth">{{selectweekMore.week ? ('第'+selectweekMore.week+'周') : '更多'}}</text>
               <view class="avter_down"></view>
               <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
           </view>
-          <view v-for="(item,index) in (weekmonlist.slice(0,4))" :key="index" :class="['timer_packer_item',current == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
+          <view v-for="(item,index) in ((weeklist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
-              <view class="markYear" v-if="item.nowMonth != null">{{item.nowMonth+'月'}}</view>
+              <view class="markYear" v-if="item.preMonth != null">{{item.preMonth+'月'}}</view>
           </view>
       </view>
 
       <!--六个月选择区-->
       <view class="timer_packer" v-else>
-          <view :class="['timer_packer_item',currentmon == index ? 'active_color' : '']" v-for="(item,index) in monlist" :key="index" @click="pickerTimermon(item,index)">
+          <view :class="['timer_packer_item',selectmonindex == index ? 'active_color' : '']" v-for="(item,index) in monlist" :key="index" @click="pickerTimermoner(item,index)">
               <text class="markMonth">{{item.markMonth + '月'}}</text>
               <view class="markYear">{{item.markYear}}</view>
           </view>
       </view>
-      <!-- <u-select v-model="isOpen" mode='single-column' @confirm="enter" @cancel="cancel" :cancel-color="'#999999'" style="background-color:#ffffff !important;" :confirm-color="'#FF5C2A'" :confirm-text="'确定'" :list="list"></u-select> -->
-      
-      <!--周选择详情弹出层选项-->
-      <u-picker mode="selector" v-model="isOpenWeek" :default-selector="defaultweekvalue" :range="weekmonlist" range-key="describe" @confirm="enterweek" @cancel="(()=>{this.isOpenWeek = false;})" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
-  
   </view>
 </template>
 
 <script>
+import { mapState } from "vuex"
 export default {
     props:{
         /**
-         * 周
-        */
-        weekmonlist:{
-            type:Array,
-            default:[]
+         * 高度
+         */
+        topHeight:{
+            type:Object,
+            default:{
+                height:'118rpx'
+            }
         },
         /**
          * 月
-        */
+         */
         monlist:{
             type:Array,
             default:[]
         },
+        /**
+         * 卡信息
+         */
+        cardList:{
+            type:Object,
+            default:{}
+        }
     },
     data(){
-        return {
+        return{
             status:0, //切换状态
-            isOpen:false, //周月开关
-            isOpenWeek:false,
-            value:-1, //选择值的确定
             btnBoundtop:(uni.getMenuButtonBoundingClientRect().top - uni.getSystemInfoSync().statusBarHeight)*2, //胶囊顶部距状态栏高度距离
             tabHeight:uni.getSystemInfoSync().statusBarHeight * 2, //状态栏高度
             menuHeight:uni.getMenuButtonBoundingClientRect().height * 2, //胶囊高度
             menu:uni.getMenuButtonBoundingClientRect(), //胶囊相关信息
             defaultweekvalue:[0],
-            current:-1,
-            currentmon:5,
-            selectweekMore:{},
-
+            type_card:2,
+            banner:[
+                'https://image.etcchebao.com/etc-min/bill_all/banner1_2.png',  //type_card=2
+                'https://image.etcchebao.com/etc-min/bill_all/banner2_2.png'  //type_card=1
+            ],
+            weekIndex:-1,
+            scrollRight:""
         }
     },
     computed: {
+        ...mapState({
+			isweekmon: (state) => state.home.new_bill_all.isweekmon,
+            selectweek: (state) => state.home.new_bill_all.selectweek,
+            selectmon: (state) => state.home.new_bill_all.selectmon,
+            selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
+            selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
+            cardinfo:(state) => state.home.new_bill_all.cardinfo,
+            cardusenum:(state) => state.home.new_bill_all.cardusenum,
+            ytkCard:(state) => state.home.new_bill_all.ytkCard,
+            isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist,
+            isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
+            selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
+            weeklist:(state) => state.home.new_bill_all.weeklist,
+            bgColor:(state) => state.home.new_bill_all.bgColor
+		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离 + 状态栏高度 + 胶囊高度）
          */
@@ -72,69 +91,127 @@ export default {
             return (this.btnBoundtop + this.tabHeight + this.menuHeight)
         },
         /**
-         * 是否打开的 Model 层
+         * 判断头部背景色
          */
-        isOpenModel(){
-            if(this.isOpenWeek){
-               return true
+        bannerPic(){
+            if(this.type_card == 2){
+                return '#28BC93'
+            }else{
+                return '#F07365'
             }
-        },
-    },
-    watch:{
-        isOpenModel(o,n){
-          o==true ? this.$emit("changZindex",-1) : this.$emit("changZindex",1)
         }
     },
     methods: {
-        
+
         /**
          * 周确定选择
          */
         enterweek(e){
-            this.selectweekMore = this.weekmonlist[e[0]],this.defaultweekvalue = e;
-            uni.$emit('pickerTimermon',this.selectweekMore)
+            // this.$store.commit("home/mt_new_bill_all_en", true);
+            this.selectweekMore = this.weeklist[e[0]],this.defaultweekvalue = e;
+            this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
+            this.$emit("selectWeekBill",this.selectweekMore)
+            this.$emit("changZindex",1)
             console.log('this.selectweekMore',this.selectweekMore,2222,e)
+            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
         },
-
         /**
-         * 取消
+         * 取消周选中
          */
-        cancel(){
-            this.isOpen = false;
+        cancelSelect(){
+            this.$store.commit("home/mt_new_bill_all_en", true);
+            this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
+            this.$emit("changZindex",1)
         },
-
+        /**
+         * 选择月tab
+         */
+        pickerTimermoner(item,index){
+            this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
+            this.$store.commit("home/mt_new_bill_all_selectmon", item);
+            this.$emit("selectMonBill",item.month)
+            console.log('月',item);
+        },
+        
         /**
          * 选择周tab
          */
         pickerTimer(item,index){
-            this.current = index;
-            uni.$emit('pickerTimermon',item)
-        },
-
-        /**
-         * 选择月tab
-         */
-        pickerTimermon(item,index){
-            this.currentmon = index;
-            uni.$emit('pickerTimermon',item)
+            this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
+            this.$store.commit("home/mt_new_bill_all_selectweek", item);
+            this.$emit("selectWeekBill",item)
+            console.log('周',item,index)
         },
 
         /**
          * 更多
          */
-        pickerMore(item,index){
-            this.current = index;
-            this.isOpenWeek = !this.isOpenWeek;
+        pickerMore(index){
+            this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
+            if(this.isOpenWeek){
+                this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
+                setTimeout(()=>{
+                    this.$store.commit("home/mt_new_bill_all_isOpenWeek", true);
+                },50);
+            }else{
+                this.$store.commit("home/mt_new_bill_all_isOpenWeek", true);
+            };
+            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", true);
         },
+
+    },
+    destroyed() {
+        uni.$off("chooseCardbottom")
+    },
+    mounted() {
+        uni.$on("chooseCardbottom",(data)=>{
+            this.type_card = data.type_card; //判断卡类型
+            let val = this.type_card == 2 ? '#28BC93' : '#F07365'; //判断header颜色
+            this.$store.commit("home/mt_new_bill_all_bg", val);
+            this.$store.commit("home/mt_new_bill_all_cardinfo", data);
+            this.$store.commit("home/mt_new_bill_all_ytkCard", data.plate);
+            this.$emit("pickCard",data)
+            console.log('data=',data)
+        })
     },
 }
 </script>
 
-<style lang='scss' scoped>
+<style scoped lang="scss">
     .box{
         position: relative;
-        width:750rpx;
+        width: 750rpx;
         z-index: 1;
+        transition: all ease-in 0.5s;
+        &_content{
+            position:absolute;
+            left:30rpx;
+            .card_title{
+                width: 300rpx;
+                .text{
+                    display: inline-block;
+                    vertical-align: middle;
+                    font-size: 40rpx;
+                    color: #FEFEFE;
+                    font-weight: bold;          
+                }
+                .image{
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-left: 20rpx;
+                    height: 36rpx;
+                    width: 36rpx;
+                    border-radius: 50%;
+                }
+            }
+            .card_num{
+                display: block;
+                margin-top: 16rpx;
+                font-size: 30rpx;
+                color: #FFFFFF;
+                opacity: .6;
+            }
+        }
         .timer_packer{
             position: absolute;
             bottom: 0;
@@ -149,6 +226,8 @@ export default {
                 font-size: 28rpx;
                 opacity: .4;
                 color: #FFFFFF;
+                width: 125rpx;
+                text-align: center;
             }
             .markMonth,.markYear{
                 text-align: center;
@@ -186,5 +265,27 @@ export default {
                 transform: rotate(180deg);
             }
         }
+        @keyframes animate-up {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(180deg);
+            }
+        }
+        @keyframes animate-down {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(-180deg);
+            }
+        }
+    }
+    /deep/ .u-drawer__scroll-view{
+        background-color: #FFFFFF !important;
+    }
+    /deep/.u-select{
+        background-color: #FFFFFF !important;
     }
 </style>

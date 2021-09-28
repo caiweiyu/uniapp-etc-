@@ -1,6 +1,6 @@
 <template>
   <view class="box">
-      <view class="box_title">
+      <view class="box_title" v-if="isweekmon==0">
         <block v-if="bottombillobj.billType==2">
             <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">{{bottombillobj.notice}}</text>
         </block>
@@ -9,8 +9,8 @@
         </block>
       </view>
       <!--月账单列表-->
-      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==0 && list.length > 0">
-        <view class="box" v-for="(item,index) in list" :key="index">
+      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==0 && cardList_info.length > 0">
+        <view class="box" v-for="(item,index) in cardList_info" :key="index">
             <view class="box1">
               <view class="box1_l">
                 <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
@@ -43,8 +43,8 @@
         </view>
       </scroll-view>
       <!--周账单列表-->
-      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==1 && weeklist.length > 0">
-        <view class="box" v-for="(item,index) in weeklist" :key="index">
+      <scroll-view :scroll-y="true" class="scroll-page" v-if="isweekmon==1 && week_cardList_info.length > 0">
+        <view class="box" v-for="(item,index) in week_cardList_info" :key="index">
             <view class="box1">
               <view class="box1_l">
                 <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
@@ -98,13 +98,14 @@ export default {
        }
     },
     watch:{
-      cardList_info(o,n){
-        this.list = o;
-      },
-      week_cardList_info(o,n){
-        console.log('周账单',o)
-        this.weeklist = o;
-      }
+      // cardList_info(o,n){
+      //   console.log('月账单',o,n)
+      //   this.list = o;
+      // },
+      // week_cardList_info(o,n){
+      //   console.log('周账单',o,n)
+      //   this.weeklist = o;
+      // }
     },
     computed: {
           ...mapState({
@@ -178,8 +179,6 @@ export default {
     },
     data(){
       return {
-        list:[], //月
-        weeklist:[],  //周
         showToast:""
       }
     },
@@ -191,7 +190,6 @@ export default {
 
 <style scoped lang="scss">
   .box{
-      position: relative;
       &_title{
         height: 53rpx;
         line-height: 73rpx;
@@ -212,7 +210,8 @@ export default {
       }
       .scroll-page{
           width: 100%;
-          height: auto !important;
+          // height: auto !important;
+          height: 100%;
           display: flex;
           flex-direction: column;
           background-color: #F6F6F6;

@@ -27,7 +27,8 @@ const home = {
 			entrue:true,  //控制下拉开关
 			selectweek:{},  //点击单周存放的数据
 			selectmon:{},  //点击单月存放的数据
-			selectweekindex:-1,  //点击单周的下标
+			weeklist:[],   //存放静态周的列表
+			selectweekindex:3,  //点击单周的下标
 			selectmonindex:5,   //点击单月的下标
 			monthsumBillsList:[],  //月总账单
 			cardinfo:{},  //卡列表信息
@@ -37,8 +38,10 @@ const home = {
 			isOpenWeeklist:false,  //周是否开启
 			isOpenWeekorMoon:false,  //周月选择否开启
 			discount_amount:"",  //节约金额
-			isNeeddisCount:false  //是否自定义banner
-
+			isNeeddisCount:false,  //是否自定义banner
+			isOpenWeek:false,   //周选择开关
+			defaultweekvalue:[0],  //默认周选择值
+			selectweekMore:{}   //选择周集
 		}, 
 	},
 	mutations: {
@@ -137,8 +140,19 @@ const home = {
 		},
 		mt_new_bill_all_isNeeddisCount: (state, n)=> {
 			state.new_bill_all.isNeeddisCount = n;
-		}
-		
+		},
+		mt_new_bill_all_isOpenWeek: (state, n)=> {
+			state.new_bill_all.isOpenWeek = n;
+		},
+		mt_new_bill_all_defaultweekvalue: (state, n)=> {
+			state.new_bill_all.defaultweekvalue = n;
+		},
+		mt_new_bill_all_selectweekMore: (state, n)=> {
+			state.new_bill_all.selectweekMore = n;
+		},
+		mt_new_bill_all_weeklist: (state, n)=> {
+			state.new_bill_all.weeklist = n;
+		},
 	},
 	actions: {
 		ac_item: (context, obj)=> {
