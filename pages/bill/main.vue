@@ -37,9 +37,9 @@
             <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
             <!--周选择详情弹出层选项-->
             <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
-            <!-- 全局弹窗 -->
-            <dialog-window ref="dialog" :flag="isweekmon==1 ? '12' : '11'"></dialog-window>
       </block>
+      <!-- 全局弹窗 -->
+      <dialog-window ref="dialog" :flag="isweekmon==1 ? '12' : '11'"></dialog-window>
   </view>
 </template>
 
@@ -143,7 +143,6 @@ export default {
             this.isweekmon == 1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
         this.$refs.dialog.loadPopup();
-       
     },
     methods: {
         /**
