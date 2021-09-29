@@ -103,6 +103,7 @@ export default {
             this.$store.commit("home/mt_new_bill_all", e[0]);
             uni.$emit('pickerTimermon',this.monlist[e[0]])
             // this.isweekmon == 1 ? this.status = 1 : this.status = 0;
+            this.$emit('selectCoinfunc',e[0])
             console.log(this.isweekmon,'周月===')
         },
         /**

@@ -7,7 +7,7 @@
       <!--有绑卡的情况-->
       <block v-else>
             <!--下拉滚动头部更换-->
-            <selectWeekmonheader :monlist="monthsumBillsList" @changZindex="changZindex"></selectWeekmonheader>  
+            <selectWeekmonheader :monlist="monthsumBillsList" @selectCoinfunc="selectCoinfunc" @changZindex="changZindex"></selectWeekmonheader>  
             <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
             <!--下拉刷新区-->
             <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
@@ -39,7 +39,7 @@
             <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
       </block>
       <!-- 全局弹窗 -->
-      <dialog-window ref="dialog" :flag="isweekmon==1 ? '12' : '11'"></dialog-window>
+      <dialog-window ref="dialog" :flag="isweekmon == 1 ? '12' : '11'"></dialog-window>
   </view>
 </template>
 
@@ -142,6 +142,7 @@ export default {
         if(this.token && this.cardusenum){
             this.isweekmon == 1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
+        this.$store.dispatch("home/ac_share_info",this.isweekmon == 1 ? '12' : '11');//分享配置
         this.$refs.dialog.loadPopup();
     },
     methods: {
