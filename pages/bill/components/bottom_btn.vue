@@ -13,6 +13,7 @@
 
 <script>
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 import * as API from "@/interfaces/bill"
 export default {
     props:{
@@ -61,6 +62,7 @@ export default {
             } = res;
             if(code == 0){
                 //this.$emit("isTouchCoin",msg)
+                eventMonitor('YTKMonthlyBill_Point_WeChat_Other_415_Button_click',2)
                 if(data != null){
                     this.$emit("selectCoinfunc",msg)
                 }

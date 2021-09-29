@@ -1,12 +1,12 @@
 <template>
   <view class="box" :style="{height: topHeight.height,background: bannerPic,backgroundSize: '100% 100%'}">
       
-      <!--内容区域-->
+      <!--内容区域  有卡号的情况下-->
       <view class="box_content" :style="{top:'26rpx'}" @click.stop="toytkList">
           <view class="card_title"><text class="text">{{ytkCard}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{cardusenum}}</text>
       </view>
-      
+
       <!--周时间选择区-->
       <view class="timer_packer" v-if="isweekmon == 1">
           <view :class="['timer_packer_item',selectweekindex == -1 ? 'active_color' : '']" @click="pickerMore(-1)">
@@ -32,6 +32,7 @@
 
 <script>
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 export default {
     props:{
         /**
@@ -65,7 +66,6 @@ export default {
             menuHeight:uni.getMenuButtonBoundingClientRect().height * 2, //胶囊高度
             menu:uni.getMenuButtonBoundingClientRect(), //胶囊相关信息
             defaultweekvalue:[0],
-            type_card:2,
             banner:[
                 'https://image.etcchebao.com/etc-min/bill_all/banner1_2.png',  //type_card=2
                 'https://image.etcchebao.com/etc-min/bill_all/banner2_2.png'  //type_card=1
@@ -85,7 +85,8 @@ export default {
             isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist,
             isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
             selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
-            weeklist:(state) => state.home.new_bill_all.weeklist
+            weeklist:(state) => state.home.new_bill_all.weeklist,
+            bgColor:(state) => state.home.new_bill_all.bgColor
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离 + 状态栏高度 + 胶囊高度）
@@ -97,7 +98,11 @@ export default {
          * 判断头部背景色
          */
         bannerPic(){
-            return `url(${this.type_card==2 ? this.banner[0] : this.banner[1]})no-repeat;`
+            if(this.bgColor=='#28BC93'){
+                return `url(${this.banner[0]})no-repeat;`
+            }else{
+                return `url(${this.banner[1]})no-repeat;`
+            } 
         }
     },
     methods: {
@@ -106,7 +111,6 @@ export default {
          * 周确定选择
          */
         enterweek(e){
-            // this.$store.commit("home/mt_new_bill_all_en", true);
             this.selectweekMore = this.weeklist[e[0]],this.defaultweekvalue = e;
             this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
             this.$emit("selectWeekBill",this.selectweekMore)
@@ -117,7 +121,6 @@ export default {
          * 取消周选中
          */
         cancelSelect(){
-            this.$store.commit("home/mt_new_bill_all_en", true);
             this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
             this.$emit("changZindex",1)
         },
@@ -128,7 +131,12 @@ export default {
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
             this.$store.commit("home/mt_new_bill_all_selectmon", item);
             this.$emit("selectMonBill",item.month)
-            console.log('月',item);
+            console.log('月',item,index);
+            if(index == 4){
+                eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Button_select',2)
+            }else if(index == 5){
+                eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Button_click',2)
+            }
         },
         
         /**
@@ -139,12 +147,18 @@ export default {
             this.$store.commit("home/mt_new_bill_all_selectweek", item);
             this.$emit("selectWeekBill",item)
             console.log('周',item,index)
+            if(index == 2){
+                eventMonitor('YTKWeeklyBill_List_WeChat_Other_416_Button_select',2)
+            }else if(index == 3){
+                eventMonitor('YTKWeeklyBill_List_WeChat_Other_416_Button_click',2)
+            }
         },
 
         /**
          * 更多
          */
         pickerMore(index){
+            eventMonitor('YTKWeeklyBill_List_WeChat_Other_416_Button_pulldown',2);
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             if(this.isOpenWeek){
                 this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
@@ -160,6 +174,11 @@ export default {
          * 去粤通卡列表
          */
         toytkList(){
+            if(this.isweekmon == 1){
+                eventMonitor('YTKWeeklyBill_Card_WeChat_Other_416_Button_select',2)
+            }else{
+                eventMonitor('YTKBill_Card_WeChat_Other_415_Button_click',2)
+            }
             this.$store.commit("home/mt_new_bill_all_en", false);
             uni.navigateTo({
                  url: '/packageA/pages/ytk/ytk_list/main?comeForm=2'
@@ -172,8 +191,7 @@ export default {
     },
     mounted() {
         uni.$on("chooseCard",(data)=>{
-            this.type_card = data.type_card; //判断卡类型
-            let val = this.type_card == 2 ? '#28BC93' : '#F07365'; //判断header颜色
+            let val = data.type_card == 2 ? '#28BC93' : '#F07365'; //判断header颜色
             this.$store.commit("home/mt_new_bill_all_bg", val);
             this.$store.commit("home/mt_new_bill_all_cardinfo", data);
             this.$store.commit("home/mt_new_bill_all_ytkCard", data.plate);

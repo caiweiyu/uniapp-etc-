@@ -78,6 +78,7 @@ import miniScript from "@/common/miniScript"
 const miniapp = miniScript.getInstance()
 const app = getApp()
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 import * as API from "@/interfaces/bill"
 export default {
     props:{
@@ -138,6 +139,7 @@ export default {
         })
         let {code,msg,data} = res;
         if(code ==0){
+            eventMonitor('YTKMonthlyBill_Card_WeChat_Other_415_Button_click',2)
             if(data != null){
               this.$emit("selectCoinfunc",msg)
             }
@@ -163,6 +165,7 @@ export default {
        * 显示提示文案
        */
       showParaList(){
+        eventMonitor('YTKMonthlyBill_Top_WeChat_Other_415_Button_click',2)
         uni.showModal({
           title: '提示',
           icon: 'none',

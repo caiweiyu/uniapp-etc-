@@ -1,725 +1,536 @@
-<!--
- * @Description:
- * @Version: 1.0
- * @Autor: yongqing
- * @Date: 2021-02-03 14:53:47
- * @LastEditors: yongqing
- * @LastEditTime: 2021-04-06 16:23:19
--->
 <template>
-	<view class="bill">
-		<!-- 用户头像昵称 -->
-		<!-- <view class="user-info" @click="toMine">
-			<image class="avatar" :src="auth_info.avatar" />
-			<view class="username">{{ auth_info.nickname }}</view>
-			<button-get-user-info type="local" />
-		</view> -->
+  <view class="box" :style="{height:winHeight+'px'}">
+      <!--没有绑卡的情况-->
+      <block v-if="!cardusenum">
+            <unbindCard></unbindCard>
+      </block>
+      <!--有绑卡的情况-->
+      <block v-else>
+            <!--下拉滚动头部更换-->
+            <selectWeekmonheader :monlist="monthsumBillsList" @changZindex="changZindex"></selectWeekmonheader>  
+            <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
+            <!--下拉刷新区-->
+            <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
+                    :refresher-triggered="triggered" :refresher-threshold="80"
+                    :refresher-background="datacolor" @refresherrefresh="onRefresh"
+                    @refresherrestore="onRestore" @refresherabort="onAbort"
+                    :scroll-with-animation="true"
+                    class="scroll-class"
+                    @scroll="scrollHandler"
+                    :style="{height:topValue,top:tabBoundheight+'rpx'}">     
 
-		<!-- 导航组件 -->
-		<!-- <view class="button-navigator">
-			<buttonNavigator />
-		</view> -->
+                    <!--顶部周月选择下拉框区-->
+                    <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
+                    
+                    <!--本月消费通行次数-->
+                    <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
-		<!-- <notice-channel type="2" styleTop="top: 180rpx" /> -->
+                    <!--账单列表区-->
+                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
 
-		<!--运营位-->
-		<swiper class="swiper-wrapper-opera" v-if="operaList.length > 0">
-			<swiper-item class="swiper-item-opera" v-for="(item, index) in operaList" :key="index">
-				<image :src="item.pic_url" @click="toJumpUrl(item)" />
-			</swiper-item>
-		</swiper>
-
-		<!-- 粤通卡（卡区） -->
-		<view class="card-box">
-			<swiper class="swiper-wrapper" :current="current_swpier" @change="onSwiperChange">
-				<block v-if="loading">
-					<swiper-item class="swiper-item" v-for="(item, index) in unitollList" :key="index">
-						<unitoll-card :card_name="item.card_name" :card_num="item.card_num" :plate="item.plate" :plate_start="item.plate_start" :plate_end="item.plate_end" :type="item.type" :url="item.url"
-						 card_type="confirm" />
-					</swiper-item>
-					<swiper-item>
-						<unitoll-card empty_tip="添加粤通卡" @onAddCard="onAddCard" />
-					</swiper-item>
-				</block>
-			</swiper>
-
-			<view class="dots" v-if="unitollList.length>0">
-				<block v-for="(key, index) in unitollList.length+1" :key="index">
-					<view class="dot" :class="{ active: index == current_swpier}"></view>
-				</block>
-			</view>
-		</view>
-
-		<view class="bill-content" v-if="show_bill_content">
-			<view class="header-box">
-				<view class="item-inner">
-					<view class="value">&yen; {{ passTotalMoney }}</view>
-					<view class="title">本月消费</view>
-				</view>
-				<view class="item-inner">
-					<view class="value">{{ passTotalTimes }}</view>
-					<view class="title">通行次数</view>
-				</view>
-			</view>
-			<view class="bill-list-box" v-if="billMonthList.length > 0">
-				<view class="bill-list-item" v-for="(item, index) in billMonthList" :key="index">
-					<block v-if="item.tradeType==3||item.tradeType==9||item.tradeType==99 ">
-						<view class="item-header">
-							<view class="item-left">{{item.name}} {{item.province}}</view>
-							<!-- 							<view class="item-right">
-								<view class="coin-wrap">
-									<view class="coin-num">
-										<image class="icon-coin" src="https://image.etcchebao.com/etc-min/icon-coin.png" />{{item.integral}}</view>
-									<view class="btn-take" v-if="item.status==0" @click="onTakeCoin(item.serialNo)">领取</view>
-									<view class="btn-take disabled" v-else>{{item.status==1?'已领取':'已过期'}}</view>
-								</view>
-							</view> -->
-						</view>
-						<view class="item-content">
-							<view class="toll-wrap">
-								<view class="entrance">
-									<view class="title">{{ item.enStation }}</view>
-									<view class="time">{{ item.enTime }}</view>
-								</view>
-								<view class="exit">
-									<view class="title">{{ item.exitStation }}</view>
-									<view class="time">{{ item.exitTime }}</view>
-								</view>
-							</view>
-							<view class="total-money"> &yen; {{item.amount}} </view>
-						</view>
-					</block>
-					<block v-else>
-						<view class="item-content">
-							<view class="biz-wrap">
-								<view class="title">{{item.enStation}}</view>
-								<view class="time">{{item.enTime}}</view>
-							</view>
-							<view class="total-money green-color"> &yen; {{item.amount}} </view>
-						</view>
-					</block>
-				</view>
-			</view>
-			<!--列表空状态-->
-			<view class="bill-empty-box" v-else>
-				<image src="https://image.etcchebao.com/etc-min/list-empty1.png" />
-				<view class="empty-text">暂无账单信息</view>
-			</view>
-			<!--列表空状态 end-->
-		</view>
-		<view v-else>
-			<image class="bottom-logo logo-fixed" src="https://image.etcchebao.com/etc-min/icon-logo.png?v=0.01" />
-		</view>
-		<!--账单指引-->
-		<view class="bill-tip-box" v-if="is_show_guide&&delay_show" @click="onCloseGuide">
-			<image src="https://image.etcchebao.com/etc-min/dialog-tip.png" />
-			<view class="overlay"></view>
-		</view>
-		<!--账单指引 end-->
-
-		<!--收藏小程序提示-->
-		<!-- <collection-guide></collection-guide> -->
-		<!--收藏小程序提示 end-->
-
-		<button-get-phone-number type="global" />
-
-		<!--底部栏-->
-		<!-- <custom-tabbar /> -->
-
-		<!-- 全局弹窗 -->
-		<dialog-window ref="dialog" flag="5"></dialog-window>
-	</view>
+            </scroll-view>
+            <!--底部一键领取-->
+            <view class="bottom_class" :style="{bottom:'128rpx',zIndex:zindex}" v-if="isweekmon==0">
+                <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
+            </view>
+            <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
+            <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
+            <!--周选择详情弹出层选项-->
+            <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
+            <!-- 全局弹窗 -->
+            <dialog-window ref="dialog" :flag="isweekmon==1 ? '12' : '11'"></dialog-window>
+      </block>
+  </view>
 </template>
+
 <script>
-	import miniScript from "@/common/miniScript"
-	const miniapp = miniScript.getInstance()
-	const app = getApp()
-	
-	import * as API from "@/interfaces/ytk";
-	import {
-		getOperaList
-	} from "@/interfaces/base";
-	import customTabbar from "@/components/custom-tabbar";
-	import unitollCard from "@/components/unitoll-card";
-	import buttonGetUserInfo from "@/components/button-getUserInfo";
-	import buttonGetPhoneNumber from "@/components/button-getPhoneNumber";
-	import buttonNavigator from "@/components/button-navigator";
-	import noticeChannel from "@/components/notice-channel";
-	import CollectionGuide from "@/components/collection-guide"
-	import DialogWindow from "@/components/dialog-window"
-	import {
-		eventMonitor
-	} from "@/common/utils"
-	import {
-		mapState
-	} from "vuex";
-	export default {
-		components: {
-			customTabbar,
-			unitollCard,
-			buttonGetPhoneNumber,
-			buttonGetUserInfo,
-			buttonNavigator,
-			noticeChannel,
-			CollectionGuide,
-			DialogWindow
-		},
-		data() {
-			return {
-				unitollList: [],
-				passTotalTimes: 0,
-				passTotalMoney: 0,
-				billMonthList: [],
-				current_swpier: 0,
-				operaList: [],
-				show_bill_content: false,
-				unsubscribeFn: () => {},
-				statusBarHeight: 22,
-				delay_show: false,
-				loading: false,//等待接口数据回调
-			};
-		},
-		computed: {
-			...mapState({
-				auth_info: (state) => state.user.auth_info,
-				token: (state) => state.user.token,
-				is_show_guide: (state) => state.user.is_show_guide,
-			}),
-		},
-		onShow() {
-			this.$token(() => {
-				this.init();
-				this.getOperaList();
-			});//检测page是否授权，token是否过期
-			this.$store.dispatch("home/ac_share_info",5);//分享配置
-			this.$refs.dialog.loadPopup();//全局弹窗配置
-		},
-		onHide() {
-			this.$store.commit("home/mt_share_info", "");
-		},
-		beforeDestroy() {
-			//取消订阅
-			this.unsubscribeFn();
-		},
-		mounted() {
-			this.getOperaList();
-			eventMonitor("WeChat_ETCBill", 1)
-			setTimeout(() => {
-				this.delay_show = true
-			}, 1000)
+import miniScript from "@/common/miniScript"
+const miniapp = miniScript.getInstance()
+const app = getApp()
+import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
+import * as API from "@/interfaces/bill"
+import selectWeekmonheader from './components/select_weekmon_header'
+import selectWeekmonbottom from './components/select_weekmon_bottom'
+import selectWeekmon from './components/select_weekmon'
+import monfreeTimer from './components/monfree-timer'
+import billList from './components/bill_list'
+import bottomBtn from './components/bottom_btn'
+import unbindCard from './components/unbindCard'
+import DialogWindow from "@/components/dialog-window"
+import lottie from 'lottie-miniprogram'
 
-			if (this.token) {
-				this.init();
-				this.getOperaList();
-			}
+export default {
+    data(){
+        return {
+            triggered:false, //下拉控制开关
+            btnBoundtop:(uni.getMenuButtonBoundingClientRect().top - uni.getSystemInfoSync().statusBarHeight)*2, //胶囊顶部距状态栏高度距离
+            tabHeight:uni.getSystemInfoSync().statusBarHeight, //状态栏高度
+            menuHeight:uni.getMenuButtonBoundingClientRect().height, //胶囊相关信息
+            winHeight:uni.getSystemInfoSync().windowHeight, //系统屏幕宽度
+            monthsumBillsList:[],  //月总账单列表
+            cardList:{},  //卡信息
+            week_cardList_info:[],  //周账单列表
+            cardList_info:[],  //月账单列表
+            operalist:{},  //运营位相关信息
+            zindex:1,  //浮窗层级
+            bottombillobj:{},  //金币相关
+            isScrollOver:false,  //是否超过滚动区域
+            datacolor:'#28BC93',    //下拉区域的颜色
+            isScroll:true,  //是否禁止滚动
+            isOpenWeekVal:false,  //周开关
+        }
+    },
+    computed: {
+        ...mapState({
+            token: (state) => state.user.token,
+			isweekmon: (state) => state.home.new_bill_all.isweekmon,
+            bgColor:(state) => state.home.new_bill_all.bgColor,
+            entrue:(state) => state.home.new_bill_all.entrue,
+            selectweek:(state) => state.home.new_bill_all.selectweek,
+            selectmon:(state) => state.home.new_bill_all.selectmon,
+            cardinfo:(state) => state.home.new_bill_all.cardinfo,
+            cardusenum:(state) => state.home.new_bill_all.cardusenum,
+            show_add_coin:(state) => state.home.new_bill_all.show_add_coin,
+            isNeeddisCount:(state) => state.home.new_bill_all.isNeeddisCount,
+            isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
+            defaultweekvalue:(state) => state.home.new_bill_all.defaultweekvalue,
+            selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
+            weeklist:(state) => state.home.new_bill_all.weeklist
+		}),
+        /**
+         * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
+         */
+        tabBoundheight(){
+            return (this.btnBoundtop + this.tabHeight*2 + this.menuHeight*2)
+        },
+        /**
+         * 计算scroll-view弹性高度
+         */
+        scrollViewHeight(){
+            return (this.btnBoundtop + this.tabHeight + this.menuHeight)
+        },
+        /**
+         * top值
+         */
+        topValue(){
+            return (this.winHeight*2-this.tabBoundheight)+'rpx'
+        },
+    },
+    watch:{
+        isOpenWeek(o,n){
+            this.isOpenWeekVal = o
+        },
+        isweekmon(o,n){
+            console.log('旧-新',o,n)
+            o==1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
+        }
+    },
+    onShow(){
+        let {
+            isWeekorMon
+        } = this.$root.$mp.query;
+        this.$store.commit("home/mt_new_bill_all_en", true);
+        if(isWeekorMon && (isWeekorMon == 1 || isWeekorMon == 0)){
+            this.$store.commit("home/mt_new_bill_all", isWeekorMon);
+        }
+        this.datacolor = this.bgColor;
+        this.$token(()=>{
+            this.loadallHandler();
+            this.$refs.dialog.loadPopup();
+        });
+        if(this.token && this.cardusenum){
+            this.isweekmon == 1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
+        }
+        this.$refs.dialog.loadPopup();
+       
+    },
+    methods: {
+        /**
+         * 获取格式  202009
+         */
+        getyymm(){
+            let date=new Date();
+            let yy=date.getFullYear();
+            let mm=date.getMonth()+1;
+            mm=(mm<10 ? "0"+mm:mm);
+            return (yy.toString()+mm.toString());
+        },
+        /**
+         * 获取周账单
+         */
+        async getbillInfoByApp(cardNum,startDay,endDay){
+            let res = await API.getbillInfoByApp({
+                cardNum:cardNum,
+                startDay:startDay || '',
+                endDay:endDay || '',
+                page:1
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                console.log('获取周账单=',data)
+                this.cardList = data;
+                this.week_cardList_info = data.billInfo;
+            }
+        },
+        /**
+         * 获取月账单
+         */
+        async getMonthBill2(cardNo,startDate){
+            let res = await API.getMonthBill2({
+                cardNo:cardNo,
+                startDate:startDate || this.getyymm()
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                console.log('获取月账单=',data);
+                this.bottombillobj = data;
+                this.cardList_info = data.passDetail;
+                if(this.isNeeddisCount){
+                    this.getUserLevel(cardNo,data.passTotalMoney)
+                }
+            }
+        },
+        /**
+         * 获取总月账单
+         */
+        async getsumMonthBill(cardNo){
+            let res = await API.getsumMonthBill({
+                cardNo:cardNo,
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                if(data.monthBills.length > 0){
+                    for(let i=0;i<data.monthBills.length;i++){
+                        if(new Date().getFullYear() > Number(data.monthBills[i].month.slice(0,4))){
+                            data.monthBills[i].markYear = data.monthBills[i].month.slice(0,4);
+                        }
+                        data.monthBills[i].markMonth = Number(data.monthBills[i].month.slice(4,6))
+                    }
+                    this.monthsumBillsList = (data.monthBills).reverse();
+                    this.$store.commit("home/mt_new_bill_all_monthsumBillsList", this.monthsumBillsList);
+                    console.log('获取六个月账单',this.monthsumBillsList)
+                }
+            }
+        },
+        /**
+         * 获取卡片列表
+         */
+        async getCardList(){
+            let res = await API.getCardList({
+                type:1,
+                page:1,
+                page_size:10
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                if(data.info.length > 0){
+                    for(let i=0;i<data.info.length;i++){
+                        if(data.info[i].comm_card){
+                            console.log('常用粤通卡卡号/车牌号是=',data.info[i].card_num,data.info[i].plate);
+                            this.$store.commit("home/mt_new_bill_all_cardusenum", data.info[i].card_num);
+                            this.$store.commit("home/mt_new_bill_all_ytkCard", data.info[i].plate);
+                            return data.info[0].card_num;
+                        }
+                    }
+                }
+            }
 
-			//等待授权后更新接口,订阅接口
-			this.unsubscribeFn = this.$store.subscribe((mutation, state) => {
-				if (mutation.type == "user/setToken") {
-					if (state.user.token) {
-						this.init();
-					} else {
-						this.unitollList = [];
-						this.billMonthList = [];
-						this.show_bill_content = false
-					}
-
-				}
-			});
-			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight + 2
-		},
-
-		methods: {
-			toMine() {
-				if (this.auth_info.openid) {
-					uni.navigateTo({
-						url: "/pages/mine/user"
-					})
-				}
-			},
-			init() {
-				this.getUserCardList();
-
-			},
-			onCloseGuide() {
-				this.$store.commit("user/setIsShowBillGuide", false);
-			},
-
-			async onTakeCoin(serialNo) {
-				let date = new Date();
-				let month = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2,"0")}` //获取当前月份
-				let res = await API.sendBillCoins({
-					month, //	string	Y	年月份（格式：201003）
-					source: "2", //int	Y	领取来源：1=app ; 2=小程序
-					orderId: serialNo, //string	Y	账单列表的流水号（serialNo）
-				})
-				if (res.data) {
-					uni.showToast({
-						title: '领取成功',
-						icon: 'none'
-					})
-					this.getUnitollBill();
-				}
-
-			},
-			/**
-			 * 获取运营位
-			 */
-			async getOperaList() {
-				let res = await getOperaList({
-					os: 1,
-					location: 2, //1=金币模块，2=账单模块
-				});
-				if (res && res.data) {
-					this.operaList = res.data;
-				}
-
-			},
-			
-			/**
-			 * 跳转page || miniProgram
-			 */
-			toJumpUrl(item) {
-				//jump_type   跳转类型0:不跳转1:内部小程序跳转，2:外部小程序跳转，3:h5跳转
-				eventMonitor("YTKBill_Banner_YTK_Other_377_Banner_click", 2, {
-					url: item.jump_url
-				})
-				miniapp.miniProgramRouter(item, (res) => {
-				
-				}, (err) => {
-				
-				})
-			},
-			
-			/**
-			 * 获取账单卡列表
-			 */
-			async getUserCardList() {
-				let res = await API.getUserCardList({
-					page: 1,
-					page_size: 100,
-					type: 2,
-				});
-				if (res.data.info && res.data.info.length > 0) {
-					this.unitollList = res.data.info;
-					for (let i = 0; i < this.unitollList.length; i++) {
-						this.unitollList[i].plate_start = this.unitollList[i].plate.slice(0,2) || '';
-						this.unitollList[i].plate_end = this.unitollList[i].plate.slice(2,7) || '';
-					}
-					this.getUnitollBill();
-					this.show_bill_content = true;
-				} else {
-					this.$store.commit("user/setIsShowBillGuide", true);
-				}
-				this.loading = true;
-			},
-			/**
-			 * 获取月账单
-			 */
-			async getUnitollBill() {
-				let index = this.current_swpier;
-				let cardNo = this.unitollList[index].card_num;
-				let date = new Date(); //+ 1
-				let startDate = `${date.getFullYear()}-${(date.getMonth()+1 ).toString().padStart(2,"0")}-01` //获取当前月份
-				let res = await API.getUnitollBill({
-					cardNo,
-					startDate,
-					etcos: "3" //1=android；2=ios；3=微信小程序
-				});
-				if (!res) {
-					return;
-				}
-				let {
-					totalMoney = 0, passTotalMoney = 0, passTotalTimes = 0, passDetail = []
-				} = res.data;
-				this.billMonthList = passDetail;
-				//this.totalMoney =totalMoney// parseFloat(passTotalMoney / 100).toFixed("2");
-				this.passTotalMoney = parseFloat(passTotalMoney / 100).toFixed("2");
-				this.passTotalTimes = passTotalTimes;
-
-			},
-			onAddCard() {
-				eventMonitor("YTKBill_Bottom_YTK_Other_118_Button_click", 2)
-				uni.requestSubscribeMessage({
-					tmplIds: ['odwFFrzxNDlJL6o3IntNbaCHRTIV2d47njhU_9PQsyQ'],
-					complete: async (res) => {
-						// let jump_url = "/packageA/pages/ytk/add_ytk/main";
-						// if (this.unitollList.length == 0) {
-						// 	let [error, res] = await API.getCardListByUsername({
-						// 		token: this.token
-						// 	});
-						// 	let {
-						// 		code,
-						// 		data
-						// 	} = res.data;
-						// 	if (code == 0) {
-						// 		if (data.list && data.list.length > 0) {
-						// 			jump_url = "/packageA/pages/ytk/ytk_list/main";
-						// 		}
-						// 	}
-						// }
-						uni.navigateTo({
-							url: "/packageA/pages/ytk/add_ytk/main",
-						});
-					}
-				})
-
-			},
-			onSwiperChange(e) {
-				this.current_swpier = e.mp.detail.current;
-				if (this.unitollList.length <= e.mp.detail.current) {
-					this.show_bill_content = false;
-					return;
-				}
-				eventMonitor("YTKBill_Card_YTK_Other_377_Button_click", 2)
-				this.getUnitollBill();
-				this.show_bill_content = true
-			},
-		},
-		/**
-		 * 监听tabBar切换
-		 */
-		onTabItemTap(item) {
-			eventMonitor("WeChat_BottomNaviClick", 2, {
-				from_tab: item.text,
-				to_tab: ""
-			});
-		},
-		/**
-		 * 分享好友/群
-		 */
-		onShareAppMessage(res) {
-			return app.shareAppMessage();
-		},
-		/**
-		 * 分享朋友圈
-		 */
-		onShareTimeline(res) {
-			return app.shareTimeline();
-		},
-	};
+        },
+        /**
+         * 触发领取金币
+         */
+        isTouchCoin(data){
+            this.$store.commit("home/mt_new_bill_all_show_add_coin", true);
+            wx.createSelectorQuery().select('#canvas').node(res => {
+                const canvas = res.node
+                const context = canvas.getContext('2d')
+                canvas.width = 750
+                canvas.height = 750
+                lottie.setup(canvas)
+                let anim  = lottie.loadAnimation({
+                    loop: false,
+                    autoplay: true,
+                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                    //animationData:require("./components/data.js"),
+                    rendererSettings: {
+                        context,
+                    },
+                });
+            }).exec();    
+            wx.createSelectorQuery().select('#canvas2').node(res => {
+                const canvas = res.node
+                const context = canvas.getContext('2d')
+                canvas.width = 750
+                canvas.height = 750
+                context.font = '28px 微软雅黑'
+                context.fillStyle="#FFFFFF"
+                context.textAlign = 'center'
+                context.fillText(data, 375, 425)
+                setTimeout(()=>{
+                     context.clearRect(0,0,750,750)
+                },3000)
+            }).exec();
+            setTimeout(()=>{
+                this.$store.commit("home/mt_new_bill_all_show_add_coin", false);
+            },3500)
+                    
+        },
+        /**
+         * 获取运营位
+         */
+        async getoperaList(location){
+            let res = await API.getOperaList({
+                location:location
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                 console.log('运营位=',data)
+                 this.operalist = data;
+                 if(this.operalist.type_2){
+                     this.$store.commit("home/mt_new_bill_all_isNeeddisCount", true);
+                 }
+                 this.operalist.location = location;
+            }
+        },
+        /**
+         * 获取用户vip等级信息
+         */
+        async getUserLevel(cardNo,amount){
+            let res = await API.getUserLevel({
+                cardNo:cardNo,
+                amount:amount
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                if(Number(data.discount_amount) > 0){
+                    this.$store.commit("home/mt_new_bill_all_discount_amount", data.discount_amount);
+                }
+            }
+        },
+        /**
+         * 获取近半年周列表
+         */
+        async getstatisWeekData(cardNo){
+            let res = await API.getstatisWeekData({
+                cardNo:cardNo
+            });
+            let {code,msg,data} = res;
+            if(code == 0){
+                if(data.length > 0){
+                    let arr = [];
+                    for(let i=0;i<data.length;i++){
+                        for(let j=0;j<data[i].weekRanges.length;j++){
+                            let begin = data[i].weekRanges[j].begin.slice(5,10).replace('-','.');
+                            let end = data[i].weekRanges[j].end.slice(5,10).replace('-','.');
+                            let nowMonth = null;
+                            let preMonth = null;
+                            if(Number(data[i].weekRanges[j].end.split('-')[1]) < new Date().getMonth()+1){
+                                nowMonth = Number(data[i].weekRanges[j].end.split('-')[1])
+                            }else{
+                                preMonth = Number(data[i].weekRanges[j].end.split('-')[1])
+                            }
+                            arr.push({
+                                week:data[i].weekRanges[j].weekOfMonth,
+                                type:data[i].weekRanges[j].statisType[0].type,
+                                sum:data[i].weekRanges[j].statisType[0].money,
+                                num:data[i].weekRanges[j].statisType[0].times,
+                                begin:begin,
+                                end:end,
+                                describe:'第'+data[i].weekRanges[j].weekOfMonth+'周 '+'('+begin+'-'+end+')',
+                                nowMonth:nowMonth,
+                                preMonth:preMonth,
+                                startDay:data[i].weekRanges[j].begin,
+                                endDay:data[i].weekRanges[j].end
+                            })
+                        }   
+                    };
+                    this.$store.commit("home/mt_new_bill_all_weeklist", arr.reverse());
+                }
+            }
+        },
+        /**
+         * 改变浮窗的层级
+         */
+        changZindex(data){
+            data == -1 ? this.isScroll = false : this.isScroll = true;
+            this.zindex = data;
+        },
+        /**
+         * 选择月份改变数据
+         */
+        selectMonBill(item){
+            console.log('月份改变数据=',item);
+            this.getMonthBill2(this.cardusenum,item)
+        },
+        /**
+         * 选择周改变数据
+         */
+        selectWeekBill(item){
+            console.log('周份改变数据=',item);
+            this.getbillInfoByApp(this.cardusenum,item.startDay,item.endDay)
+        },
+        /**
+         * 选择卡片触发的事件
+         */
+        pickCardfn(item){
+            console.log('选择卡片相关的信息=',item)
+            this.getMonthBill2(item.cardno,this.selectmon.month);
+            this.getsumMonthBill(item.cardno);
+            this.getbillInfoByApp(item.cardno,this.selectweek.startDay,this.selectweek.endDay);
+            this.getstatisWeekData(item.cardno);
+            let data = this.isweekmon == 1 ? 4 : 3;
+            this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+        },
+        /**
+         * 一键领取/单独领取
+         */
+        selectCoinfunc(item){
+            console.log(item)
+            this.loadallHandlerhasCard()
+        },
+        /**
+         * 选择周确定
+         */
+        enterweek(e){
+            this.$store.commit("home/mt_new_bill_all_selectweekMore", this.weeklist[e[0]]);
+            this.$store.commit("home/mt_new_bill_all_defaultweekvalue", e);
+            this.$store.commit("home/mt_new_bill_all_selectweek", this.selectweekMore);
+            this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
+            this.selectWeekBill(this.selectweekMore)
+        },
+        /**
+         * 取消周选择
+         */
+        cancelWeekPicker(){
+            this.$store.commit("home/mt_new_bill_all_isOpenWeek", false);
+        },
+        /**
+         * 下拉事件
+         */
+        onRefresh() { 
+            this.triggered = true;
+            let timer = setTimeout(() => {
+                this.triggered = false;
+                clearTimeout(timer)
+            }, 1500)
+        },
+        /**
+         * 下拉被复位
+         */
+        onRestore() {
+            console.log('事件刷新~');
+            this.loadallHandlerhasCard()
+        },
+        /**
+         * 下拉被中止，没下拉完就松手就会触发
+         */
+        onAbort() {
+            console.log('无效下拉')
+        },
+        /**
+         * scrollview滚动事件
+         */
+        scrollHandler(e){
+            e.detail.scrollTop > 153 ? this.isScrollOver = true : this.isScrollOver = false;
+        },
+        /**
+         * 加载所有事件，卡号还没有的情况
+         */
+        loadallHandler(){
+            new Promise((resolve,reject)=>{
+                resolve( this.getCardList() )
+            }).then(res=>{
+                if(res){
+                    this.getMonthBill2(res,this.selectmon.month);
+                    this.getsumMonthBill(res);
+                    this.getbillInfoByApp(res,this.selectweek.startDay,this.selectweek.endDay);
+                    this.getstatisWeekData(res);
+                    let data = this.isweekmon == 1 ? 4 : 3;
+                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+                }
+            })
+        },
+        /**
+         * 加载所有事件，卡号有的情况
+         */
+        loadallHandlerhasCard(){
+            this.getMonthBill2(this.cardusenum,this.selectmon.month);
+            this.getsumMonthBill(this.cardusenum);
+            this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay);
+            this.getstatisWeekData(this.cardusenum);
+            let data = this.isweekmon == 1 ? 4 : 3;
+            this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+        },
+    },
+    destroyed() {
+        //uni.$off('chooseCard')
+    },
+    mounted(){
+        this.loadallHandler()
+    },
+    /**
+     * 分享好友/群
+     */
+    onShareAppMessage(res) {
+        return app.shareAppMessage();
+    },
+    /**
+     * 分享朋友圈
+     */
+    onShareTimeline(res) {
+        return app.shareTimeline();
+    },
+    components:{
+        selectWeekmonheader,
+        selectWeekmonbottom,
+        selectWeekmon,
+        monfreeTimer,
+        billList,
+        bottomBtn,
+        DialogWindow,
+        unbindCard
+    }
+}
 </script>
 
-<style lang="scss">
-	page {
-		background-color: #f9f9f9;
-	}
-	.bill {
-		position: relative;
-		padding: 20rpx 0 0 0;
-		// padding-top: constant(safe-area-inset-top);
-		// padding-top: env(safe-area-inset-top);
-
-
-		/deep/ .card {
-			width: 690rpx;
-			margin: 0 auto;
-		}
-
-		.button-navigator {
-			margin: 20rpx 0 0 30rpx;
-			min-height: 30rpx;
-		}
-
-		.swiper-wrapper-opera {
-			width: 690rpx;
-			height: 108rpx;
-			margin: 20rpx auto;
-
-			.swiper-item-opera {
-				image {
-					width: 690rpx;
-					height: 108rpx;
-				}
-			}
-		}
-
-		.card-box {
-			position: relative;
-			height: 280rpx;
-
-			/*用来包裹所有的小圆点 */
-			.dots {
-				display: flex;
-				flex-direction: row;
-				position: absolute;
-				left: calc(50% - 10rpx);
-				transform: translateX(-50%);
-				bottom: -15rpx;
-
-				/*未选中时的小圆点样式 */
-				.dot {
-					width: 12rpx;
-					height: 6rpx;
-					border-radius: 50%;
-					background-color: #CCC;
-					margin-left: 10rpx;
-
-					/*选中以后的小圆点样式 */
-					&.active {
-						width: 24rpx;
-						height: 6rpx;
-						background-color: #48485C;
-						border-radius: 50px;
-					}
-				}
-			}
-
-			.swiper-wrapper {
-				height: 260rpx;
-				margin: 0 auto;
-
-			}
-		}
-
-
-
-		.bill-content {
-			background: #f9f9f9;
-			border-radius: 20rpx 20rpx 0 0;
-			padding: 30rpx;
-			margin-top: 50rpx;
-			// height: calc(100vh - 360rpx);
-			box-sizing: border-box;
-
-			.header-box {
-				display: flex;
-				align-items: center;
-
-				.item-inner {
-					flex: 1;
-					text-align: center;
-
-					.value {
-						font-size: 40rpx;
-						font-weight: 600;
-						font-family: 'etccb-font' !important;
-					}
-
-					.title {
-						font-size: 24rpx;
-						color: #999;
-					}
-				}
-			}
-
-			.bill-list-box {
-				padding-top: 15rpx;
-
-				.bill-list-item {
-					background: #fff;
-					padding: 0 30rpx;
-					border-radius: 20rpx 20rpx 0 0;
-					margin-top: 20rpx;
-
-					.item-header {
-						display: flex;
-						align-items: center;
-						font-size: 26rpx;
-						padding: 20rpx 0;
-						justify-content: space-between;
-						border-bottom: 1rpx solid #ebebeb;
-
-						.item-left {
-							color: #222;
-						}
-
-						.item-right {
-							display: flex;
-							color: #666;
-							align-items: center;
-
-							.coin-wrap {
-								display: flex;
-								align-items: center;
-
-								.coin-num {
-									display: flex;
-									align-items: center;
-
-									.icon-coin {
-										width: 30rpx;
-										height: 30rpx;
-										margin-right: 5rpx;
-									}
-								}
-
-								.btn-take {
-									background-color: rgb(255, 92, 42);
-									width: 110rpx;
-									height: 50rpx;
-									line-height: 50rpx;
-									text-align: center;
-									color: #fff;
-									border-radius: 100rpx;
-									font-size: 26rpx;
-									margin-left: 25rpx;
-
-									&.disabled {
-										background-color: #cccccc;
-									}
-								}
-							}
-						}
-					}
-
-					.item-content {
-						display: flex;
-						align-items: center;
-						justify-content: space-between;
-						padding: 30rpx 0;
-						// margin-top: 20rpx;
-
-						.title {
-							font-size: 30rpx;
-							color: #222;
-							font-weight: bold;
-						}
-
-						.time {
-							font-size: 24rpx;
-							color: #999;
-						}
-
-						.toll-wrap {
-							.entrance {
-								position: relative;
-								padding-left: 30rpx;
-
-								&:after {
-									content: "";
-									position: absolute;
-									top: 12rpx;
-									left: 0;
-									background: #999999;
-									width: 15rpx;
-									height: 15rpx;
-									border-radius: 100%;
-								}
-							}
-
-							.exit {
-								margin-top: 20rpx;
-								position: relative;
-								padding-left: 30rpx;
-
-								&:after {
-									content: "";
-									position: absolute;
-									top: 12rpx;
-									left: 0;
-									display: block;
-									background: url("https://image.etcchebao.com/etc-min/icon-loc.png") no-repeat;
-									background-size: 100%;
-									width: 14rpx;
-									height: 20rpx;
-								}
-							}
-						}
-
-						.biz-wrap {
-							position: relative;
-							padding: 20rpx 0 20rpx 30rpx;
-
-							&:after {
-								content: "";
-								position: absolute;
-								top: 32rpx;
-								left: 0;
-								background: #cccccc;
-								width: 15rpx;
-								height: 15rpx;
-								border-radius: 100%;
-							}
-						}
-
-						.total-money {
-							font-weight: 600;
-							color: #FF5C2A;
-							font-size: 44rpx;
-							font-family: 'etccb-font' !important;
-							&.green-color {
-								color: #20ae48;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		.logo-fixed {
-			position: absolute;
-			left: 0;
-			right: 0;
-			bottom: -50vh;
-		}
-
-		.bill-empty-box {
-			text-align: center;
-			margin-top: 150rpx;
-
-			image {
-				width: 300rpx;
-				height: 200rpx;
-			}
-
-			.empty-text {
-				font-size: 26rpx;
-				color: #cccccc;
-			}
-		}
-
-		.bill-tip-box {
-			height: 100vh;
-			width: 100%;
-			position: fixed;
-			top: 0;
-			z-index: 10002;
-
-			image {
-				width: 690rpx;
-				height: 633rpx;
-				position: absolute;
-				z-index: 100;
-				left: 0;
-				right: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				bottom: 0;
-				margin: 0 auto;
-			}
-
-			.overlay {
-				position: fixed;
-				top: 0;
-				left: 0;
-				z-index: 99;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(0, 0, 0, 0.7);
-			}
-		}
-
-		.user-info {
-			position: relative;
-			display: flex;
-			align-items: center;
-			padding: 12rpx 40rpx;
-
-			.avatar {
-				width: 50rpx;
-				height: 50rpx;
-				background: #cccccc;
-				border-radius: 100px;
-			}
-
-			.username {
-				font-size: 26rpx;
-				color: #222;
-				margin-left: 20rpx;
-			}
-		}
-
-
-	}
+<style scoped lang="scss">
+    .box{
+        width: 100%;
+        background-color: #F6F6F6;
+    }
+    .bottom_class{
+        position: fixed;
+        transform: translateX(-50%);
+        left: 50%;
+    }
+    .selectWeekmonbottom{
+        
+    }
+    .canves{
+        position: absolute;
+        left: 50%;
+        z-index: 9999;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 750rpx;
+        height: 750rpx;
+    }
+    .scroll-class{
+        position: fixed;
+    }
+    .select_list{
+        width:750rpx;
+        background-color: #000000;
+        z-index: 999;
+            &_bg{
+                height: calc(100vh - 600rpx);
+                opacity: .7;
+            }
+            &_picker{
+                border-radius: 12rpx 12rpx 0 0;
+                background-color: #FFFFFF;
+                height: 600rpx;
+            }
+    }
 </style>

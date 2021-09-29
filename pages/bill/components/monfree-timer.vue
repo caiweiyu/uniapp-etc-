@@ -57,6 +57,7 @@
 import miniScript from "@/common/miniScript"
 const  miniapp = miniScript.getInstance()
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 export default {
     props:{
         getoperalist:{
@@ -115,7 +116,8 @@ export default {
       
     },
     methods: {
-      openArea(item){
+      openArea(item){ 
+        this.isweekmon == 1 ? eventMonitor('YTKWeeklyBill_Operation_WeChat_Other_416_Button_click',2) : eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Check_click',2)
         if (typeof(item.subs_template_id) == "string") {
 					// 消息订阅
 					let arr = [];
@@ -140,7 +142,9 @@ export default {
 				})
 			},
       openArea2(item){
-        console.log('自定义',item);
+        if(this.isweekmon == 0){
+            eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Link_click',2)
+        };
         if (typeof(item.subs_template_id) == "string") {
 					// 消息订阅
 					let arr = [];

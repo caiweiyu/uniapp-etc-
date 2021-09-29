@@ -86,7 +86,7 @@
 			</view>
 		</view>
 		
-		<block v-show="!default_card">
+		<block v-if="!default_card">
 			<dialog-window ref="dialog" flag="9"></dialog-window>
 		</block>
 
@@ -155,7 +155,9 @@
 				this.getCardList();
 			});//检测page是否授权，token是否过期
 			this.$store.dispatch("home/ac_share_info",9);//分享配置
-			this.$refs.dialog.loadPopup();//全局弹窗配置
+			if(!this.default_card){
+				this.$refs.dialog.loadPopup();//全局弹窗配置
+			}
 			this.get_ytk_pay_order_error();
 			this.getCardList();
 		},

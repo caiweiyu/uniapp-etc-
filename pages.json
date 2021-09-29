@@ -78,7 +78,8 @@
 			"path": "pages/bill/main",
 			"style": {
 				"navigationBarTitleText": "账单",
-				"navigationBarBackgroundColor": "#f9f9f9"
+				"navigationBarBackgroundColor": "#f9f9f9",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -250,13 +251,6 @@
 					"path": "bill/main",
 					"style": {
 						"navigationBarTitleText": "账单",
-						"navigationBarBackgroundColor": "#f9f9f9"
-					}
-				},
-				{
-					"path": "bill_all/main",
-					"style": {
-						"navigationBarTitleText": "我的新账单",
 						"navigationBarBackgroundColor": "#f9f9f9",
 						"navigationStyle": "custom"
 					}

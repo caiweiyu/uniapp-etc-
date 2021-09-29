@@ -152,7 +152,7 @@ const home = {
 		},
 		mt_new_bill_all_weeklist: (state, n)=> {
 			state.new_bill_all.weeklist = n;
-		},
+		}
 	},
 	actions: {
 		ac_item: (context, obj)=> {

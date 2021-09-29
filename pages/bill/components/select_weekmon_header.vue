@@ -7,19 +7,11 @@
             </view>
         <!--周、月弹出层选项-->
         <u-picker mode="selector" v-model="isOpen" :default-selector="[isweekmon]" :range="list" range-key="cateName" @confirm="enter" @cancel="cancel" :confirm-color="'#FF5C2A'" :confirm-text="'确定'"></u-picker>
-         <!-- <u-select v-model="isOpen" mode="single-column" :default-value="[isweekmon]" :cancel-color="'#999999'" :confirm-color="'#FF5C2A'" z-index="999"  :title="''" :list="list" @confirm="enter"></u-select> -->
-         <!-- <view :class="['select_list',isOpenWeekorMoon == true ? 'select_list_active' : 'select_list_off']" @touchmove.stop="()=>{return true}">
-          <view @click="cancelSelect" :class="['select_list_bg',isOpenWeekorMoon == true ? 'select_list_bg_active' : 'select_list_bg_off']"></view>
-          <view :class="['select_list_picker',isOpenWeekorMoon == true ? 'select_list_picker_active':'select_list_picker_off']">
-              <scroll-view :scroll-y="true" :class="['scroll_page']" v-if="isOpenWeekorMoon" :scroll-into-view="scrollRight" :scroll-with-animation="true">
-                  <view v-for="(item,index) in list" :id="'into_right'+index" :key="index" :class="['scroll_page_list',isweekmon==index?'scroll_page_list_active':'']" @click="handClick(item,index)">{{item.cateName}}</view>
-              </scroll-view>
-          </view> 
-        </view>-->
     </view>
 </template>
 <script>
 import { mapState } from "vuex"
+import { eventMonitor } from "@/common/utils"
 export default {
     props:{
         /**
@@ -123,35 +115,17 @@ export default {
          * 头部下拉开关
          */
         openTarget(){
-            // this.visible = !this.visible;
             this.isOpen = true;
-            // this.$store.commit("home/mt_new_bill_all_en", true);
-            // this.$store.commit("home/mt_new_bill_all_isOpenWeeklist", false);
-            // this.$store.commit("home/mt_new_bill_all_isOpenWeekorMoon", true);
             this.$emit("changZindex",-1)
+            this.isweekmon == 1 ? eventMonitor('YTKWeeklyBill_Top_WeChat_Other_416_Button_click',2) : eventMonitor('YTKMonthlyBill_Top_WeChat_Other_415_Button_select',2)
         },
-                /**
+        /**
          * 关闭周月
          */
         cancelSelect(){
             this.$store.commit("home/mt_new_bill_all_isOpenWeekorMoon", false);
             this.$emit("changZindex",1)
         },
-        /**
-         * 选择周月切换
-         */
-        handClick(item,index){
-            // this.$store.commit("home/mt_new_bill_all", index);
-            this.$store.commit("home/mt_new_bill_all", index);
-            this.$emit("changZindex",1);
-            setTimeout(()=>{
-                this.$store.commit("home/mt_new_bill_all_isOpenWeekorMoon", false);
-            },1000)
-            this.$nextTick(()=>{
-               this.scrollRight = 'into_right'+ index
-            });
-            this.scrollRight = '';
-        }
     },
 }
 </script>
