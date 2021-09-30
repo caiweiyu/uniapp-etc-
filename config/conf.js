@@ -13,5 +13,5 @@ export default {
 	distinct_id:'',
 	appMarketChannel:'',
 	network_type:'',
-	version:'4.3.2'// 客户端接口版本号
+	version:'4.5.0'// 客户端接口版本号
 }
