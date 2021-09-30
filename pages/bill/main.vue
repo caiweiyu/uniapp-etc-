@@ -26,7 +26,7 @@
                     <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
                     <!--账单列表区-->
-                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
+                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
 
             </scroll-view>
             <!--底部一键领取-->
@@ -190,6 +190,12 @@ export default {
                     this.getUserLevel(cardNo,data.passTotalMoney)
                 }
             }
+        },
+        /**
+         * 单个领取改变领取状态
+         */
+        cardListInfoIndex(index){
+            this.cardList_info[index].status = 1;
         },
         /**
          * 获取总月账单
