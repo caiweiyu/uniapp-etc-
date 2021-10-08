@@ -129,15 +129,15 @@ export default {
     onShow(){
         let {
             isWeekorMon,
-            ispreweekorpremoon
+            lastWeekorlastMon
         } = this.$root.$mp.query;
         this.$store.commit("home/mt_new_bill_all_en", true);
         if(isWeekorMon && (isWeekorMon == 1 || isWeekorMon == 0)){
             this.$store.commit("home/mt_new_bill_all", isWeekorMon);
         }
-        if(ispreweekorpremoon && ispreweekorpremoon == 0){
+        if(lastWeekorlastMon && lastWeekorlastMon == 0){
             this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
-        }else if(ispreweekorpremoon && ispreweekorpremoon == 1){
+        }else if(lastWeekorlastMon && lastWeekorlastMon == 1){
             this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
         }
         this.datacolor = this.bgColor;
