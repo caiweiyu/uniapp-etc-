@@ -131,19 +131,24 @@ export default {
           return (yy.toString()+mm.toString());
       },
       async getCoin(item,index){
-        console.log(item,index,this.selectmon,this.selectweek,this.selectweekindex,this.selectmonindex);
+        if(this.show_add_coin) return;
         let res = await API.sendBillCoins({
-          month:this.selectmon.month || this.getyymm(),
-          source:1,
-          orderId:item.serialNo
-        })
+            month:this.selectmon.month || this.getyymm(),
+            source:1,
+            orderId:item.serialNo
+        });
         let {code,msg,data} = res;
         if(code ==0){
-            eventMonitor('YTKMonthlyBill_Card_WeChat_Other_415_Button_click',2)
-            if(data != null){
-              this.$emit("selectCoinfunc",msg)
-            }
-            
+            this.$emit("isTouchCoin",msg)
+            eventMonitor('YTKMonthlyBill_Card_WeChat_Other_415_Button_click',2)  
+            this.$emit('cardListInfoIndex',index)     
+        }else{
+            uni.showToast({
+              title: msg,
+              icon: 'none',
+              mask: true,
+              duration:2000
+            })
         }
       },
       async getparaList(){

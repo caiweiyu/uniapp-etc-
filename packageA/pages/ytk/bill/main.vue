@@ -26,7 +26,7 @@
                     <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
                     <!--账单列表区-->
-                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info"></billList>
+                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
 
             </scroll-view>
             <!--底部一键领取-->
@@ -128,11 +128,17 @@ export default {
     },
     onShow(){
         let {
-            isWeekorMon
+            isWeekorMon,
+            ispreweekorpremoon
         } = this.$root.$mp.query;
         this.$store.commit("home/mt_new_bill_all_en", true);
         if(isWeekorMon && (isWeekorMon == 1 || isWeekorMon == 0)){
             this.$store.commit("home/mt_new_bill_all", isWeekorMon);
+        }
+        if(ispreweekorpremoon && ispreweekorpremoon == 0){
+            this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+        }else if(ispreweekorpremoon && ispreweekorpremoon == 1){
+            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
         }
         this.datacolor = this.bgColor;
         this.$token(()=>{
@@ -190,6 +196,12 @@ export default {
                     this.getUserLevel(cardNo,data.passTotalMoney)
                 }
             }
+        },
+        /**
+         * 单个领取改变领取状态
+         */
+        cardListInfoIndex(index){
+            this.cardList_info[index].status = 1;
         },
         /**
          * 获取总月账单

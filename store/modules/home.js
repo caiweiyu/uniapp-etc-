@@ -22,7 +22,8 @@ const home = {
 		info_item:{},
 
 		new_bill_all:{ //新账单模块
-			isweekmon:0,  //周月
+			isweekmon:0,  //1周 0月
+			ispreweekorpremoon:0, //  0上月 1上周
 			bgColor:'#28BC93', //#F07365 卡片颜色控制
 			entrue:true,  //控制下拉开关
 			selectweek:{},  //点击单周存放的数据

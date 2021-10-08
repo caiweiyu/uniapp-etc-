@@ -128,11 +128,17 @@ export default {
     },
     onShow(){
         let {
-            isWeekorMon
+            isWeekorMon,
+            ispreweekorpremoon
         } = this.$root.$mp.query;
         this.$store.commit("home/mt_new_bill_all_en", true);
         if(isWeekorMon && (isWeekorMon == 1 || isWeekorMon == 0)){
             this.$store.commit("home/mt_new_bill_all", isWeekorMon);
+        }
+        if(ispreweekorpremoon && ispreweekorpremoon == 0){
+            this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+        }else if(ispreweekorpremoon && ispreweekorpremoon == 1){
+            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
         }
         this.datacolor = this.bgColor;
         this.$token(()=>{

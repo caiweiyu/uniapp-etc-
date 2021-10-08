@@ -61,11 +61,9 @@ export default {
                 data
             } = res;
             if(code == 0){
-                //this.$emit("isTouchCoin",msg)
+                this.$emit("isTouchCoin",msg)
                 eventMonitor('YTKMonthlyBill_Point_WeChat_Other_415_Button_click',2)
-                if(data != null){
-                    this.$emit("selectCoinfunc",msg)
-                }
+                this.$emit("selectCoinfunc",msg)
             }
         }
     },
