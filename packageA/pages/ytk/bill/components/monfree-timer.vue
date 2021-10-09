@@ -77,6 +77,11 @@ export default {
         }
       }
     },
+    watch:{
+      cardList(o,n){
+        console.log(o,666)
+      }
+    },
     computed: {
           ...mapState({
                 isweekmon: (state) => state.home.new_bill_all.isweekmon,
@@ -199,6 +204,7 @@ export default {
     overflow: hidden;
     width: 100%;
     height: 108rpx;
+    margin-top: 20rpx;
     background-color: #F6F6F6;
     .swiper-item{
       width: 750rpx;

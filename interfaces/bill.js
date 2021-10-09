@@ -57,8 +57,8 @@ export function getCardList(data) {
  export function getOperaList(data) {
 	return request({
 		// url:'http://172.16.9.10:9090/mock/16/mini-program/v2/wx-applets/get-opera-list',
-		url: `${G}/mini-program/v2/wx-applets/get-opera-list`,
-		// url:'https://g-test-test.etcchebao.com/mini-program/v2/wx-applets/get-opera-list',
+		// url: `${G}/mini-program/v2/wx-applets/get-opera-list`,
+		url:'https://g-test-test.etcchebao.com/mini-program/v2/wx-applets/get-opera-list',
 		method: "post",
 		data
 	});

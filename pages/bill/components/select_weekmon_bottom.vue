@@ -137,7 +137,7 @@ export default {
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             this.$store.commit("home/mt_new_bill_all_selectweek", item);
             this.$emit("selectWeekBill",item)
-            console.log('周',item,index)
+            console.log('周=',item,index)
         },
 
         /**

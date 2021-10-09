@@ -153,7 +153,7 @@ export default {
       },
       async getparaList(){
         let res = await API.getparaList({
-          type:"['bill_notes']"
+          type:'["bill_notes"]'
         });
         let {
           code,
@@ -162,7 +162,7 @@ export default {
         } = res;
         if(code == 0){
           if(data.bill_notes){
-            this.showToast = data.bill_notes;
+              this.showToast = data.bill_notes.replace(/<br>/g,"\r");
           }
         }
       },
@@ -171,18 +171,7 @@ export default {
        */
       showParaList(){
         eventMonitor('YTKMonthlyBill_Top_WeChat_Other_415_Button_click',2)
-        uni.showModal({
-          title: '提示',
-          icon: 'none',
-          content:this.showToast || "2020年5月6日零时起，全国高速恢复正常收费！\r\n1.车主当次高速通行全程只扣费一次；\r\n2.费显屏显示当次高速全程的扣费金额；\r\n高速账单也更加清晰易读！\r\n跑高速就上【ETC车宝】查实时账单",
-          mask: true,
-          showCancel:false,
-          confirmColor:"#FF5C2A",
-          confirmText:"知道了",
-          success:res=>{
-            console.log('关闭')
-          }
-        })
+        this.$emit('showToastfn',true)
       },
     },
     data(){
@@ -344,5 +333,8 @@ export default {
         font-weight: bold;
       }
     }
+  }
+  /deep/ uni-modal .uni-modal__bd{      
+      white-space: pre-wrap;      
   }
 </style>

@@ -3,7 +3,7 @@
       
       <!--内容区域  有卡号的情况下-->
       <view class="box_content" :style="{top:'26rpx'}" @click.stop="toytkList">
-          <view class="card_title"><text class="text">{{ytkCard}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
+          <view class="card_title"><text class="text">{{ytkCard.slice(0,2)}}&nbsp;&nbsp;{{ytkCard.slice(2)}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{cardusenum}}</text>
       </view>
 
@@ -14,7 +14,7 @@
               <view class="avter_down"></view>
               <view class="markYear" v-if="selectweekMore.nowMonth != null">{{selectweekMore.nowMonth+'月'}}</view>
           </view>
-          <view v-for="(item,index) in ((weeklist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(item,index)">
+          <view v-for="(item,index) in ((weeklist.slice(0,4).reverse()))" :key="index" :class="['timer_packer_item',selectweekindex == index ? 'active_color' : '']" @click="pickerTimer(index)">
               <text class="markMonth">{{'第'+item.week+'周'}}</text>
               <view class="markYear" v-if="item.preMonth != null">{{item.preMonth+'月'}}</view>
           </view>
@@ -22,7 +22,7 @@
 
       <!--六个月选择区-->
       <view class="timer_packer" v-else>
-          <view :class="['timer_packer_item',selectmonindex == index ? 'active_color' : '']" v-for="(item,index) in monlist" :key="index" @click="pickerTimermoner(item,index)">
+          <view :class="['timer_packer_item',selectmonindex == index ? 'active_color' : '']" v-for="(item,index) in monlist" :key="index" @click="pickerTimermoner(index)">
               <text class="markMonth">{{item.markMonth + '月'}}</text>
               <view class="markYear">{{item.markYear}}</view>
           </view>
@@ -127,11 +127,12 @@ export default {
         /**
          * 选择月tab
          */
-        pickerTimermoner(item,index){
+        pickerTimermoner(index){
+            let mon_arr = this.monlist;
+            console.log(mon_arr[index].month)
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
-            this.$store.commit("home/mt_new_bill_all_selectmon", item);
-            this.$emit("selectMonBill",item.month)
-            console.log('月',item,index);
+            this.$store.commit("home/mt_new_bill_all_selectmon", mon_arr[index]);
+            this.$emit("selectMonBill",mon_arr[index].month)
             if(index == 4){
                 eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Button_select',2)
             }else if(index == 5){
@@ -142,11 +143,11 @@ export default {
         /**
          * 选择周tab
          */
-        pickerTimer(item,index){
+        pickerTimer(index){
+            let week_arr = this.weeklist.slice(0,4).reverse();
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
-            this.$store.commit("home/mt_new_bill_all_selectweek", item);
-            this.$emit("selectWeekBill",item)
-            console.log('周',item,index)
+            this.$store.commit("home/mt_new_bill_all_selectweek", week_arr[index]);
+            this.$emit("selectWeekBill",week_arr[index])
             if(index == 2){
                 eventMonitor('YTKWeeklyBill_List_WeChat_Other_416_Button_select',2)
             }else if(index == 3){
@@ -218,7 +219,7 @@ export default {
                     vertical-align: middle;
                     font-size: 40rpx;
                     color: #FEFEFE;
-                    font-weight: bold;          
+                    font-weight: 400;          
                 }
                 .image{
                     display: inline-block;

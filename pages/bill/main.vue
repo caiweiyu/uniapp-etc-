@@ -26,7 +26,7 @@
                     <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
                     <!--账单列表区-->
-                    <billList ref="billList" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
+                    <billList ref="billList" @showToastfn="showToastfn" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
 
             </scroll-view>
             <!--底部一键领取-->
@@ -38,6 +38,8 @@
             <!--周选择详情弹出层选项-->
             <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
       </block>
+      <!-- 全局提示 -->
+      <toast :content="showToast" @showToastfn="showToastfn" v-show="isToast"></toast>
       <!-- 全局弹窗 -->
       <dialog-window ref="dialog" :flag="isweekmon == 1 ? '12' : '11'"></dialog-window>
   </view>
@@ -57,6 +59,7 @@ import monfreeTimer from './components/monfree-timer'
 import billList from './components/bill_list'
 import bottomBtn from './components/bottom_btn'
 import unbindCard from './components/unbindCard'
+import toast from './components/toast'
 import DialogWindow from "@/components/dialog-window"
 import lottie from 'lottie-miniprogram'
 
@@ -79,6 +82,8 @@ export default {
             datacolor:'#28BC93',    //下拉区域的颜色
             isScroll:true,  //是否禁止滚动
             isOpenWeekVal:false,  //周开关
+            showToast:'',  //提示文字
+            isToast:false  //显示关闭弹窗
         }
     },
     computed: {
@@ -127,29 +132,51 @@ export default {
         }
     },
     onShow(){
-        let {
-            isWeekorMon,
-            lastWeekorlastMon
-        } = this.$root.$mp.query;
         this.$store.commit("home/mt_new_bill_all_en", true);
-        if(isWeekorMon && (isWeekorMon == 1 || isWeekorMon == 0)){
-            this.$store.commit("home/mt_new_bill_all", isWeekorMon);
-        }
-        if(lastWeekorlastMon && lastWeekorlastMon == 0){
-            this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
-        }else if(lastWeekorlastMon && lastWeekorlastMon == 1){
-            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
-        }
         this.datacolor = this.bgColor;
         this.$token(()=>{
-            this.loadallHandler();
+            this.loadallHandlerhasCard();
             this.$refs.dialog.loadPopup();
         });
         if(this.token && this.cardusenum){
             this.isweekmon == 1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
+        console.log('onShow')
         this.$store.dispatch("home/ac_share_info",this.isweekmon == 1 ? '12' : '11');//分享配置
         this.$refs.dialog.loadPopup();
+    },
+    onLoad(options){
+        /**
+         * 初始化参数0月1周
+         */
+        if(options.isWeekorMon && (options.isWeekorMon == 1 || options.isWeekorMon == 0)){
+            this.$store.commit("home/mt_new_bill_all", options.isWeekorMon);
+        }  
+        /**
+         * 加载信息提示
+        */ 
+        this.getparaList()
+        new Promise((resolve,reject)=>{
+            resolve( this.getCardList() )
+        }).then(res=>{
+            this.getstatisWeekData(res);
+            this.getsumMonthBill(res);
+            console.log('延迟1')
+            setTimeout(()=>{
+                if(options.lastWeekorlastMon && options.lastWeekorlastMon == 0){
+                    this.$store.commit("home/mt_new_bill_all", 0);
+                    this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+                    this.$refs.selectWeekmon.pickerTimermoner(4)
+                }else if(options.lastWeekorlastMon && options.lastWeekorlastMon == 1){
+                    this.$store.commit("home/mt_new_bill_all", 1);
+                    this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                    this.$refs.selectWeekmon.pickerTimer(2)
+                }
+                console.log('延迟2')
+            },1500)
+
+        })
+        console.log(options,'--options--')
     },
     methods: {
         /**
@@ -362,6 +389,31 @@ export default {
             }
         },
         /**
+         * 获取后台提示信息
+         */
+        async getparaList(){
+            let res = await API.getparaList({
+                type:'["bill_notes"]'
+            });
+            let {
+                code,
+                msg,
+                data
+            } = res;
+            if(code == 0){
+            if(data.bill_notes){
+                this.showToast = data.bill_notes;
+                }
+            }
+        },
+        /**
+         * 关闭全局弹窗提示
+         */
+        showToastfn(data){
+            console.log('是否关闭',data)
+            this.isToast = data;
+        },
+        /**
          * 改变浮窗的层级
          */
         changZindex(data){
@@ -387,12 +439,11 @@ export default {
          */
         pickCardfn(item){
             console.log('选择卡片相关的信息=',item)
-            this.getMonthBill2(item.cardno,this.selectmon.month);
-            this.getsumMonthBill(item.cardno);
-            this.getbillInfoByApp(item.cardno,this.selectweek.startDay,this.selectweek.endDay);
-            this.getstatisWeekData(item.cardno);
             let data = this.isweekmon == 1 ? 4 : 3;
             this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            this.getsumMonthBill(item.cardno);
+            this.getMonthBill2(item.cardno,this.selectmon.month);
+            this.getbillInfoByApp(item.cardno,this.selectweek.startDay,this.selectweek.endDay);
         },
         /**
          * 一键领取/单独领取
@@ -447,39 +498,18 @@ export default {
             e.detail.scrollTop > 153 ? this.isScrollOver = true : this.isScrollOver = false;
         },
         /**
-         * 加载所有事件，卡号还没有的情况
-         */
-        loadallHandler(){
-            new Promise((resolve,reject)=>{
-                resolve( this.getCardList() )
-            }).then(res=>{
-                if(res){
-                    this.getMonthBill2(res,this.selectmon.month);
-                    this.getsumMonthBill(res);
-                    this.getbillInfoByApp(res,this.selectweek.startDay,this.selectweek.endDay);
-                    this.getstatisWeekData(res);
-                    let data = this.isweekmon == 1 ? 4 : 3;
-                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
-                }
-            })
-        },
-        /**
          * 加载所有事件，卡号有的情况
          */
         loadallHandlerhasCard(){
-            this.getMonthBill2(this.cardusenum,this.selectmon.month);
-            this.getsumMonthBill(this.cardusenum);
-            this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay);
-            this.getstatisWeekData(this.cardusenum);
             let data = this.isweekmon == 1 ? 4 : 3;
             this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            this.getMonthBill2(this.cardusenum,this.selectmon.month);
+            this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay); 
         },
     },
-    destroyed() {
-        //uni.$off('chooseCard')
-    },
     mounted(){
-        this.loadallHandler()
+        console.log('mounted')
+        this.loadallHandlerhasCard()
     },
     /**
      * 分享好友/群
@@ -501,7 +531,8 @@ export default {
         billList,
         bottomBtn,
         DialogWindow,
-        unbindCard
+        unbindCard,
+        toast
     }
 }
 </script>
@@ -515,9 +546,6 @@ export default {
         position: fixed;
         transform: translateX(-50%);
         left: 50%;
-    }
-    .selectWeekmonbottom{
-        
     }
     .canves{
         position: absolute;
