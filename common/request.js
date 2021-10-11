@@ -61,7 +61,7 @@ const interceptRequest = useIntercept(uni.request, {
 			params.data["network_type"] = conf.network_type;
 			params.data["version"] = conf.version;
 			params.data["etcos"] = miniapp.loadModel();
-			// params.data["token"] = "0c2b5b9a41ed93bc637acadacaba5127" //正式token
+			// params.data["token"] = "b2d59ba3e329635795107fcac642b258" //正式token
 			// params.url = params.url.replace("-test","");
 		}
 		params.data["from_type"] = store.state.user.from_type

@@ -20,7 +20,7 @@
                     :style="{height:topValue,top:tabBoundheight+'rpx'}">     
 
                     <!--顶部周月选择下拉框区-->
-                    <selectWeekmon ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
+                    <selectWeekmon ref="selectWeekmon" :triggered="triggered" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
                     
                     <!--本月消费通行次数-->
                     <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>

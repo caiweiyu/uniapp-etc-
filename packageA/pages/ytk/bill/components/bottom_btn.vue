@@ -46,6 +46,9 @@ export default {
             show_add_coin:(state) => state.home.new_bill_all.show_add_coin
 		}),
     },
+    mounted() {
+        console.log('bottombillobj',this.bottombillobj)   
+    },
     methods: {
         /**
          * 获取格式  202009
@@ -59,11 +62,13 @@ export default {
         },
         async selectMonCoin(cardNo,source,month,type){
             if(this.show_add_coin) return;
-            if(type == 2){
-                uni.navigateTo({
-                    url:`/pages/webview/main?src=${encodeURIComponent(this.bottombillobj.oneKeyGetConfig.jumpUrl)}`
-                })
-            }
+            try {
+                if(type == 2){
+                    uni.navigateTo({
+                        url:`/pages/webview/main?src=${encodeURIComponent(this.bottombillobj.oneKeyGetConfig.jumpUrl)}`
+                    })
+                }
+            } catch (error) {}
             let res = await API.sendMonthBillCoins({
                 cardNo:cardNo,
                 source:source,

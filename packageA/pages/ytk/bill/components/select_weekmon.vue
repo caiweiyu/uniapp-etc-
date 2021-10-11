@@ -57,6 +57,13 @@ export default {
         cardList:{
             type:Object,
             default:{}
+        },
+        /**
+         * 是否开启下拉刷新
+         */
+        triggered:{
+            type:Boolean,
+            default:false
         }
     },
     data(){
@@ -175,6 +182,7 @@ export default {
          * 去粤通卡列表
          */
         toytkList(){
+            if(this.triggered) return;
             if(this.isweekmon == 1){
                 eventMonitor('YTKWeeklyBill_Card_WeChat_Other_416_Button_select',2)
             }else{
