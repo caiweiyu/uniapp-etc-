@@ -5,7 +5,7 @@
                 <text class="item_title">提示</text>
                 <view class="item_content">
                     <scroll-view class="scroll-page" :scroll-y="true">
-                        <text>{{content}}</text>
+                        <text class="text">{{content}}</text>
                     </scroll-view>
                 </view>
                 <view class="item_btn" @click.stop="noShow">知道了</view>
@@ -76,7 +76,11 @@ export default {
                 font-size: 30rpx;
                 text-align: left;
                 .scroll-page{
-                    height: 100%;
+                    height: 300rpx;
+                    .text{
+                        height: 100%;
+                        overflow: auto;
+                    }
                 }
             }
             &_btn{

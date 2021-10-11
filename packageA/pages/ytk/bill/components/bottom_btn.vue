@@ -6,14 +6,14 @@
             <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || 0}}</text>
       </view>
       <view v-if="bottombillobj.oneKeyGetConfig.jumpType==2" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
-         {{bottombillobj.oneKeyGetConfig.btnTxt}}
+         {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
       </view>
       <block v-else>
             <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
-                {{bottombillobj.oneKeyGetConfig.btnTxt}}
+                {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
             </view>
             <view class="off" v-if="bottombillobj.integralDetail.unGetPoint <= 0">
-                {{bottombillobj.oneKeyGetConfig.btnTxt}}
+                {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
             </view>
       </block>
 

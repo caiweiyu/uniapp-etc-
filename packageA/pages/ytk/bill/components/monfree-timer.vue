@@ -233,6 +233,7 @@ export default {
         .box2_1{
             font-weight: bold;
             font-size: 40rpx;
+            margin-right: 12rpx;
         }
         .box2_2{
             font-size: 26rpx;
