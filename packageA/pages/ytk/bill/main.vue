@@ -30,7 +30,7 @@
 
             </scroll-view>
             <!--底部一键领取-->
-            <view class="bottom_class" :style="{bottom:'128rpx',zIndex:zindex}" v-if="isweekmon==0">
+            <view class="bottom_class" :style="{bottom:'28rpx',zIndex:zindex}" v-if="isweekmon==0">
                 <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
             </view>
             <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
@@ -159,22 +159,23 @@ export default {
         new Promise((resolve,reject)=>{
             resolve( this.getCardList() )
         }).then(res=>{
-            this.getstatisWeekData(res);
-            this.getsumMonthBill(res);
-            console.log('延迟1')
-            setTimeout(()=>{
-                if(options.lastWeekorlastMon && options.lastWeekorlastMon == 0){
-                    this.$store.commit("home/mt_new_bill_all", 0);
-                    this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
-                    this.$refs.selectWeekmon.pickerTimermoner(4)
-                }else if(options.lastWeekorlastMon && options.lastWeekorlastMon == 1){
-                    this.$store.commit("home/mt_new_bill_all", 1);
-                    this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
-                    this.$refs.selectWeekmon.pickerTimer(2)
-                }
-                console.log('延迟2')
-            },1500)
-
+            if(res){
+                this.getstatisWeekData(res);
+                this.getsumMonthBill(res);
+                console.log('延迟1')
+                setTimeout(()=>{
+                    if(options.lastWeekorlastMon && options.lastWeekorlastMon == 0){
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+                        this.$refs.selectWeekmon.pickerTimermoner(4)
+                    }else if(options.lastWeekorlastMon && options.lastWeekorlastMon == 1){
+                        this.$store.commit("home/mt_new_bill_all", 1);
+                        this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                        this.$refs.selectWeekmon.pickerTimer(2)
+                    }
+                    console.log('延迟2')
+                },1500)
+            }
         })
         console.log(options,'--options--')
     },
@@ -503,8 +504,10 @@ export default {
         loadallHandlerhasCard(){
             let data = this.isweekmon == 1 ? 4 : 3;
             this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
-            this.getMonthBill2(this.cardusenum,this.selectmon.month);
-            this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay); 
+            if(this.cardusenum){
+                this.getMonthBill2(this.cardusenum,this.selectmon.month);
+                this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay); 
+            }   
         },
     },
     mounted(){

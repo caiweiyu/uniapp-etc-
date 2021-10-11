@@ -1,13 +1,22 @@
 <template>
-  <view class="box" v-if="bottombillobj.integralDetail.unGetPoint != 0">
+  <view class="box">
       <view class="box1">
             <img class="box1_1" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" alt="">
             <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint || 0}}</text>
-            <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || ''}}</text>
+            <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || 0}}</text>
       </view>
-      <view class="box2" v-if="bottombillobj.canSend==1" @click="selectMonCoin(cardusenum,1,selectmon.month)">
-          一键领取
+      <view v-if="bottombillobj.oneKeyGetConfig.jumpType==2" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
+         {{bottombillobj.oneKeyGetConfig.btnTxt}}
       </view>
+      <block v-else>
+            <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
+                {{bottombillobj.oneKeyGetConfig.btnTxt}}
+            </view>
+            <view class="off" v-if="bottombillobj.integralDetail.unGetPoint <= 0">
+                {{bottombillobj.oneKeyGetConfig.btnTxt}}
+            </view>
+      </block>
+
   </view>
 </template>
 
@@ -48,8 +57,13 @@ export default {
             mm=(mm<10 ? "0"+mm:mm);
             return (yy.toString()+mm.toString());
         },
-        async selectMonCoin(cardNo,source,month){
+        async selectMonCoin(cardNo,source,month,type){
             if(this.show_add_coin) return;
+            if(type == 2){
+                uni.navigateTo({
+                    url:`/pages/webview/main?src=${encodeURIComponent(this.bottombillobj.oneKeyGetConfig.jumpUrl)}`
+                })
+            }
             let res = await API.sendMonthBillCoins({
                 cardNo:cardNo,
                 source:source,
@@ -97,12 +111,22 @@ export default {
             }
         }
         .box2{
-            width: 160rpx;
+            padding: 0 28rpx;
             height: 50rpx;
             line-height: 50rpx;
             border-radius: 120rpx;
             background-color: #FF5C2A;
             color: #FFFFFF;
+            text-align: center;
+            margin: 20rpx 20rpx 20rpx 0;
+        }
+        .off{
+            padding: 0 28rpx;
+            height: 50rpx;
+            line-height: 50rpx;
+            border-radius: 120rpx;
+            border:1rpx solid #CCCCCC;
+            color: #CCCCCC;
             text-align: center;
             margin: 20rpx 20rpx 20rpx 0;
         }
