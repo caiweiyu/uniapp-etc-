@@ -135,6 +135,7 @@ export default {
          * 选择月tab
          */
         pickerTimermoner(index){
+            console.log('月tab',index)
             let mon_arr = this.monlist;
             console.log(mon_arr[index].month)
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
@@ -151,6 +152,7 @@ export default {
          * 选择周tab
          */
         pickerTimer(index){
+            console.log('周tab',index)
             let week_arr = this.weeklist.slice(0,4).reverse();
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             this.$store.commit("home/mt_new_bill_all_selectweek", week_arr[index]);

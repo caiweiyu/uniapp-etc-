@@ -160,6 +160,7 @@ export default {
                     /**
                      * 初始化参数 type 1本周 2上周 3本月 4上月
                      */
+                    console.log('options.type=',options.type)
                     if(options.type == 1){
                         this.$store.commit("home/mt_new_bill_all", 1);
                         this.$refs.selectWeekmon.pickerTimer(3)
@@ -168,18 +169,18 @@ export default {
                         this.$refs.selectWeekmon.pickerTimer(2)
                     }else if(options.type == 3){
                         this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(4)
+                        this.$refs.selectWeekmon.pickerTimermoner(5)
                     }else if(options.type == 4){
                         this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(5)
+                        this.$refs.selectWeekmon.pickerTimermoner(4)
                     }else{
                         this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(4)
+                        this.$refs.selectWeekmon.pickerTimermoner(5)
                     }
-                },1500)
+                },300)
             }
         })
-        console.log(options,'--options--')
+        
     },
     methods: {
         /**

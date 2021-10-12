@@ -191,6 +191,7 @@ export default {
             &_text{
               color: #222222;
               font-size: 48rpx;
+              font-family: 'etccb-font';
             }
             &_view{
               color: #999999;
@@ -214,6 +215,7 @@ export default {
           transform: translateX(-50%) !important;
           width: 690rpx !important;
           height: 108rpx !important;
+          border-radius: 16rpx;
       }
     }
     .swiper-ac{

@@ -267,9 +267,9 @@ export default {
         vertical-align:middle;
       }
       &_btn1{
-        width: 110rpx;
+        padding: 0 19rpx;
         height:50rpx;
-        line-height: 50rpx;
+        line-height: 46rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;
@@ -280,9 +280,9 @@ export default {
         vertical-align:middle;
       }
       &_btn{
-        width: 110rpx;
+        padding: 0 19rpx;
         height:50rpx;
-        line-height: 50rpx;
+        line-height: 46rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;
@@ -327,6 +327,7 @@ export default {
       }
     }
     &_r{
+      font-family: 'etccb-font';
       color: #FF5C2A;
       font-size: 44rpx;
       &_text{

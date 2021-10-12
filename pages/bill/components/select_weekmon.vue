@@ -4,7 +4,7 @@
       <!--内容区域  有卡号的情况下-->
       <view class="box_content" :style="{top:'26rpx'}" @click.stop="toytkList">
           <view class="card_title"><text class="text">{{ytkCard.slice(0,2)}}&nbsp;&nbsp;{{ytkCard.slice(2)}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
-          <text class="card_num">{{cardusenum}}</text>
+          <text class="card_num">{{ytkCardnum}}</text>
       </view>
 
       <!--周时间选择区-->
@@ -110,6 +110,18 @@ export default {
             }else{
                 return `url(${this.banner[1]})no-repeat;`
             } 
+        },
+        /**
+         * 格式化粤通卡号
+         */
+        ytkCardnum(){
+            if(this.cardusenum){
+                let str = this.cardusenum,reg=/.{4}/g,rs=str.match(reg),h=[];
+                rs.forEach((v,i)=>{
+                    h.push(v)
+                });
+                return h.join(' ');
+            }
         }
     },
     methods: {
@@ -135,6 +147,7 @@ export default {
          * 选择月tab
          */
         pickerTimermoner(index){
+            console.log('月tab',index)
             let mon_arr = this.monlist;
             console.log(mon_arr[index].month)
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
@@ -151,6 +164,7 @@ export default {
          * 选择周tab
          */
         pickerTimer(index){
+            console.log('周tab',index)
             let week_arr = this.weeklist.slice(0,4).reverse();
             this.$store.commit("home/mt_new_bill_all_selectweekindex", index);
             this.$store.commit("home/mt_new_bill_all_selectweek", week_arr[index]);
@@ -227,7 +241,8 @@ export default {
                     vertical-align: middle;
                     font-size: 40rpx;
                     color: #FEFEFE;
-                    font-weight: 400;          
+                    font-weight: 500; 
+                    letter-spacing: 2rpx;         
                 }
                 .image{
                     display: inline-block;
@@ -243,6 +258,7 @@ export default {
                 margin-top: 16rpx;
                 font-size: 30rpx;
                 color: #FFFFFF;
+                letter-spacing: 2rpx;
                 opacity: .6;
             }
         }

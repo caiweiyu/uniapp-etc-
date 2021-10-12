@@ -1,5 +1,9 @@
 <template>
     <view class="box" :style="{backgroundColor:bgColor,height:tabBoundheight+'rpx'}">
+        <!--返回-->
+            <navigator open-type='navigateBack'>
+                <image class="back" :style="{top:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
+            </navigator>
         <!--顶部周、月账单选项-->
             <view :class="['box_title']"  @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx'}">
                 <text class="dirtctionTitle">{{isweekmon == 1 ? list[isweekmon].cateName : list[isweekmon].cateName}}</text>
@@ -137,6 +141,14 @@ export default {
         z-index: 1;
         top: 0;
         transition: all ease-in 0.5s;
+        .back{
+            width: 62rpx;
+            height: 62rpx;
+            flex-shrink: 0;
+            display: flex;
+            position: absolute;
+            left: 26rpx;
+        }
         &_title{
                 position: absolute;
                 transform: translateX(-50%);
