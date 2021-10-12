@@ -147,12 +147,6 @@ export default {
     },
     onLoad(options){
         /**
-         * 初始化参数0月1周
-         */
-        if(options.isWeekorMon && (options.isWeekorMon == 1 || options.isWeekorMon == 0)){
-            this.$store.commit("home/mt_new_bill_all", options.isWeekorMon);
-        }  
-        /**
          * 加载信息提示
         */ 
         this.getparaList()
@@ -162,18 +156,26 @@ export default {
             if(res){
                 this.getstatisWeekData(res);
                 this.getsumMonthBill(res);
-                console.log('延迟1')
                 setTimeout(()=>{
-                    if(options.lastWeekorlastMon && options.lastWeekorlastMon == 0){
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
-                        this.$refs.selectWeekmon.pickerTimermoner(4)
-                    }else if(options.lastWeekorlastMon && options.lastWeekorlastMon == 1){
+                    /**
+                     * 初始化参数 type 1本周 2上周 3本月 4上月
+                     */
+                    if(options.type == 1){
                         this.$store.commit("home/mt_new_bill_all", 1);
-                        this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                        this.$refs.selectWeekmon.pickerTimer(3)
+                    }else if(options.type == 2){
+                        this.$store.commit("home/mt_new_bill_all", 1);
                         this.$refs.selectWeekmon.pickerTimer(2)
+                    }else if(options.type == 3){
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.$refs.selectWeekmon.pickerTimermoner(4)
+                    }else if(options.type == 4){
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.$refs.selectWeekmon.pickerTimermoner(5)
+                    }else{
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.$refs.selectWeekmon.pickerTimermoner(4)
                     }
-                    console.log('延迟2')
                 },1500)
             }
         })
