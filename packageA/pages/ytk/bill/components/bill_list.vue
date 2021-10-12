@@ -267,9 +267,9 @@ export default {
         vertical-align:middle;
       }
       &_btn1{
-        padding: 0 19rpx;
+        width: 110rpx;
         height:50rpx;
-        line-height: 46rpx;
+        line-height: 48rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;
@@ -280,9 +280,9 @@ export default {
         vertical-align:middle;
       }
       &_btn{
-        padding: 0 19rpx;
+        width: 110rpx;
         height:50rpx;
-        line-height: 46rpx;
+        line-height: 50rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;

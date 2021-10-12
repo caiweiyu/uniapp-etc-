@@ -83,7 +83,8 @@ export default {
             isScroll:true,  //是否禁止滚动
             isOpenWeekVal:false,  //周开关
             showToast:'',  //提示文字
-            isToast:false  //显示关闭弹窗
+            isToast:false,  //显示关闭弹窗
+            jsondata:null,
         }
     },
     computed: {
@@ -132,8 +133,8 @@ export default {
         }
     },
     destroyed() {
-        console.log('destroyed销毁')
-        this.$store.commit("home/mt_new_bill_all_en", false);
+        // console.log('destroyed销毁')
+        // this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
@@ -160,13 +161,8 @@ export default {
                 this.getparaList()
             }).then(res=>{
                 if(res){
-                    wx.request({
-                        url: 'https://image.etcchebao.com/etc-min/new-bill-all/coin.json',
-                        header: {'Content-Type': 'application/json'},
-                        method: 'GET'
-                    })
-                    this.getstatisWeekData(res);
                     this.getsumMonthBill(res);
+                    this.getstatisWeekData(res);
                     setTimeout(()=>{
                         /**
                          * 初始化参数 type 1本周 2上周 3本月 4上月
@@ -180,13 +176,14 @@ export default {
                             this.$refs.selectWeekmon.pickerTimer(2)
                         }else if(options.type == 3){
                             this.$store.commit("home/mt_new_bill_all", 0);
-                            this.$refs.selectWeekmon.pickerTimermoner(5)
+                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
+                            this.getMonthBill2(res,this.getyymm(1))
                         }else if(options.type == 4){
                             this.$store.commit("home/mt_new_bill_all", 0);
-                            this.$refs.selectWeekmon.pickerTimermoner(4)
+                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+                            this.getMonthBill2(res,this.getyymm(0))
                         }else{
-                            this.$store.commit("home/mt_new_bill_all", 0);
-                            this.$refs.selectWeekmon.pickerTimermoner(5)
+                            this.getMonthBill2(res,this.selectmon.month)
                         }
                     },300)
                 }
@@ -244,6 +241,7 @@ export default {
          */
         cardListInfoIndex(index){
             this.cardList_info[index].status = 1;
+            this.loadallHandlerhasCard()
         },
         /**
          * 获取总月账单
@@ -306,7 +304,8 @@ export default {
                     loop: false,
                     autoplay: true,
                     path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
-                    //animationData:require("./components/data.js"),
+                    // animationData:require("../../packageA/pages/ytk/bill/components/coin.json"),
+                    path:this.jsondata,
                     rendererSettings: {
                         context,
                     },
@@ -317,7 +316,7 @@ export default {
                 const context = canvas.getContext('2d')
                 canvas.width = 750
                 canvas.height = 750
-                context.font = '28px 微软雅黑'
+                context.font = 'bold 32px 微软雅黑'
                 context.fillStyle="#FFFFFF"
                 context.textAlign = 'center'
                 context.fillText(data, 375, 425)
@@ -527,7 +526,6 @@ export default {
         },
     },
     mounted(){
-        console.log('mounted')
         this.loadallHandlerhasCard()
     },
     /**

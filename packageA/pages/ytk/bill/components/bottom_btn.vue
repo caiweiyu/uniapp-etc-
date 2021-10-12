@@ -99,6 +99,7 @@ export default {
         display: flex;
         font-size: 26rpx;
         justify-content: space-between;
+        box-shadow: 0 10rpx 20rpx 5rpx rgba($color: #000000, $alpha: 0.05);
         .box1{
             display: flex;
             &_1{
