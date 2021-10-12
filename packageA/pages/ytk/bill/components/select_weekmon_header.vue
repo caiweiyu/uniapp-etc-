@@ -1,9 +1,7 @@
 <template>
     <view class="box" :style="{backgroundColor:bgColor,height:tabBoundheight+'rpx'}">
-         <!--返回-->
-            <navigator open-type='navigateBack'>
-                <image class="back" :style="{top:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
-            </navigator>
+        <!--返回-->
+            <image class="back" @click="back" :style="{top:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
         <!--顶部周、月账单选项-->
             <view :class="['box_title']"  @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx'}">
                 <text class="dirtctionTitle">{{isweekmon == 1 ? list[isweekmon].cateName : list[isweekmon].cateName}}</text>
@@ -109,6 +107,15 @@ export default {
             // this.isweekmon == 1 ? this.status = 1 : this.status = 0;
             this.$emit('selectCoinfunc',e[0])
             console.log(this.isweekmon,'周月===')
+        },
+        /**
+         * 返回首页
+         */
+        back(){
+            console.log('返回==')
+            uni.reLaunch({
+                url: "/pages/home/main"
+            })
         },
         /**
          * 取消

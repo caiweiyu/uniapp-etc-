@@ -131,6 +131,10 @@ export default {
             o==1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
     },
+    destroyed() {
+        console.log('destroyed销毁')
+        this.$store.commit("home/mt_new_bill_all_en", false);
+    },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
         this.datacolor = this.bgColor;
@@ -146,41 +150,48 @@ export default {
         this.$refs.dialog.loadPopup();
     },
     onLoad(options){
+        console.log('onload')
         /**
          * 加载信息提示
         */ 
-        this.getparaList()
-        new Promise((resolve,reject)=>{
-            resolve( this.getCardList() )
-        }).then(res=>{
-            if(res){
-                this.getstatisWeekData(res);
-                this.getsumMonthBill(res);
-                setTimeout(()=>{
-                    /**
-                     * 初始化参数 type 1本周 2上周 3本月 4上月
-                     */
-                    console.log('options.type=',options.type)
-                    if(options.type == 1){
-                        this.$store.commit("home/mt_new_bill_all", 1);
-                        this.$refs.selectWeekmon.pickerTimer(3)
-                    }else if(options.type == 2){
-                        this.$store.commit("home/mt_new_bill_all", 1);
-                        this.$refs.selectWeekmon.pickerTimer(2)
-                    }else if(options.type == 3){
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(5)
-                    }else if(options.type == 4){
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(4)
-                    }else{
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.$refs.selectWeekmon.pickerTimermoner(5)
-                    }
-                },300)
-            }
-        })
-        
+        if(this.token){
+            new Promise((resolve,reject)=>{
+                resolve( this.getCardList() )
+                this.getparaList()
+            }).then(res=>{
+                if(res){
+                    wx.request({
+                        url: 'https://image.etcchebao.com/etc-min/new-bill-all/coin.json',
+                        header: {'Content-Type': 'application/json'},
+                        method: 'GET'
+                    })
+                    this.getstatisWeekData(res);
+                    this.getsumMonthBill(res);
+                    setTimeout(()=>{
+                        /**
+                         * 初始化参数 type 1本周 2上周 3本月 4上月
+                         */
+                        console.log('options.type=',options.type)
+                        if(options.type == 1){
+                            this.$store.commit("home/mt_new_bill_all", 1);
+                            this.$refs.selectWeekmon.pickerTimer(3)
+                        }else if(options.type == 2){
+                            this.$store.commit("home/mt_new_bill_all", 1);
+                            this.$refs.selectWeekmon.pickerTimer(2)
+                        }else if(options.type == 3){
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$refs.selectWeekmon.pickerTimermoner(5)
+                        }else if(options.type == 4){
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$refs.selectWeekmon.pickerTimermoner(4)
+                        }else{
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$refs.selectWeekmon.pickerTimermoner(5)
+                        }
+                    },300)
+                }
+            })
+        }      
     },
     methods: {
         /**

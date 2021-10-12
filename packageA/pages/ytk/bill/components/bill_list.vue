@@ -15,7 +15,7 @@
               <view class="box1_l">
                 <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
               </view>
-              <view class="box1_r" v-if="item.integral !=0 ">
+              <view class="box1_r">
                     <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
                     <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
                     <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-if="item.status==0" @click="getCoin(item,index)">领取</view>
@@ -267,9 +267,9 @@ export default {
         vertical-align:middle;
       }
       &_btn1{
-        width: 110rpx;
+        padding: 0 19rpx;
         height:50rpx;
-        line-height: 50rpx;
+        line-height: 46rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;
@@ -280,9 +280,9 @@ export default {
         vertical-align:middle;
       }
       &_btn{
-        width: 110rpx;
+        padding: 0 19rpx;
         height:50rpx;
-        line-height: 50rpx;
+        line-height: 46rpx;
         text-align: center;
         display: inline-block;
         border-radius: 120rpx;
@@ -327,6 +327,7 @@ export default {
       }
     }
     &_r{
+      font-family: 'etccb-font';
       color: #FF5C2A;
       font-size: 44rpx;
       &_text{

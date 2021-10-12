@@ -70,6 +70,7 @@
 								avatar:"https://image.etcchebao.com/etc-min/mine/undifine-user-logo.png"
 							});
 							this.$store.dispatch("user/refreshJsCode");
+							this.$store.commit("home/mt_new_bill_all_cardusenum", "");
 							wx.navigateBack({
 								delta: 1, // 回退前 delta(默认为1) 页面
 							});
