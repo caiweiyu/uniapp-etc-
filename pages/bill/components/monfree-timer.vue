@@ -40,8 +40,8 @@
             <view class="swiper" v-else-if="getoperalist.type_2.length > 0">
               <view class="swiper-item swiper-ac">
                   <view class="box2">
-                      <block v-if="discount_amount != ''">¥
-                        <text class="box2_1">{{discount_amount}}</text>
+                      <block>¥
+                        <text class="box2_1">{{discount_amount || 0}}</text>
                       </block>
                       <text class="box2_2">{{getoperalist.type_2[0].extend.explain_tips}}</text>
                       <view class="box2_3">{{getoperalist.type_2[0].title}}</view>

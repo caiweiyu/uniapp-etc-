@@ -102,7 +102,8 @@ export default {
             isOpenWeek:(state) => state.home.new_bill_all.isOpenWeek,
             defaultweekvalue:(state) => state.home.new_bill_all.defaultweekvalue,
             selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
-            weeklist:(state) => state.home.new_bill_all.weeklist
+            weeklist:(state) => state.home.new_bill_all.weeklist,
+            selectmonindex:(state) => state.home.new_bill_all.selectmonindex,
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
@@ -235,7 +236,8 @@ export default {
                 this.bottombillobj = data;
                 this.cardList_info = data.passDetail;
                 if(this.isNeeddisCount){
-                    this.getUserLevel(cardNo,data.passTotalMoney)
+                    console.log('月账单数据=',this.monthsumBillsList,'月下标tab=',this.selectmonindex);
+                    this.selectmonindex == 5 ? this.getUserLevel(cardNo,this.monthsumBillsList[4].sum) : this.getUserLevel(cardNo,this.monthsumBillsList[this.selectmonindex].sum)
                 }
             }
         },
