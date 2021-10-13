@@ -5,18 +5,12 @@
             <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint || 0}}</text>
             <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || 0}}</text>
       </view>
-      <view v-if="bottombillobj.oneKeyGetConfig.jumpType==2" @click="selectMonCoin(bottombillobj.oneKeyGetConfig.jumpType,bottombillobj.oneKeyGetConfig.jumpUrl)">
-         {{bottombillobj.oneKeyGetConfig.btnTxt}}
-      </view>
-      <block v-else>
-            <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(bottombillobj.oneKeyGetConfig.jumpType,bottombillobj.oneKeyGetConfig.jumpUrl)">
-                {{bottombillobj.oneKeyGetConfig.btnTxt}}
-            </view>
-            <view class="box2" v-if="bottombillobj.integralDetail.unGetPoint <= 0" @click="selectMonCoin(bottombillobj.exchangeConfig.jumpType,bottombillobj.exchangeConfig.jumpUrl)">
-                {{bottombillobj.exchangeConfig.btnTxt}}
-            </view>
-      </block>
-
+        <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(bottombillobj.oneKeyGetConfig.jumpType,bottombillobj.oneKeyGetConfig.jumpUrl)">
+            {{bottombillobj.oneKeyGetConfig.btnTxt}}
+        </view>
+        <view class="box2" v-if="bottombillobj.integralDetail.unGetPoint <= 0" @click="selectMonCoin(bottombillobj.exchangeConfig.jumpType,bottombillobj.exchangeConfig.jumpUrl)">
+            {{bottombillobj.exchangeConfig.btnTxt}}
+        </view>
   </view>
 </template>
 
@@ -65,8 +59,9 @@ export default {
             try {
                 if(type == 2){
                     uni.navigateTo({
-                        url:`/pages/webview/main?src=${encodeURIComponent(url)}`
+                        url:`/pages/coin/detail/main`
                     });
+                    return;
                 }
             } catch (error) {}
             let res = await API.sendMonthBillCoins({

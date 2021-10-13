@@ -7,7 +7,7 @@
       <!--有绑卡的情况-->
       <block v-else>
             <!--下拉滚动头部更换-->
-            <selectWeekmonheader :monlist="monthsumBillsList" @selectCoinfunc="selectCoinfunc" @changZindex="changZindex"></selectWeekmonheader>  
+            <selectWeekmonheader :monlist="monthsumBillsList" @selectCoinfuncom="selectCoinfuncom" @changZindex="changZindex"></selectWeekmonheader>  
             <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
             <!--下拉刷新区-->
             <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
@@ -308,9 +308,8 @@ export default {
                 let anim  = lottie.loadAnimation({
                     loop: false,
                     autoplay: true,
-                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin3.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
                     // animationData:require("../../packageA/pages/ytk/bill/components/coin.json"),
-                    path:this.jsondata,
                     rendererSettings: {
                         context,
                     },
@@ -471,6 +470,12 @@ export default {
          */
         selectCoinfunc(item){
             console.log(item)
+            this.getMonthBill2(this.cardusenum,this.selectmon.month);
+        },
+        /**
+         * 切换周月
+         */
+        selectCoinfuncom(item){
             this.loadallHandlerhasCard()
         },
         /**

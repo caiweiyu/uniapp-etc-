@@ -6,7 +6,7 @@
         <view class="list-none" @click="onAdd">
             <view class="box">
                 <image class="minbox" src="https://image.etcchebao.com/etc-min/etc-f/icon_19.png"></image>
-                <view class="minbox">添加粤通卡充值</view>
+                <view class="minbox">添加粤通卡</view>
             </view>
             <image class="logo" src="https://image.etcchebao.com/etc-min/etc-f/icon_20.png" mode="widthFix" />
         </view>
@@ -50,7 +50,7 @@ export default {
                 width: 100%;
                 display: block;
                 text-align: center;
-                font-size: 26rpx;
+                font-size: 28rpx;
                 color: #222222;
             }
         }

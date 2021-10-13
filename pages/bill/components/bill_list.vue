@@ -2,7 +2,7 @@
   <view class="box">
       <view class="box_title" v-if="isweekmon==0">
         <block v-if="bottombillobj.billType==2">
-            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png"></image><text class="text">{{bottombillobj.notice}}</text>
+            <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/ic_check.png" @click.stop="showParaList"></image><text class="text" @click.stop="showParaList">{{bottombillobj.notice}}</text>
         </block>
         <block v-else-if="bottombillobj.billType==1">
             <image class="img" src="https://image.etcchebao.com/etc-min/bill_all/antion.png" @click.stop="showParaList"></image><text class="text" @click.stop="showParaList">{{bottombillobj.notice}}</text>
@@ -70,6 +70,12 @@
             </view>
         </view>
       </scroll-view>
+      <!--周月账单无列表-->
+      <view v-if="week_cardList_info.length == 0 || cardList_info.length == 0"  class="scroll-page" >
+          <view class="box3">
+              <image src="https://image.etcchebao.com/etc-min/bill_all/unlist.png" mode="" class="box-img" />
+          </view> 
+      </view>
   </view>
 </template>
 
@@ -215,12 +221,10 @@ export default {
       }
       .scroll-page{
           width: 100%;
-          // height: auto !important;
           height: 100%;
           display: flex;
           flex-direction: column;
           background-color: #F6F6F6;
-          // padding-bottom: 199rpx;
           padding-bottom: 266rpx;
           .box{
             background-color: #FFFFFF;
@@ -229,6 +233,18 @@ export default {
             height: 300rpx;
             border-radius: 16rpx;
             display: block;
+          }
+          .box3{
+            margin-top: 30rpx;
+            height: 300rpx;
+            border-radius: 16rpx;
+            display: block;
+            .box-img{
+                width: 326rpx;
+                height: 277rpx;
+                display: block;
+                margin: auto;
+            }
           }
       }
   }

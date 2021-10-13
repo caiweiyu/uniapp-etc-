@@ -3,7 +3,7 @@
       
       <!--内容区域  有卡号的情况下-->
       <view class="box_content" :style="{top:'26rpx'}" @click.stop="toytkList">
-          <view class="card_title"><text class="text">{{ytkCard.slice(0,2)}}&nbsp;&nbsp;{{ytkCard.slice(2)}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
+          <view class="card_title"><text class="text">{{ytkCard.slice(0,2)}}&nbsp;{{ytkCard.slice(2)}}</text><image class="image" src="https://image.etcchebao.com/etc-min/bill_all/change_icon1.png" mode="" /></view>
           <text class="card_num">{{ytkCardnum}}</text>
       </view>
 

@@ -5,7 +5,7 @@
             <view class="box">
               <block v-if="isweekmon==1">
                   <view class="box1">
-                      ¥<text class="box1_text">{{cardList.consumeAmount}}</text>
+                      ¥<text class="box1_text min1">{{cardList.consumeAmount}}</text>
                       <view class="box1_view">本周消费{{weekselectdetail}}</view>
                     </view>
                     <view class="box1">
@@ -15,7 +15,7 @@
               </block>
               <block v-else>
                   <view class="box1">
-                    ¥<text class="box1_text">{{monsum}}</text>
+                    ¥<text class="box1_text min1">{{monsum}}</text>
                     <view class="box1_view">本月消费</view>
                   </view>
                   <view class="box1">
@@ -26,17 +26,31 @@
             </view>
         </view>
         <!--可滑动 自动滚区-->
-        <swiper class="swiper" v-if="getoperalist.location==4 && getoperalist.type_1.length > 0" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true">
-            <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_1" :key="index" @click.stop="openArea(item)">
-                <image :src="item.pic_url" class="swiper-item-view" mode="" />
-            </swiper-item>
-        </swiper>
+        <block v-if="getoperalist.location==4">
+          <view class="boxContainer" v-if="getoperalist.type_1.length > 0">
+              <swiper class="swiper" :previous-margin="previousmargin" :next-margin="nextmargin" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true" @change="bindchange">
+                  <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_1" :key="index" @click.stop="openArea(item)">
+                      <image :src="item.pic_url" class="swiper-item-view" mode="" />
+                  </swiper-item>
+              </swiper>
+              <view class="dots">
+                  <view :class="['box', swiper_current == index ? 'active' : '']" v-for="(item, index) in getoperalist.type_1"
+                    :key="index"></view>
+              </view>
+          </view>
+        </block>
         <block v-if="getoperalist.location==3">
-            <swiper class="swiper" v-if="getoperalist.type_3.length > 0" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true">
-              <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_3" :key="index" @click.stop="openArea(item)">
-                  <image :src="item.pic_url" class="swiper-item-view" mode="" />
-              </swiper-item>
-            </swiper>
+            <view class="boxContainer" v-if="getoperalist.type_3.length > 0">
+              <swiper class="swiper" :previous-margin="previousmargin" :next-margin="nextmargin" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true" @change="bindchange">
+                  <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_3" :key="index" @click.stop="openArea(item)">
+                      <image :src="item.pic_url" class="swiper-item-view" mode="" />
+                  </swiper-item>
+              </swiper>
+              <view class="dots">
+                  <view :class="['box', swiper_current == index ? 'active' : '']" v-for="(item, index) in getoperalist.type_3"
+                    :key="index"></view>
+              </view>
+            </view>
             <view class="swiper" v-else-if="getoperalist.type_2.length > 0">
               <view class="swiper-item swiper-ac">
                   <view class="box2">
@@ -74,7 +88,10 @@ export default {
         details:{
           num:0,
           sum:0
-        }
+        },
+        swiper_current:0,
+        previousmargin:"14rpx",
+				nextmargin:"14rpx",
       }
     },
     watch:{
@@ -107,7 +124,7 @@ export default {
            * 计算周详细时间
            */
           weekselectdetail(){
-            if(this.weeklist.length > 0){
+            if(this.weeklist.length > 0 && this.selectweekindex > -1){
                 let week_arr = this.weeklist.slice(0,4).reverse();
                 return '('+week_arr[this.selectweekindex].begin+"-"+week_arr[this.selectweekindex].end+')'
             }else{
@@ -116,6 +133,12 @@ export default {
           },
     },
     methods: {
+      /**
+       * 监听轮播点
+       */
+      bindchange(e){
+				this.swiper_current = e.detail.current;
+			},
       openArea(item){ 
         this.isweekmon == 1 ? eventMonitor('YTKWeeklyBill_Operation_WeChat_Other_416_Button_click',2) : eventMonitor('YTKMonthlyBill_List_WeChat_Other_415_Check_click',2)
         if (typeof(item.subs_template_id) == "string") {
@@ -188,12 +211,43 @@ export default {
               font-size: 48rpx;
               font-family: 'etccb-font';
             }
+            .min1{
+              margin-left: 5rpx;
+            }
             &_view{
               color: #999999;
               font-size: 24rpx;
             }
         }
       }
+  }
+  .boxContainer{
+    position: relative;
+    .dots {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			position: absolute;
+			left: 50%;
+			bottom: 10rpx;
+			transform: translateX(-50%);
+			.box {
+				margin: 0 0 0 8rpx;
+				width: 8rpx;
+				height: 8rpx;
+				background-color: rgba(255,255,255,0.5);
+				border-radius: 12rpx;
+				&.box:first-child {
+					margin: 0;
+				}
+				&.active {
+					background-color: #FF5C2A !important;
+					width: 16rpx !important;
+					transition: width linear 0.2s;
+				}
+			}
+		}
   }
   .swiper{
     position: relative;
