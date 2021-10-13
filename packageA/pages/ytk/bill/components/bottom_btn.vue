@@ -5,15 +5,15 @@
             <text class="box1_2">本月已领: {{bottombillobj.integralDetail.hGetPoint || 0}}</text>
             <text class="box1_3">未领: {{bottombillobj.integralDetail.unGetPoint || 0}}</text>
       </view>
-      <view v-if="bottombillobj.oneKeyGetConfig.jumpType==2" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
-         {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
+      <view v-if="bottombillobj.oneKeyGetConfig.jumpType==2" @click="selectMonCoin(bottombillobj.oneKeyGetConfig.jumpType,bottombillobj.oneKeyGetConfig.jumpUrl)">
+         {{bottombillobj.oneKeyGetConfig.btnTxt}}
       </view>
       <block v-else>
-            <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(cardusenum,1,selectmon.month,bottombillobj.oneKeyGetConfig.jumpType)">
-                {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
+            <view class="box2" v-if="bottombillobj.canSend==1 && bottombillobj.integralDetail.unGetPoint > 0" @click="selectMonCoin(bottombillobj.oneKeyGetConfig.jumpType,bottombillobj.oneKeyGetConfig.jumpUrl)">
+                {{bottombillobj.oneKeyGetConfig.btnTxt}}
             </view>
-            <view class="off" v-if="bottombillobj.integralDetail.unGetPoint <= 0">
-                {{bottombillobj.oneKeyGetConfig.btnTxt || '一键领取'}}
+            <view class="box2" v-if="bottombillobj.integralDetail.unGetPoint <= 0" @click="selectMonCoin(bottombillobj.exchangeConfig.jumpType,bottombillobj.exchangeConfig.jumpUrl)">
+                {{bottombillobj.exchangeConfig.btnTxt}}
             </view>
       </block>
 
@@ -60,19 +60,19 @@ export default {
             mm=(mm<10 ? "0"+mm:mm);
             return (yy.toString()+mm.toString());
         },
-        async selectMonCoin(cardNo,source,month,type){
+        async selectMonCoin(type,url){
             if(this.show_add_coin) return;
             try {
                 if(type == 2){
                     uni.navigateTo({
-                        url:`/pages/webview/main?src=${encodeURIComponent(this.bottombillobj.oneKeyGetConfig.jumpUrl)}`
-                    })
+                        url:`/pages/webview/main?src=${encodeURIComponent(url)}`
+                    });
                 }
             } catch (error) {}
             let res = await API.sendMonthBillCoins({
-                cardNo:cardNo,
-                source:source,
-                month:month || this.getyymm()
+                cardNo:this.cardusenum,
+                source:1,
+                month:this.selectmon.month || this.getyymm()
             });
             let {
                 code,
@@ -123,16 +123,6 @@ export default {
             border-radius: 120rpx;
             background-color: #FF5C2A;
             color: #FFFFFF;
-            text-align: center;
-            margin: 20rpx 20rpx 20rpx 0;
-        }
-        .off{
-            padding: 0 28rpx;
-            height: 50rpx;
-            line-height: 50rpx;
-            border-radius: 120rpx;
-            border:1rpx solid #CCCCCC;
-            color: #CCCCCC;
             text-align: center;
             margin: 20rpx 20rpx 20rpx 0;
         }

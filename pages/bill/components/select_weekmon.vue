@@ -149,7 +149,6 @@ export default {
         pickerTimermoner(index){
             console.log('月tab',index)
             let mon_arr = this.monlist;
-            console.log(mon_arr)
             console.log(mon_arr[index].month)
             this.$store.commit("home/mt_new_bill_all_selectmonindex", index);
             this.$store.commit("home/mt_new_bill_all_selectmon", mon_arr[index]);

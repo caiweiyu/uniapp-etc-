@@ -132,8 +132,8 @@ export default {
             o==1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
     },
-    destroyed() {
-        console.log('destroyed销毁')
+    onHide() {
+        console.log('hide')
         this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
@@ -163,17 +163,22 @@ export default {
                 if(res){
                     this.getstatisWeekData(res);
                     this.getsumMonthBill(res);
+                    let data = this.isweekmon == 1 ? 4 : 3;
+                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
                     setTimeout(()=>{
                         /**
                          * 初始化参数 type 1本周 2上周 3本月 4上月
                          */
-                        console.log('options.type=',options.type)
+                        let week_arr = this.weeklist.slice(0,4).reverse();
+                        console.log('options.type=',options.type,'week_arr',week_arr)
                         if(options.type == 1){
                             this.$store.commit("home/mt_new_bill_all", 1);
-                            this.$refs.selectWeekmon.pickerTimer(3)
+                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 3);
+                            this.getbillInfoByApp(res,week_arr[3].startDay,week_arr[3].endDay)
                         }else if(options.type == 2){
                             this.$store.commit("home/mt_new_bill_all", 1);
-                            this.$refs.selectWeekmon.pickerTimer(2)
+                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                            this.getbillInfoByApp(res,week_arr[2].startDay,week_arr[2].endDay)
                         }else if(options.type == 3){
                             this.$store.commit("home/mt_new_bill_all", 0);
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);

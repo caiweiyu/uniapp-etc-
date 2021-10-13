@@ -37,7 +37,7 @@
                   <image :src="item.pic_url" class="swiper-item-view" mode="" />
               </swiper-item>
             </swiper>
-            <view class="swiper" v-else-if="getoperalist.type_2.length > 0">
+            <view class="swiper" v-else-if="getoperalist.type_2.length > 0 && isweekmon == 0">
               <view class="swiper-item swiper-ac">
                   <view class="box2">
                       <block v-if="discount_amount != ''">¥
@@ -107,18 +107,13 @@ export default {
            * 计算周详细时间
            */
           weekselectdetail(){
-            if(Object.keys(this.selectweek).length > 0){
-                  return '('+this.selectweek.begin+"-"+this.selectweek.end+')'
+            if(this.weeklist.length > 0){
+                let week_arr = this.weeklist.slice(0,4).reverse();
+                return '('+week_arr[this.selectweekindex].begin+"-"+week_arr[this.selectweekindex].end+')'
             }else{
-                  return ''
+                return ''
             }
           },
-    },
-    mounted() {
-      // setTimeout(()=>{
-      //   console.log('this.getoperalist====',this.getoperalist,this.getoperalist.location==4,this.getoperalist.type_1.length > 0)
-      // },2000)
-      
     },
     methods: {
       openArea(item){ 

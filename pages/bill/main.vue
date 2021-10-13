@@ -133,8 +133,12 @@ export default {
         }
     },
     destroyed() {
-        // console.log('destroyed销毁')
+        console.log('destroyed销毁')
         // this.$store.commit("home/mt_new_bill_all_en", false);
+    },
+    onHide() {
+        console.log('hide')
+        this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
@@ -161,19 +165,24 @@ export default {
                 this.getparaList()
             }).then(res=>{
                 if(res){
-                    this.getsumMonthBill(res);
                     this.getstatisWeekData(res);
+                    this.getsumMonthBill(res);
+                    let data = this.isweekmon == 1 ? 4 : 3;
+                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
                     setTimeout(()=>{
                         /**
                          * 初始化参数 type 1本周 2上周 3本月 4上月
                          */
-                        console.log('options.type=',options.type)
+                        let week_arr = this.weeklist.slice(0,4).reverse();
+                        console.log('options.type=',options.type,'week_arr',week_arr)
                         if(options.type == 1){
                             this.$store.commit("home/mt_new_bill_all", 1);
-                            this.$refs.selectWeekmon.pickerTimer(3)
+                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 3);
+                            this.getbillInfoByApp(res,week_arr[3].startDay,week_arr[3].endDay)
                         }else if(options.type == 2){
                             this.$store.commit("home/mt_new_bill_all", 1);
-                            this.$refs.selectWeekmon.pickerTimer(2)
+                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                            this.getbillInfoByApp(res,week_arr[2].startDay,week_arr[2].endDay)
                         }else if(options.type == 3){
                             this.$store.commit("home/mt_new_bill_all", 0);
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
@@ -194,10 +203,10 @@ export default {
         /**
          * 获取格式  202009
          */
-        getyymm(){
+        getyymm(data){
             let date=new Date();
             let yy=date.getFullYear();
-            let mm=date.getMonth()+1;
+            let mm=date.getMonth()+data;
             mm=(mm<10 ? "0"+mm:mm);
             return (yy.toString()+mm.toString());
         },
@@ -224,7 +233,7 @@ export default {
         async getMonthBill2(cardNo,startDate){
             let res = await API.getMonthBill2({
                 cardNo:cardNo,
-                startDate:startDate || this.getyymm()
+                startDate:startDate || this.getyymm(1)
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -261,7 +270,7 @@ export default {
                     }
                     this.monthsumBillsList = (data.monthBills).reverse();
                     this.$store.commit("home/mt_new_bill_all_monthsumBillsList", this.monthsumBillsList);
-                    console.log('获取六个月账单',this.monthsumBillsList)
+                    console.log('获取六个月账单',this.monthsumBillsList) 
                 }
             }
         },
@@ -526,6 +535,7 @@ export default {
         },
     },
     mounted(){
+        console.log('mounted')
         this.loadallHandlerhasCard()
     },
     /**

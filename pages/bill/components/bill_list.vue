@@ -18,9 +18,9 @@
               <view class="box1_r">
                     <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
                     <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
-                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-if="item.status==0" @click="getCoin(item,index)">领取</view>
-                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-else-if="item.status==1">已领取</view>
-                    <view :class="[item.status==0 ? 'box1_r_btn' : 'box1_r_btn1']" v-else>已过期</view>
+                    <view class="box1_r_btn" v-if="item.status==0" @click="getCoin(item,index,bottombillobj.ungetConfig.jumpType,bottombillobj.ungetConfig.jumpUrl)">{{bottombillobj.ungetConfig.btnTxt}}</view>
+                    <view class="box1_r_btn1" v-else-if="item.status==1" @click="getCoin(item,index,bottombillobj.getConfig.jumpType,bottombillobj.getConfig.jumpUrl)">{{bottombillobj.getConfig.btnTxt}}</view>
+                    <view class="box1_r_btn1" v-else @click="getCoin(item,index,bottombillobj.expireConfig.jumpType,bottombillobj.expireConfig.jumpUrl)">{{bottombillobj.expireConfig.btnTxt}}</view>
               </view>
             </view>
             <view class="box2">
@@ -98,6 +98,16 @@ export default {
          default:{}
        }
     },
+    watch:{
+      // cardList_info(o,n){
+      //   console.log('月账单',o,n)
+      //   this.list = o;
+      // },
+      // week_cardList_info(o,n){
+      //   console.log('周账单',o,n)
+      //   this.weeklist = o;
+      // }
+    },
     computed: {
           ...mapState({
                 isweekmon: (state) => state.home.new_bill_all.isweekmon,
@@ -120,8 +130,16 @@ export default {
           mm=(mm<10 ? "0"+mm:mm);
           return (yy.toString()+mm.toString());
       },
-      async getCoin(item,index){
+      async getCoin(item,index,type,url){
         if(this.show_add_coin) return;
+        try {
+            if(type == 2){
+                uni.navigateTo({
+                    url:`/pages/webview/main?src=${encodeURIComponent(url)}`
+                });
+            }
+        } catch (error) {}
+        if(item.status !== 0) return;
         let res = await API.sendBillCoins({
             month:this.selectmon.month || this.getyymm(),
             source:1,
