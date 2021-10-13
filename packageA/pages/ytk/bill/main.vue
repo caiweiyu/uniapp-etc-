@@ -132,8 +132,8 @@ export default {
             o==1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
     },
-    onHide() {
-        console.log('hide')
+    destroyed() {
+        console.log('销毁===')
         this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
@@ -163,8 +163,6 @@ export default {
                 if(res){
                     this.getstatisWeekData(res);
                     this.getsumMonthBill(res);
-                    let data = this.isweekmon == 1 ? 4 : 3;
-                    this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
                     setTimeout(()=>{
                         /**
                          * 初始化参数 type 1本周 2上周 3本月 4上月
@@ -522,8 +520,17 @@ export default {
          * 加载所有事件，卡号有的情况
          */
         loadallHandlerhasCard(){
-            let data = this.isweekmon == 1 ? 4 : 3;
-            this.getoperaList(data); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            let {
+                type
+            } = this.$root.$mp.query;
+            if(type == 3 || type == 4){
+                this.getoperaList(3); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块 
+            }else if(type == 1 || type == 2){
+                this.getoperaList(4); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            }else{
+                let data = this.isweekmon == 1 ? 4 : 3;
+                this.getoperaList(data);
+            }
             if(this.cardusenum){
                 this.getMonthBill2(this.cardusenum,this.selectmon.month);
                 this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay); 

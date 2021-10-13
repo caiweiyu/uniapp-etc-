@@ -37,7 +37,7 @@
                   <image :src="item.pic_url" class="swiper-item-view" mode="" />
               </swiper-item>
             </swiper>
-            <view class="swiper" v-else-if="getoperalist.type_2.length > 0 && isweekmon == 0">
+            <view class="swiper" v-else-if="getoperalist.type_2.length > 0">
               <view class="swiper-item swiper-ac">
                   <view class="box2">
                       <block v-if="discount_amount != ''">¥
