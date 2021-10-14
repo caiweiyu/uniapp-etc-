@@ -1,7 +1,7 @@
 <template>
     <view class="container">
         <view class="container_title" :style="{height:tabBoundheight+'rpx'}">
-            <image class="back" @click="back" :style="{paddingTop:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
+            <!-- <image class="back" @click="back" :style="{paddingTop:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" /> -->
             <text class="dirtctionTitle" :style="{paddingTop:tabHeight+btnBoundtop+'rpx',lineHeight:menuHeight+'rpx'}">添加粤通卡</text>
         </view>
         <view class="list-none" @click="onAdd">
@@ -64,6 +64,7 @@ export default {
                 display: block;
                 text-align: center;
                 font-size: 28rpx;
+                font-weight: bold;
                 color: #222222;
             }
             .back{

@@ -64,6 +64,7 @@ export default {
                 display: block;
                 text-align: center;
                 font-size: 28rpx;
+                font-weight: bold;
                 color: #222222;
             }
             .back{

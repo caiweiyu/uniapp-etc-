@@ -322,7 +322,6 @@ export default {
             if(code == 0){
                 if(data.cardList && data.cardList.length > 0){
                     console.log('粤通卡卡号/车牌号是=',data.cardList[0].cardno,data.cardList[0].plate,'卡号',this.cardusenum);
-                    this.loading = true;
                     if(this.cardusenum){
                         return this.cardusenum;
                     }else{
@@ -333,6 +332,7 @@ export default {
                         return data.cardList[0].cardno;
                     } 
                 }
+                this.loading = true;
             }
         },
         /**
