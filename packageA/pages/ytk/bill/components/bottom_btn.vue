@@ -35,7 +35,6 @@ export default {
             entrue:(state) => state.home.new_bill_all.entrue,
             selectweek:(state) => state.home.new_bill_all.selectweek,
             selectmon:(state) => state.home.new_bill_all.selectmon,
-            cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
             show_add_coin:(state) => state.home.new_bill_all.show_add_coin
 		}),

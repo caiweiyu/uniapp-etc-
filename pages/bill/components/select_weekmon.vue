@@ -105,6 +105,7 @@ export default {
          * 判断头部背景色
          */
         bannerPic(){
+            console.log(this.bgColor,'背景色')
             if(this.bgColor=='#28BC93'){
                 return `url(${this.banner[0]})no-repeat;`
             }else{
@@ -216,7 +217,8 @@ export default {
         uni.$on("chooseCard",(data)=>{
             let val = data.type_card == 2 ? '#28BC93' : '#F07365'; //判断header颜色
             this.$store.commit("home/mt_new_bill_all_bg", val);
-            this.$store.commit("home/mt_new_bill_all_cardinfo", data);
+            this.$store.commit("home/mt_new_bill_all_cardusenum", data.cardno);
+            console.log(data.cardno,9999,val)
             this.$store.commit("home/mt_new_bill_all_ytkCard", data.plate);
             this.$emit("pickCard",data)
             console.log('data=',data)

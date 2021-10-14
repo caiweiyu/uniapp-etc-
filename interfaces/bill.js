@@ -50,6 +50,18 @@ export function getCardList(data) {
 }
 
 /**
+ * 粤通卡列表
+ * https://api-unitoll-test.etcchebao.com/card/cardList
+ */
+ export function ytk_list(data) {
+	return request({
+		url: `${G}/api-unitoll/card/cardList`,
+		method: "get",
+		data
+	});
+}
+
+/**
  * 获取运营位
  * @param {*} data 
  * @returns 

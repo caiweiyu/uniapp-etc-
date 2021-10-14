@@ -9,73 +9,89 @@
         </block>
       </view>
       <!--月账单列表-->
-      <scroll-view :scroll-y="false" class="scroll-page" v-if="isweekmon==0 && cardList_info.length > 0">
-        <view class="box" v-for="(item,index) in cardList_info" :key="index">
-            <view class="box1">
-              <view class="box1_l">
-                <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
-              </view>
-              <view class="box1_r">
-                    <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
-                    <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
-                    <view class="box1_r_btn" v-if="item.status==0" @click="getCoin(item,index,bottombillobj.ungetConfig.jumpType,bottombillobj.ungetConfig.jumpUrl)">{{bottombillobj.ungetConfig.btnTxt}}</view>
-                    <view class="box1_r_btn1" v-else-if="item.status==1" @click="getCoin(item,index,bottombillobj.getConfig.jumpType,bottombillobj.getConfig.jumpUrl)">{{bottombillobj.getConfig.btnTxt}}</view>
-                    <view class="box1_r_btn1" v-else @click="getCoin(item,index,bottombillobj.expireConfig.jumpType,bottombillobj.expireConfig.jumpUrl)">{{bottombillobj.expireConfig.btnTxt}}</view>
-              </view>
-            </view>
-            <view class="box2">
-              <view class="box2_l">
-                  <view class="title">
-                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
-                    <text class="title_text">{{item.enStation}}</text>
+      <block v-if="isweekmon==0">
+          <block v-if="cardList_info.length > 0">
+            <scroll-view :scroll-y="false" class="scroll-page">
+              <view class="box" v-for="(item,index) in cardList_info" :key="index">
+                  <view class="box1">
+                    <view class="box1_l">
+                      <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
+                    </view>
+                    <view class="box1_r">
+                          <image :class="[item.status==0 ? 'box1_r_img' : 'box1_r_img1']" src="https://image.etcchebao.com/etc-min/bill_all/coin_icon.png" mode="" />
+                          <text :class="[item.status==0 ? 'box1_r_text' : 'box1_r_text1']">{{item.integral}}</text>
+                          <view class="box1_r_btn" v-if="item.status==0" @click="getCoin(item,index,bottombillobj.ungetConfig.jumpType,bottombillobj.ungetConfig.jumpUrl)">{{bottombillobj.ungetConfig.btnTxt}}</view>
+                          <view class="box1_r_btn1" v-else-if="item.status==1" @click="getCoin(item,index,bottombillobj.getConfig.jumpType,bottombillobj.getConfig.jumpUrl)">{{bottombillobj.getConfig.btnTxt}}</view>
+                          <view class="box1_r_btn1" v-else @click="getCoin(item,index,bottombillobj.expireConfig.jumpType,bottombillobj.expireConfig.jumpUrl)">{{bottombillobj.expireConfig.btnTxt}}</view>
+                    </view>
                   </view>
-                  <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
-                  <view class="title title2" v-if="item.type==1">
-                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
-                    <text class="title_text">{{item.exitStation}}</text>
+                  <view class="box2">
+                    <view class="box2_l">
+                        <view class="title">
+                          <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
+                          <text class="title_text">{{item.enStation}}</text>
+                        </view>
+                        <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
+                        <view class="title title2" v-if="item.type==1">
+                          <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
+                          <text class="title_text">{{item.exitStation}}</text>
+                        </view>
+                        <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
+                    </view>
+                    <view class="box2_r">
+                        ¥<text class="box2_r_text">{{item.amount}}</text>
+                    </view>
                   </view>
-                  <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
               </view>
-              <view class="box2_r">
-                  ¥<text class="box2_r_text">{{item.amount}}</text>
+            </scroll-view>
+          </block>
+          <block v-else>
+              <view class="scroll-page" >
+                <view class="box3">
+                    <image src="https://image.etcchebao.com/etc-min/bill_all/unlist.png" mode="" class="box-img" />
+                </view> 
               </view>
-            </view>
-        </view>
-      </scroll-view>
+          </block>
+      </block>
       <!--周账单列表-->
-      <scroll-view :scroll-y="false" class="scroll-page" v-if="isweekmon==1 && week_cardList_info.length > 0">
-        <view class="box" v-for="(item,index) in week_cardList_info" :key="index">
-            <view class="box1">
-              <view class="box1_l">
-                <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
-              </view>
-              <view class="box1_r"></view>
-            </view>
-            <view class="box2">
-              <view class="box2_l">
-                  <view class="title">
-                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
-                    <text class="title_text">{{item.enStation}}</text>
+      <block v-if="isweekmon==1">
+          <block v-if="week_cardList_info.length > 0">
+              <scroll-view :scroll-y="false" class="scroll-page">
+                  <view class="box" v-for="(item,index) in week_cardList_info" :key="index">
+                      <view class="box1">
+                        <view class="box1_l">
+                          <text class="text" v-if="item.name != null">{{item.name}}</text><text v-if="item.province != null">{{item.province}}</text>
+                        </view>
+                        <view class="box1_r"></view>
+                      </view>
+                      <view class="box2">
+                        <view class="box2_l">
+                            <view class="title">
+                              <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_point.png" mode="" />
+                              <text class="title_text">{{item.enStation}}</text>
+                            </view>
+                            <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
+                            <view class="title title2" v-if="item.type==1">
+                              <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
+                              <text class="title_text">{{item.exitStation}}</text>
+                            </view>
+                            <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
+                        </view>
+                        <view class="box2_r">
+                            ¥<text class="box2_r_text">{{item.amount}}</text>
+                        </view>
+                      </view>
                   </view>
-                  <text class="timer" v-if="item.enTime != null">{{item.enTime}}</text>
-                  <view class="title title2" v-if="item.type==1">
-                    <image class="title_image" src="https://image.etcchebao.com/etc-min/bill_all/icon_location.png" mode="" />
-                    <text class="title_text">{{item.exitStation}}</text>
-                  </view>
-                  <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
+              </scroll-view>
+          </block>
+          <block v-else>
+              <view class="scroll-page" >
+                <view class="box3">
+                    <image src="https://image.etcchebao.com/etc-min/bill_all/unlist.png" mode="" class="box-img" />
+                </view> 
               </view>
-              <view class="box2_r">
-                  ¥<text class="box2_r_text">{{item.amount}}</text>
-              </view>
-            </view>
-        </view>
-      </scroll-view>
-      <!--周月账单无列表-->
-      <view v-if="week_cardList_info.length == 0 || cardList_info.length == 0"  class="scroll-page" >
-          <view class="box3">
-              <image src="https://image.etcchebao.com/etc-min/bill_all/unlist.png" mode="" class="box-img" />
-          </view> 
-      </view>
+          </block>
+      </block>
   </view>
 </template>
 
@@ -105,14 +121,12 @@ export default {
        }
     },
     watch:{
-      // cardList_info(o,n){
-      //   console.log('月账单',o,n)
-      //   this.list = o;
-      // },
-      // week_cardList_info(o,n){
-      //   console.log('周账单',o,n)
-      //   this.weeklist = o;
-      // }
+      cardList_info(o,n){
+        console.log('月账单',o,n)
+      },
+      week_cardList_info(o,n){
+        console.log('周账单',o,n)
+      }
     },
     computed: {
           ...mapState({

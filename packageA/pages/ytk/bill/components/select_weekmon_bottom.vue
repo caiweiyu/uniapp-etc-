@@ -74,7 +74,6 @@ export default {
             selectmon: (state) => state.home.new_bill_all.selectmon,
             selectweekindex: (state) => state.home.new_bill_all.selectweekindex,
             selectmonindex: (state) => state.home.new_bill_all.selectmonindex,
-            cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
             ytkCard:(state) => state.home.new_bill_all.ytkCard,
             isOpenWeeklist:(state) => state.home.new_bill_all.isOpenWeeklist,
@@ -164,7 +163,7 @@ export default {
         uni.$on("chooseCardbottom",(data)=>{
             let val = data.type_card == 2 ? '#28BC93' : '#F07365'; //判断卡类型header颜色
             this.$store.commit("home/mt_new_bill_all_bg", val);
-            this.$store.commit("home/mt_new_bill_all_cardinfo", data);
+            this.$store.commit("home/mt_new_bill_all_cardusenum", data.cardno);
             this.$store.commit("home/mt_new_bill_all_ytkCard", data.plate);
             this.$emit("pickCard",data)
             console.log('data=',data)

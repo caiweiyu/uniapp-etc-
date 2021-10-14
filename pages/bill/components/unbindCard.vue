@@ -1,6 +1,7 @@
 <template>
     <view class="container">
         <view class="container_title" :style="{height:tabBoundheight+'rpx'}">
+            <image class="back" @click="back" :style="{paddingTop:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" />
             <text class="dirtctionTitle" :style="{paddingTop:tabHeight+btnBoundtop+'rpx',lineHeight:menuHeight+'rpx'}">添加粤通卡</text>
         </view>
         <view class="list-none" @click="onAdd">
@@ -31,6 +32,15 @@ export default {
                 url: `/packageA/pages/ytk/add_ytk/main`,
             });
         },
+        /**
+         * 返回首页
+         */
+        back(){
+            console.log('返回==')
+            uni.reLaunch({
+                url: "/pages/home/main"
+            })
+        },
     },
     computed:{
         /**
@@ -46,12 +56,22 @@ export default {
 <style lang="scss" scoped>
     .container{
         &_title{ 
+            position: relative;
             .dirtctionTitle{
-                width: 100%;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
                 display: block;
                 text-align: center;
                 font-size: 28rpx;
                 color: #222222;
+            }
+            .back{
+                position: absolute;
+                left:26rpx;
+                width: 62rpx;
+                height: 62rpx;
+                flex-shrink: 0;
             }
         }
         .list-none {

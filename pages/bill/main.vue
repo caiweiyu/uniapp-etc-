@@ -1,43 +1,55 @@
 <template>
   <view class="box" :style="{height:winHeight+'px'}">
-      <!--没有绑卡的情况-->
-      <block v-if="!cardusenum">
-            <unbindCard></unbindCard>
+      <block v-if="loading">
+            <!--没有绑卡的情况-->
+            <block v-if="!cardusenum">
+                    <unbindCard></unbindCard>
+            </block>
+            <!--有绑卡的情况-->
+            <block v-else>
+                    <!--下拉滚动头部更换-->
+                    <selectWeekmonheader :monlist="monthsumBillsList" @selectCoinfuncom="selectCoinfuncom" @changZindex="changZindex"></selectWeekmonheader>  
+                    <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
+                    <!--下拉刷新区-->
+                    <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
+                            :refresher-triggered="triggered" :refresher-threshold="80"
+                            :refresher-background="datacolor" @refresherrefresh="onRefresh"
+                            @refresherrestore="onRestore" @refresherabort="onAbort"
+                            :scroll-with-animation="true"
+                            class="scroll-class"
+                            @scroll="scrollHandler"
+                            :style="{height:topValue,top:tabBoundheight+'rpx'}">     
+
+                            <!--顶部周月选择下拉框区-->
+                            <selectWeekmon ref="selectWeekmon" :triggered="triggered" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
+                            
+                            <!--本月消费通行次数-->
+                            <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
+
+                            <!--账单列表区-->
+                            <billList ref="billList" @showToastfn="showToastfn" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
+
+                    </scroll-view>
+                    <!--底部一键领取-->
+                    <view class="bottom_class" :style="{bottom:'28rpx',zIndex:zindex}" v-if="isweekmon==0">
+                        <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
+                    </view>
+                    <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
+                    <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
+                    <!--周选择详情弹出层选项-->
+                    <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
+            </block>
       </block>
-      <!--有绑卡的情况-->
-      <block v-else>
-            <!--下拉滚动头部更换-->
-            <selectWeekmonheader :monlist="monthsumBillsList" @selectCoinfuncom="selectCoinfuncom" @changZindex="changZindex"></selectWeekmonheader>  
-            <selectWeekmonbottom v-if="isScrollOver" :style="{position:'fixed',top:tabBoundheight+'rpx',zIndex:zindex}"  ref="selectWeekmon" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmonbottom> 
-            <!--下拉刷新区-->
-            <scroll-view :refresher-enabled="entrue" :scroll-y="isScroll"
-                    :refresher-triggered="triggered" :refresher-threshold="80"
-                    :refresher-background="datacolor" @refresherrefresh="onRefresh"
-                    @refresherrestore="onRestore" @refresherabort="onAbort"
-                    :scroll-with-animation="true"
-                    class="scroll-class"
-                    @scroll="scrollHandler"
-                    :style="{height:topValue,top:tabBoundheight+'rpx'}">     
-
-                    <!--顶部周月选择下拉框区-->
-                    <selectWeekmon ref="selectWeekmon" :triggered="triggered" :cardList="cardList" :monlist="monthsumBillsList" @pickCard="pickCardfn" @changZindex="changZindex" @selectMonBill="selectMonBill" @selectWeekBill="selectWeekBill"></selectWeekmon>  
-                    
-                    <!--本月消费通行次数-->
-                    <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
-
-                    <!--账单列表区-->
-                    <billList ref="billList" @showToastfn="showToastfn" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
-
-            </scroll-view>
-            <!--底部一键领取-->
-            <view class="bottom_class" :style="{bottom:'28rpx',zIndex:zindex}" v-if="isweekmon==0">
-                <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
-            </view>
-            <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
-            <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
-            <!--周选择详情弹出层选项-->
-            <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
-      </block>
+      <!-- 加载中 -->
+      <view v-if="!loading"
+            :style="[
+                {margin: '0 auto'},
+                {padding: '300rpx 0 0 0'},
+                {width: '50rpx'}
+            ]"
+        >
+            <u-loading mode="circle" size="50" color="#FF5C2A"></u-loading>
+      </view>
       <!-- 全局提示 -->
       <toast :content="showToast" @showToastfn="showToastfn" v-show="isToast"></toast>
       <!-- 全局弹窗 -->
@@ -84,7 +96,7 @@ export default {
             isOpenWeekVal:false,  //周开关
             showToast:'',  //提示文字
             isToast:false,  //显示关闭弹窗
-            jsondata:null,
+            loading: false,//加载中...
         }
     },
     computed: {
@@ -95,7 +107,6 @@ export default {
             entrue:(state) => state.home.new_bill_all.entrue,
             selectweek:(state) => state.home.new_bill_all.selectweek,
             selectmon:(state) => state.home.new_bill_all.selectmon,
-            cardinfo:(state) => state.home.new_bill_all.cardinfo,
             cardusenum:(state) => state.home.new_bill_all.cardusenum,
             show_add_coin:(state) => state.home.new_bill_all.show_add_coin,
             isNeeddisCount:(state) => state.home.new_bill_all.isNeeddisCount,
@@ -158,7 +169,7 @@ export default {
         */ 
         if(this.token){
             new Promise((resolve,reject)=>{
-                resolve( this.getCardList() )
+                resolve( this.ytk_list() )
                 this.getparaList()
             }).then(res=>{
                 if(res){
@@ -235,7 +246,7 @@ export default {
                 console.log('获取月账单=',data);
                 this.bottombillobj = data;
                 this.cardList_info = data.passDetail;
-                if(this.isNeeddisCount){
+                if(this.isNeeddisCount && this.monthsumBillsList.length > 0){
                     console.log('月账单数据=',this.monthsumBillsList,'月下标tab=',this.selectmonindex);
                     this.selectmonindex == 5 ? this.getUserLevel(cardNo,this.monthsumBillsList[4].sum) : this.getUserLevel(cardNo,this.monthsumBillsList[this.selectmonindex].sum)
                 }
@@ -271,13 +282,13 @@ export default {
             }
         },
         /**
-         * 获取卡片列表
+         * 获取卡片列表(弃用)
          */
         async getCardList(){
             let res = await API.getCardList({
                 type:1,
                 page:1,
-                page_size:10
+                page_size:1
             });
             let {code,msg,data} = res;
             if(code == 0){
@@ -293,6 +304,36 @@ export default {
                 }
             }
 
+        },
+
+        /**
+         * 获取粤通卡列表
+         */
+        async ytk_list(){
+            let res = await API.ytk_list({
+                type: 2,
+				page: 1,
+				page_size: 20
+            });
+            let {
+                code,
+                data
+            } = res;
+            if(code == 0){
+                if(data.cardList && data.cardList.length > 0){
+                    console.log('粤通卡卡号/车牌号是=',data.cardList[0].cardno,data.cardList[0].plate,'卡号',this.cardusenum);
+                    this.loading = true;
+                    if(this.cardusenum){
+                        return this.cardusenum;
+                    }else{
+                        let val = data.cardList[0].card_name.indexOf('储值卡') > -1 ? '#28BC93' : '#F07365';
+                        this.$store.commit("home/mt_new_bill_all_bg", val);
+                        this.$store.commit("home/mt_new_bill_all_cardusenum", data.cardList[0].cardno);
+                        this.$store.commit("home/mt_new_bill_all_ytkCard", data.cardList[0].plate);
+                        return data.cardList[0].cardno;
+                    } 
+                }
+            }
         },
         /**
          * 触发领取金币
@@ -546,6 +587,7 @@ export default {
     },
     mounted(){
         console.log('mounted')
+        this.ytk_list();
         this.loadallHandlerhasCard()
     },
     /**
