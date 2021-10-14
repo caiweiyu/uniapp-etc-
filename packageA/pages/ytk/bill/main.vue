@@ -198,7 +198,9 @@ export default {
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
                             this.getMonthBill2(res,this.getyymm(0))
                         }else{
-                            this.getMonthBill2(res,this.selectmon.month)
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
+                            this.getMonthBill2(res,this.getyymm(1))
                         }
                     },300)
                 }
@@ -320,6 +322,8 @@ export default {
                 data
             } = res;
             if(code == 0){
+                console.log('进入账单-----')
+                this.loading = true;
                 if(data.cardList && data.cardList.length > 0){
                     console.log('粤通卡卡号/车牌号是=',data.cardList[0].cardno,data.cardList[0].plate,'卡号',this.cardusenum);
                     if(this.cardusenum){
@@ -332,7 +336,7 @@ export default {
                         return data.cardList[0].cardno;
                     } 
                 }
-                this.loading = true;
+                
             }
         },
         /**

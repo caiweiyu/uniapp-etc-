@@ -116,11 +116,14 @@ export default {
          * 格式化粤通卡号
          */
         ytkCardnum(){
-            if(this.cardusenum){
+            console.log(this.cardusenum,'粤通卡')
+            if(this.cardusenum && this.cardusenum.length > 0){
                 let str = this.cardusenum,reg=/.{4}/g,rs=str.match(reg),h=[];
-                rs.forEach((v,i)=>{
-                    h.push(v)
-                });
+                if(rs){
+                    rs.forEach((v,i)=>{
+                        h.push(v)
+                    });
+                }
                 return h.join(' ');
             }
         }
