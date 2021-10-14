@@ -591,7 +591,7 @@ export default {
     },
     mounted(){
         console.log('mounted')
-        this.ytk_list();
+        // this.ytk_list();
         this.loadallHandlerhasCard()
     },
     /**

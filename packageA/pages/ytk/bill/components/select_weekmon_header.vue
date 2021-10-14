@@ -1,5 +1,5 @@
 <template>
-    <view class="box" :style="{backgroundColor:bgColor,height:tabBoundheight+'rpx'}">
+    <view class="box" :style="{backgroundColor:headerColor,height:tabBoundheight+'rpx'}">
         <!--返回-->
             <view class="back" :style="{top:tabHeight+btnBoundtop+'rpx',height:menuHeight+'rpx'}" @click="back">
                 <image class="back_box" :style="{paddingTop:(menuHeight/4)+'rpx'}" src="https://image.etcchebao.com/etc-min/bill_all/icon_left.png" />
@@ -76,6 +76,13 @@ export default {
                return true
             }
         },
+        /**
+         * 头部背景色
+         */
+        headerColor(){
+            console.log(this.bgColor,'背景头部色~');
+            return this.bgColor
+        }
     },
     watch:{
         isOpenModel(o,n){

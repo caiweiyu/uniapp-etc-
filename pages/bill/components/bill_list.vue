@@ -241,7 +241,7 @@ export default {
             display: block;
           }
           .box3{
-            margin-top: 30rpx;
+            margin-top: 80rpx;
             height: 300rpx;
             border-radius: 16rpx;
             display: block;
