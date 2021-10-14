@@ -405,9 +405,7 @@ export default {
             });
             let {code,msg,data} = res;
             if(code == 0){
-                if(Number(data.discount_amount) > 0){
-                    this.$store.commit("home/mt_new_bill_all_discount_amount", data.discount_amount);
-                }
+                this.$store.commit("home/mt_new_bill_all_discount_amount", data.discount_amount);
             }
         },
         /**
