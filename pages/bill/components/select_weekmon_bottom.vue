@@ -166,7 +166,6 @@ export default {
             this.$store.commit("home/mt_new_bill_all_cardusenum", data.cardno);
             this.$store.commit("home/mt_new_bill_all_ytkCard", data.plate);
             this.$emit("pickCard",data)
-            console.log('data=',data)
         })
     },
 }

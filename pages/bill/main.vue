@@ -35,7 +35,7 @@
                         <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
                     </view>
                     <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
-                    <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas>
+                    <!-- <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas> -->
                     <!--周选择详情弹出层选项-->
                     <u-picker mode="selector" v-model="isOpenWeekVal" :default-selector="defaultweekvalue" :range="weeklist" range-key="describe" @confirm="enterweek" @cancel="cancelWeekPicker" :confirm-color="'#FF5C2A'" :cancel-color="'#999999'" :confirm-text="'确定'"></u-picker>
             </block>
@@ -146,7 +146,7 @@ export default {
     },
     onHide(){
         console.log('销毁===')
-        this.$store.commit("home/mt_new_bill_all_en", false);
+        // this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
@@ -326,7 +326,7 @@ export default {
                 this.loading = true;
                 if(data.cardList && data.cardList.length > 0){
                     console.log('粤通卡卡号/车牌号是=',data.cardList[0].cardno,data.cardList[0].plate,'卡号',this.cardusenum);
-                    if(this.cardusenum != ''){
+                    if(this.cardusenum){
                         return this.cardusenum;
                     }else{
                         let val = data.cardList[0].card_name.indexOf('储值卡') > -1 ? '#28BC93' : '#F07365';
@@ -336,6 +336,7 @@ export default {
                         return data.cardList[0].cardno;
                     } 
                 }
+                
             }
         },
         /**
@@ -352,26 +353,26 @@ export default {
                 let anim  = lottie.loadAnimation({
                     loop: false,
                     autoplay: true,
-                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin3.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
+                    path: "https://image.etcchebao.com/etc-min/new-bill-all/coin4.json", //lottie json包的网络链接，可以防止小程序的体积过大，要注意请求域名要添加到小程序的合法域名中
                     // animationData:require("../../packageA/pages/ytk/bill/components/coin.json"),
                     rendererSettings: {
                         context,
                     },
                 });
             }).exec();    
-            wx.createSelectorQuery().select('#canvas2').node(res => {
-                const canvas = res.node
-                const context = canvas.getContext('2d')
-                canvas.width = 750
-                canvas.height = 750
-                context.font = 'bold 32px 微软雅黑'
-                context.fillStyle="#FFFFFF"
-                context.textAlign = 'center'
-                context.fillText(data, 375, 425)
-                setTimeout(()=>{
-                     context.clearRect(0,0,750,750)
-                },3000)
-            }).exec();
+            // wx.createSelectorQuery().select('#canvas2').node(res => {
+            //     const canvas = res.node
+            //     const context = canvas.getContext('2d')
+            //     canvas.width = 750
+            //     canvas.height = 750
+            //     context.font = 'bold 32px 微软雅黑'
+            //     context.fillStyle="#FFFFFF"
+            //     context.textAlign = 'center'
+            //     context.fillText(data, 375, 425)
+            //     setTimeout(()=>{
+            //          context.clearRect(0,0,750,750)
+            //     },3000)
+            // }).exec();
             setTimeout(()=>{
                 this.$store.commit("home/mt_new_bill_all_show_add_coin", false);
             },3500)

@@ -120,14 +120,6 @@ export default {
          default:{}
        }
     },
-    watch:{
-      cardList_info(o,n){
-        console.log('月账单',o,n)
-      },
-      week_cardList_info(o,n){
-        console.log('周账单',o,n)
-      }
-    },
     computed: {
           ...mapState({
                 isweekmon: (state) => state.home.new_bill_all.isweekmon,

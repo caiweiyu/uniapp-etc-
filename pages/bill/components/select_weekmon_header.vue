@@ -1,7 +1,9 @@
 <template>
     <view class="box" :style="{backgroundColor:bgColor,height:tabBoundheight+'rpx'}">
         <!--返回-->
-            <!-- <image class="back" @click="back" :style="{top:tabHeight+btnBoundtop+'rpx'}" src="https://image.etcchebao.com/etc-min/etc-f/icon_12.png" /> -->
+            <!-- <view class="back" :style="{top:tabHeight+btnBoundtop+'rpx',height:menuHeight+'rpx'}" @click="back">
+                <image class="back_box" :style="{paddingTop:(menuHeight/4)+'rpx'}" src="https://image.etcchebao.com/etc-min/bill_all/icon_left.png" />
+            </view> -->
         <!--顶部周、月账单选项-->
             <view :class="['box_title']"  @click="openTarget" :style="{top:tabHeight+btnBoundtop+'rpx',height:menu.height*2+'rpx'}">
                 <text class="dirtctionTitle">{{isweekmon == 1 ? list[isweekmon].cateName : list[isweekmon].cateName}}</text>
@@ -149,12 +151,16 @@ export default {
         top: 0;
         transition: all ease-in 0.5s;
         .back{
-            width: 62rpx;
-            height: 62rpx;
+            width: 64rpx;
             flex-shrink: 0;
-            display: flex;
             position: absolute;
             left: 26rpx;
+            &_box{
+                display: block;
+                margin: auto;
+                width: 16rpx;
+                height: 32rpx;
+            }
         }
         &_title{
                 position: absolute;
