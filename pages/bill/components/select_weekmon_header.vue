@@ -78,7 +78,7 @@ export default {
         },
         /**
          * 头部背景色
-        */
+         */
         headerColor(){
             console.log(this.bgColor,'背景头部色~');
             return this.bgColor

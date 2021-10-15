@@ -26,7 +26,7 @@
             </view>
         </view>
         <!--可滑动 自动滚区-->
-        <block v-if="getoperalist.location==4">
+        <block v-if="getoperalist.location==4 && isweekmon==1">
           <view class="boxContainer" v-if="getoperalist.type_1.length > 0">
               <swiper class="swiper" :previous-margin="previousmargin" :next-margin="nextmargin" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true" @change="bindchange">
                   <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_1" :key="index" @click.stop="openArea(item)">
@@ -39,7 +39,7 @@
               </view>
           </view>
         </block>
-        <block v-if="getoperalist.location==3">
+        <block v-if="getoperalist.location==3 && isweekmon==0">
             <view class="boxContainer" v-if="getoperalist.type_3.length > 0">
               <swiper class="swiper" :previous-margin="previousmargin" :next-margin="nextmargin" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" :circular="true" @change="bindchange">
                   <swiper-item class="swiper-item" v-for="(item,index) in getoperalist.type_3" :key="index" @click.stop="openArea(item)">
@@ -55,7 +55,7 @@
               <view class="swiper-item swiper-ac">
                   <view class="box2">
                       <block>¥
-                        <text class="box2_1">{{discount_amount || 0}}</text>
+                        <text class="box2_1">{{amountDeal}}</text>
                       </block>
                       <text class="box2_2">{{getoperalist.type_2[0].extend.explain_tips}}</text>
                       <view class="box2_3">{{getoperalist.type_2[0].title}}</view>
@@ -131,6 +131,16 @@ export default {
                 return ''
             }
           },
+          /**
+           * 格式化路费返还 0.00
+           */
+          amountDeal(){
+            if(this.discount_amount > 0){
+              return Number(this.discount_amount).toFixed(2)
+            }else{
+              return '0.00'
+            }
+          }
     },
     methods: {
       /**
@@ -280,24 +290,28 @@ export default {
       .box2{
         color: #8E523F;
         font-size: 24rpx;
-        margin-left: 29rpx;
+        margin: 0 0 10rpx 29rpx;
         .box2_1{
             font-weight: bold;
             font-size: 40rpx;
-            margin-right: 12rpx;
+            margin: 0 12rpx 0 5rpx;
+            font-family: 'etccb-font';
         }
         .box2_2{
             font-size: 26rpx;
+            font-weight: bold;
         }
         .box2_3{
           font-size: 24rpx;
+          font-weight: bold;
+          opacity: .6;
         }
       }
       .box3{
         margin-right: 20rpx;
         width: 144rpx;
         height: 50rpx;
-        line-height: 50rpx;
+        line-height: 48rpx;
         text-align: center;
         border-radius: 120rpx;
         border: 2rpx solid #8E523F;

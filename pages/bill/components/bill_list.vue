@@ -38,7 +38,7 @@
                         </view>
                         <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
                     </view>
-                    <view class="box2_r">
+                    <view :class="['box2_r',item.tradeType==94 ? 'box2_r1' : '']">
                         ¥<text class="box2_r_text">{{item.amount}}</text>
                     </view>
                   </view>
@@ -77,7 +77,7 @@
                             </view>
                             <text class="timer" v-if="item.type==1 && item.exitTime != null">{{item.exitTime}}</text>
                         </view>
-                        <view class="box2_r">
+                        <view :class="['box2_r',item.tradeType==94 ? 'box2_r1' : '']">
                             ¥<text class="box2_r_text">{{item.amount}}</text>
                         </view>
                       </view>
@@ -118,7 +118,14 @@ export default {
        bottombillobj:{
          type:Object,
          default:{}
-       }
+       },
+       /**
+         * 是否开启下拉刷新
+         */
+        triggered:{
+            type:Boolean,
+            default:false
+        }
     },
     computed: {
           ...mapState({
@@ -143,6 +150,7 @@ export default {
           return (yy.toString()+mm.toString());
       },
       async getCoin(item,index,type,url){
+        if(this.triggered) return;
         if(this.show_add_coin) return;
         try {
             if(type == 2){
@@ -208,9 +216,7 @@ export default {
 <style scoped lang="scss">
   .box{
       &_title{
-        height: 53rpx;
-        line-height: 73rpx;
-        padding-left: 34rpx;
+        margin: 40rpx 0 0 34rpx;
         background-color: #F6F6F6;
         .img{
           display: inline-block;
@@ -359,6 +365,14 @@ export default {
     &_r{
       font-family: 'etccb-font';
       color: #FF5C2A;
+      font-size: 44rpx;
+      &_text{
+        font-weight: bold;
+      }
+    }
+    &_r1{
+      font-family: 'etccb-font';
+      color: #20AE48;
       font-size: 44rpx;
       &_text{
         font-weight: bold;

@@ -23,6 +23,13 @@ export default {
         bottombillobj:{
             type:Object,
             default:{}
+        },
+        /**
+         * 是否开启下拉刷新
+         */
+        triggered:{
+            type:Boolean,
+            default:false
         }
     },
     data(){
@@ -54,6 +61,7 @@ export default {
             return (yy.toString()+mm.toString());
         },
         async selectMonCoin(type,url){
+            if(this.triggered) return;
             if(this.show_add_coin) return;
             try {
                 if(type == 2){

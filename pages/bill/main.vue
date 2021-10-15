@@ -27,12 +27,12 @@
                             <monfreeTimer ref="monfreeTimer" :getoperalist="operalist" :cardList="cardList"></monfreeTimer>
 
                             <!--账单列表区-->
-                            <billList ref="billList" @showToastfn="showToastfn" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
+                            <billList ref="billList" :triggered="triggered" @showToastfn="showToastfn" @selectCoinfunc="selectCoinfunc" :bottombillobj="bottombillobj" :cardList_info="cardList_info" :week_cardList_info="week_cardList_info" @isTouchCoin="isTouchCoin" @cardListInfoIndex="cardListInfoIndex"></billList>
 
                     </scroll-view>
                     <!--底部一键领取-->
                     <view class="bottom_class" :style="{bottom:'28rpx',zIndex:zindex}" v-if="isweekmon==0">
-                        <bottomBtn ref="bottomBtn" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
+                        <bottomBtn ref="bottomBtn" :triggered="triggered" :bottombillobj="bottombillobj" @selectCoinfunc="selectCoinfunc" @isTouchCoin="isTouchCoin"></bottomBtn>
                     </view>
                     <canvas v-show="show_add_coin" id="canvas" type="2d"  class="canves"></canvas>
                     <!-- <canvas v-show="show_add_coin" id="canvas2" type="2d" class="canves"></canvas> -->
@@ -146,7 +146,7 @@ export default {
     },
     onHide(){
         console.log('销毁===')
-        // this.$store.commit("home/mt_new_bill_all_en", false);
+        this.$store.commit("home/mt_new_bill_all_en", false);
     },
     onShow(){
         this.$store.commit("home/mt_new_bill_all_en", true);
@@ -175,6 +175,19 @@ export default {
                 if(res){
                     this.getstatisWeekData(res);
                     this.getsumMonthBill(res);
+                    /**
+                     * 获取运营位: 1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+                     */
+                    if(options.type==1 || options.type==2){
+                        this.$store.commit("home/mt_new_bill_all", 1);
+                        this.getoperaList(4)
+                    }else if(options.type==3 || options.type==4){
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.getoperaList(3)
+                    }else{
+                        this.$store.commit("home/mt_new_bill_all", 0);
+                        this.getoperaList(3)
+                    }
                     setTimeout(()=>{
                         /**
                          * 初始化参数 type 1本周 2上周 3本月 4上月
@@ -182,23 +195,18 @@ export default {
                         let week_arr = this.weeklist.slice(0,4).reverse();
                         console.log('options.type=',options.type,'week_arr',week_arr)
                         if(options.type == 1){
-                            this.$store.commit("home/mt_new_bill_all", 1);
                             this.$store.commit("home/mt_new_bill_all_selectweekindex", 3);
                             this.getbillInfoByApp(res,week_arr[3].startDay,week_arr[3].endDay)
                         }else if(options.type == 2){
-                            this.$store.commit("home/mt_new_bill_all", 1);
                             this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
                             this.getbillInfoByApp(res,week_arr[2].startDay,week_arr[2].endDay)
                         }else if(options.type == 3){
-                            this.$store.commit("home/mt_new_bill_all", 0);
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
                             this.getMonthBill2(res,this.getyymm(1))
                         }else if(options.type == 4){
-                            this.$store.commit("home/mt_new_bill_all", 0);
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
                             this.getMonthBill2(res,this.getyymm(0))
                         }else{
-                            this.$store.commit("home/mt_new_bill_all", 0);
                             this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
                             this.getMonthBill2(res,this.getyymm(1))
                         }
@@ -209,12 +217,12 @@ export default {
     },
     methods: {
         /**
-         * 获取格式  202009
+         * 获取格式  202009  val=1本月 val=0上月
          */
-        getyymm(data){
+        getyymm(val){
             let date=new Date();
             let yy=date.getFullYear();
-            let mm=date.getMonth()+data;
+            let mm=date.getMonth()+val;
             mm=(mm<10 ? "0"+mm:mm);
             return (yy.toString()+mm.toString());
         },
@@ -388,8 +396,8 @@ export default {
             let {code,msg,data} = res;
             if(code == 0){
                  console.log('运营位=',data)
-                 this.operalist = data;
-                 if(this.operalist.type_2){
+                 if(data && data.type_2){
+                     this.operalist = data;
                      this.$store.commit("home/mt_new_bill_all_isNeeddisCount", true);
                  }
                  this.operalist.location = location;
@@ -570,17 +578,9 @@ export default {
          * 加载所有事件，卡号有的情况
          */
         loadallHandlerhasCard(){
-            let {
-                type
-            } = this.$root.$mp.query;
-            if(type == 3 || type == 4){
-                this.getoperaList(3); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块 
-            }else if(type == 1 || type == 2){
-                this.getoperaList(4); //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
-            }else{
-                let data = this.isweekmon == 1 ? 4 : 3;
-                this.getoperaList(data);
-            }
+            //1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+            let data = this.isweekmon == 1 ? 4 : 3;
+            this.getoperaList(data);
             if(this.cardusenum){
                 this.getMonthBill2(this.cardusenum,this.selectmon.month);
                 this.getbillInfoByApp(this.cardusenum,this.selectweek.startDay,this.selectweek.endDay); 
@@ -589,8 +589,6 @@ export default {
     },
     mounted(){
         console.log('mounted')
-        // this.ytk_list();
-        this.loadallHandlerhasCard()
     },
     /**
      * 分享好友/群
