@@ -115,6 +115,8 @@ export default {
             selectweekMore:(state) => state.home.new_bill_all.selectweekMore,
             weeklist:(state) => state.home.new_bill_all.weeklist,
             selectmonindex:(state) => state.home.new_bill_all.selectmonindex,
+            type:(state) => state.home.new_bill_all.type,
+            bindCardSuccess:(state) => state.home.new_bill_all.bindCardSuccess,
 		}),
         /**
          * 计算高度（胶囊顶部距状态栏高度距离*2 + 状态栏高度 + 胶囊高度）
@@ -132,7 +134,8 @@ export default {
          * top值
          */
         topValue(){
-            return (this.winHeight*2-this.tabBoundheight)+'rpx'
+            // return (this.winHeight*2-this.tabBoundheight)+'rpx'
+            return '100%'
         },
     },
     watch:{
@@ -158,7 +161,15 @@ export default {
         if(this.token && this.cardusenum){
             this.isweekmon == 1 ? eventMonitor('WeChat_YTK_WeeklyBill_1',1) : eventMonitor('WeChat_YTK_MonthlyBill_1',1);
         }
-        console.log('onShow')
+        console.log('onShow');
+        if(this.bindCardSuccess){
+            let data = {
+                type:this.type
+            };
+            console.log(data,'参数=',this.bindCardSuccess)
+            this.init(data)
+            this.$store.commit("home/mt_new_bill_all_bindCardSuccess", false);
+        }
         this.$store.dispatch("home/ac_share_info",this.isweekmon == 1 ? '12' : '11');//分享配置
         this.$refs.dialog.loadPopup();
     },
@@ -166,56 +177,66 @@ export default {
         console.log('onload')
         /**
          * 加载信息提示
-        */ 
-        if(this.token){
-            new Promise((resolve,reject)=>{
-                resolve( this.ytk_list() )
-                this.getparaList()
-            }).then(res=>{
-                if(res){
-                    this.getstatisWeekData(res);
-                    this.getsumMonthBill(res);
-                    /**
-                     * 获取运营位: 1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
-                     */
-                    if(options.type==1 || options.type==2){
-                        this.$store.commit("home/mt_new_bill_all", 1);
-                        this.getoperaList(4)
-                    }else if(options.type==3 || options.type==4){
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.getoperaList(3)
-                    }else{
-                        this.$store.commit("home/mt_new_bill_all", 0);
-                        this.getoperaList(3)
-                    }
-                    setTimeout(()=>{
-                        /**
-                         * 初始化参数 type 1本周 2上周 3本月 4上月
-                         */
-                        let week_arr = this.weeklist.slice(0,4).reverse();
-                        console.log('options.type=',options.type,'week_arr',week_arr)
-                        if(options.type == 1){
-                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 3);
-                            this.getbillInfoByApp(res,week_arr[3].startDay,week_arr[3].endDay)
-                        }else if(options.type == 2){
-                            this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
-                            this.getbillInfoByApp(res,week_arr[2].startDay,week_arr[2].endDay)
-                        }else if(options.type == 3){
-                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
-                            this.getMonthBill2(res,this.getyymm(1))
-                        }else if(options.type == 4){
-                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
-                            this.getMonthBill2(res,this.getyymm(0))
-                        }else{
-                            this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
-                            this.getMonthBill2(res,this.getyymm(1))
-                        }
-                    },300)
-                }
-            })
-        }      
+        */
+       this.init(options) 
+           
     },
     methods: {
+        /**
+         * 初始化
+         */
+        init(options){
+            if(this.token){
+                new Promise((resolve,reject)=>{
+                    resolve( this.ytk_list() )
+                    this.getparaList()
+                }).then(res=>{
+                    if(res){
+                        this.getstatisWeekData(res);
+                        this.getsumMonthBill(res);
+                        /**
+                         * 获取运营位: 1 金币模块 2 账单模块 3 粤通卡月账单模块  4 粤通卡周账单模块
+                         */
+                        if(options.type==1 || options.type==2){
+                            this.$store.commit("home/mt_new_bill_all", 1);
+                            this.$store.commit("home/mt_new_bill_all_type", options.type);
+                            this.getoperaList(4)
+                        }else if(options.type==3 || options.type==4){
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$store.commit("home/mt_new_bill_all_type", options.type);
+                            this.getoperaList(3)
+                        }else{
+                            this.$store.commit("home/mt_new_bill_all", 0);
+                            this.$store.commit("home/mt_new_bill_all_type", 5);
+                            this.getoperaList(3)
+                        }
+                        setTimeout(()=>{
+                            /**
+                             * 初始化参数 type 1本周 2上周 3本月 4上月
+                             */
+                            let week_arr = this.weeklist.slice(0,4).reverse();
+                            console.log('options.type=',options.type,'week_arr',week_arr)
+                            if(options.type == 1){
+                                this.$store.commit("home/mt_new_bill_all_selectweekindex", 3);
+                                this.getbillInfoByApp(res,week_arr[3].startDay,week_arr[3].endDay)
+                            }else if(options.type == 2){
+                                this.$store.commit("home/mt_new_bill_all_selectweekindex", 2);
+                                this.getbillInfoByApp(res,week_arr[2].startDay,week_arr[2].endDay)
+                            }else if(options.type == 3){
+                                this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
+                                this.getMonthBill2(res,this.getyymm(1))
+                            }else if(options.type == 4){
+                                this.$store.commit("home/mt_new_bill_all_selectmonindex", 4);
+                                this.getMonthBill2(res,this.getyymm(0))
+                            }else{
+                                this.$store.commit("home/mt_new_bill_all_selectmonindex", 5);
+                                this.getMonthBill2(res,this.getyymm(1))
+                            }
+                        },300)
+                    }
+                })
+            }
+        },
         /**
          * 获取格式  202009  val=1本月 val=0上月
          */

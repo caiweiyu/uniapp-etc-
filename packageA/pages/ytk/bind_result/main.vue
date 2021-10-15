@@ -64,7 +64,8 @@
 			...mapState({
 				token: (state) => state.user.token,
 				userid: (state) => state.user.info.userid,
-				userinfo: (state) => state.user.info
+				userinfo: (state) => state.user.info,
+				type: (state) => state.home.new_bill_all.type
 			}),
 		},
 		onShow() {
@@ -111,9 +112,15 @@
 			
 			toBill() {
 				eventMonitor("BindSuccess_Middle_YTK_BindCard_329_Button_click", 2)
-				uni.redirectTo({
-					url: "/pages/bill/main",
-				});
+				if([1,2,3,4].indexOf(Number(this.type)) > -1){
+					uni.navigateTo({
+						 url: '/packageA/pages/ytk/bill/main'
+					});
+				}else{
+					uni.switchTab({
+						url: "/pages/bill/main"
+					});
+				}	
 			},
 			toPay() {
 				eventMonitor("BindSuccess_Middle_YTK_YTKRecharge_329_Button_click", 2);

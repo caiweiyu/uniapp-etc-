@@ -149,6 +149,7 @@
 					uni.redirectTo({
 						url: `/packageA/pages/ytk/bind_result/main?cardNo=${this.card_num}&plate=${this.plate_number}`,
 					});
+					this.$store.commit("home/mt_new_bill_all_bindCardSuccess", true);
 				}
 				uni.$emit("etc",{})
 			},

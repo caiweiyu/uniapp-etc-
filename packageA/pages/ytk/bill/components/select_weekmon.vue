@@ -240,7 +240,6 @@ export default {
             position:absolute;
             left:30rpx;
             .card_title{
-                width: 300rpx;
                 .text{
                     display: inline-block;
                     vertical-align: middle;

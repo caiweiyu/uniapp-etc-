@@ -23,6 +23,8 @@ const home = {
 
 		new_bill_all:{ //新账单模块
 			isweekmon:0,  //1周 0月
+			type:5,    //1本周 2上周 3本月 4上月
+			bindCardSuccess:false,  //是不是绑卡成功
 			bgColor:'#28BC93', //#F07365 卡片颜色控制
 			entrue:true,  //控制下拉开关
 			selectweek:{},  //点击单周存放的数据
@@ -152,7 +154,13 @@ const home = {
 		},
 		mt_new_bill_all_weeklist: (state, n)=> {
 			state.new_bill_all.weeklist = n;
-		}
+		},
+		mt_new_bill_all_type: (state, n)=> {
+			state.new_bill_all.type = n;
+		},
+		mt_new_bill_all_bindCardSuccess: (state, n)=> {
+			state.new_bill_all.bindCardSuccess = n;
+		},
 	},
 	actions: {
 		ac_item: (context, obj)=> {

@@ -137,6 +137,8 @@
 					uni.redirectTo({
 						url: `/packageA/pages/ytk/bind_result/main?cardNo=${this.card_num}&plate=${this.plate_number}`,
 					});
+					this.$store.commit("home/mt_new_bill_all_bindCardSuccess", true);
+					console.log('假绑---')
 				} else {
 					uni.redirectTo({
 						url: `/packageA/pages/ytk/bind_ytk/main?card_num=${this.card_num}&color_code=${this.vehicle_color}&color_text=${this.vehicle_color_text}&phone=${phone}&plate_number=${this.plate_number}&type=${type}`,
